@@ -4,9 +4,11 @@
 \alias{mg_list}
 \title{group samples within a list}
 \usage{
-mg_list(sample.info, samples.data.list)
+mg_list(sample.info, group.label, samples.data.list)
 }
 \arguments{
+\item{sample.info}{A data frame with a column}
+
 \item{samples.data.list}{}
 }
 \description{
