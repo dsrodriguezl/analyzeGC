@@ -5,6 +5,8 @@
 #' @param aligned_df
 #' @param empty.peaks
 #'
+#' @import tibble
+#'
 #' @export
 add_empty_peaks <- function(aligned_df, empty.peaks) {
 

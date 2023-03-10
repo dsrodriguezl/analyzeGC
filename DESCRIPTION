@@ -4,8 +4,8 @@ Title: Analysis of GC data
 Version: 0.1.0
 Author: Daniel S. Rodríguez-Leon
 Maintainer: Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: A package to facilitate the analysis of Gas-Chromatography (GC) 
+  data in R. 
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -18,7 +18,8 @@ Imports:
     GCalignR,
     ggplot2,
     gplots,
-    viridis
+    viridis,
+    tibble
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 3.0.0)
