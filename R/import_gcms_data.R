@@ -25,7 +25,6 @@
 import_gcms_data <- function(data.path.list
                              , patterns_2_delete){
 
-
   names_list <- str_split(data.path.list
                           , "/"
                           , simplify = T) |>
