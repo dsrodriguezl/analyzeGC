@@ -7,9 +7,13 @@
 mg_list(sample.info, group.label, samples.data.list)
 }
 \arguments{
-\item{sample.info}{A data frame with a column}
+\item{sample.info}{A data frame indicating the groups to which the samples belong}
 
-\item{samples.data.list}{}
+\item{group.label}{A character indicating the name of the column of sample.info that contains
+the group names by which the samples should be grouped}
+
+\item{samples.data.list}{List of data frames with integration results per sample, as produced by
+import_gcms_data}
 }
 \description{
 A function to Group samples gcms integration data frames based

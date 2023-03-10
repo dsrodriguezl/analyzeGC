@@ -33,8 +33,8 @@ import_gcms_data <- function(data.path.list
 
   data.list <- data.path.list |>
     lapply(read_csv, comment = "#"
-           , col_select = c(`Center X`
-                            , Area)) |>
+           , col_select = c("Center X"
+                            , "Area")) |>
     rename(RT = "Center X")
 
   names(data.list) <- names_list

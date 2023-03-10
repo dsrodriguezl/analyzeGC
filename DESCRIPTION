@@ -1,15 +1,24 @@
 Package: analyzeGC
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Analysis of GC data
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Daniel S. Rodríguez-Leon
+Maintainer: Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr, purrr, readr, stringr
+Imports: 
+    tidyr,
+    dplyr,
+    purrr,
+    readr,
+    stringr,
+    GCalignR,
+    ggplot2,
+    gplots,
+    viridis
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 3.0.0)
