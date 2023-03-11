@@ -15,3 +15,6 @@ from an aligned data set, as produced by align_chromatogram2.
 It automatically labels each peak as P1 to Pn, where n  =  number of peaks
 in the data set.
 }
+\author{
+Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+}

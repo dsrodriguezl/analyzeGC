@@ -19,3 +19,6 @@ import_gcms_data}
 A function to Group samples gcms integration data frames based
 on unique group labels, within the list containing the data frames.
 }
+\author{
+Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+}

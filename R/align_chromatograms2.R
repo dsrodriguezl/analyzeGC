@@ -15,6 +15,10 @@
 #' rt_col_name is set to "RT" by default, as it is the name given by
 #' import_gcms_data.
 #'
+#' If the given data set contain only one sample, it returns a list with a
+#' similar structure to that of the typical GCalignR::align_chromatograms
+#' output. However, this list is nto a GCalignR object.
+#'
 #' @param data2align
 #' Dataset containing peaks that need to be aligned and matched.
 #'

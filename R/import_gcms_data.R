@@ -20,6 +20,8 @@
 #' @import readr
 #' @import dplyr
 #'
+#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#'
 #' @export
 
 import_gcms_data <- function(data.path.list

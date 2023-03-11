@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnostic_heatmap.R
 \name{diagnostic_heatmap}
 \alias{diagnostic_heatmap}
-\title{Diagnostic}
+\title{Plot to evaluate peak alignment}
 \usage{
 diagnostic_heatmap(df_area_norm, title)
 }
@@ -12,5 +12,14 @@ diagnostic_heatmap(df_area_norm, title)
 \item{title}{Character string with the text for the title of the plot}
 }
 \description{
-Diagnostic
+Heatmap + dendrogram of the chemical composition of samples within an aligned
+data frame.
+
+It uses gplots::heatmap.2 to produce the plot.
+
+If the received data frames contains onyl on sample, it returns a heatmap,
+using ggplot2
+}
+\author{
+Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 }

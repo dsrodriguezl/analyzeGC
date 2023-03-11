@@ -1,4 +1,13 @@
-#' @title Diagnostic
+#' @title Plot to evaluate peak alignment
+#'
+#' @description
+#' Heatmap + dendrogram of the chemical composition of samples within an aligned
+#' data frame.
+#'
+#' It uses gplots::heatmap.2 to produce the plot.
+#'
+#' If the received data frames contains onyl on sample, it returns a heatmap,
+#' using ggplot2
 #'
 #' @param df_area_norm
 #' Normalized area data frame, as produced by area_norm
@@ -9,6 +18,8 @@
 #' @import tidyr
 #' @import ggplot2
 #'
+#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#'
 #' @export
 diagnostic_heatmap <- function(df_area_norm, title) {
   heatmap_colors <- viridis::turbo(200)
@@ -17,11 +28,14 @@ diagnostic_heatmap <- function(df_area_norm, title) {
     p <- gplots::heatmap.2(as.matrix(df_area_norm |> log1p())
                        , main = title
                        , srtCol = 90
+                       , strRow = 90
+                       , offsetRow = 0.02
+                       , offsetCol = 0.02
                        , dendrogram = "row"
                        # Ensures that the columns are not ordered
                        , Colv = "NA"
                        , trace = "none"
-                       , key.xlab = "log1p of relative abundance (%)"
+                       , key.xlab = "log(1 + x) of relative abundance (%)"
                        , col = heatmap_colors)
   } else {
     p <- df_area_norm |>

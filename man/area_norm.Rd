@@ -21,3 +21,6 @@ By default set the rt_col_name to "RT", and conc_col_name to "Area".
 Automatically labels each peak as P1 to Pn, where n  =  number of peaks
 in the data set.
 }
+\author{
+Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+}
