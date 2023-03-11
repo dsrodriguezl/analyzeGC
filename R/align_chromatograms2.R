@@ -40,6 +40,7 @@
 #' @import dplyr
 #' @import GCalignR
 #'
+#'
 #' @author
 #' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
@@ -68,7 +69,7 @@ align_chromatograms2 <- function(data2align
   }
 
   if (length(data2align) > 1) {
-    set.seed(12345)
+    withr::local_seed(12345)
     df <- align_chromatograms(data = data2align
                               , rt_col_name = "RT"
                               , max_linear_shift = linear_shift_criteria

@@ -19,7 +19,8 @@ Imports:
     ggplot2,
     gplots,
     viridis,
-    tibble
+    tibble,
+    withr
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 3.0.0)
