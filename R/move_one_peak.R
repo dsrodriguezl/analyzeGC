@@ -20,7 +20,8 @@
 #' @import dplyr
 #' @import tidyr
 #'
-#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#' @author
+#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
 move_one_peak <- function(df, Sample, Peak, Dir){

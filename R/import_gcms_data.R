@@ -20,7 +20,8 @@
 #' @import readr
 #' @import dplyr
 #'
-#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#' @author
+#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
 

@@ -18,7 +18,8 @@
 #' @import tidyr
 #' @import ggplot2
 #'
-#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#' @author
+#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
 diagnostic_heatmap <- function(df_area_norm, title) {

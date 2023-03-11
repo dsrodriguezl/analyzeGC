@@ -14,7 +14,8 @@
 #'
 #' @param aligned_data An aligned data set as produced by align_chromatogram2
 #'
-#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#' @author
+#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
 area_norm <- function(aligned_data){

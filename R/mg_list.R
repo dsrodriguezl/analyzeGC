@@ -17,7 +17,8 @@
 #' @import dplyr
 #' @import purrr
 #'
-#' @author Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
+#' @author
+#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
 mg_list <- function(sample.info, group.label, samples.data.list){

@@ -19,8 +19,8 @@ with lapply, as the function will add the empty peaks to the correct aligned
 data frame within the list.
 
 The entries of the list should correspond to data.frames/tibbles with two
-columns ("position.reference" and "direction"). The columns of the data frame
-indicate where the empty peak should be added to the aligned data frame.
+columns ("position.reference" and "direction"). Position.reference
+indicates where the empty peak should be added to the aligned data frame.
 The position reference indicate a peak (e.g. P10) as a location reference
 within the aligned data frame. Direction ("before" or "after") indicates
 whether the empty peak should be created as the row before or after the
