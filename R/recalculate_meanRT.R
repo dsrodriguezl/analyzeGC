@@ -69,8 +69,8 @@ recalculate_meanRT <- function(RT.list
     table.mean.RT <- mean.RT.list[[table]]
 
     # Shape the table
-    tmp.table <- cbind.data.frame(Peak = row.names(table.mean.RT)
-                                  , mean_RT = table.mean.RT$mean_RT
+    tmp.table <- cbind.data.frame("Peak" = row.names(table.mean.RT)
+                                  , "mean_RT" = table.mean.RT$mean_RT
                                   # Place samples as columns
                                   , list_2_return[[table]] |>
                                     t() |>
@@ -85,9 +85,9 @@ recalculate_meanRT <- function(RT.list
                                            )
                                   ) |>
       # Add column with peak label
-      mutate(Peak = paste0("P", 1:ncol(list_2_return[[table]]))) |>
+      mutate("Peak" = paste0("P", 1:ncol(list_2_return[[table]]))) |>
       # Place the peak label as the first column
-      select(Peak, everything()) |>
+      select(contains("Peak"), everything()) |>
       # turn the data frame into a tibble
       as_tibble()
 

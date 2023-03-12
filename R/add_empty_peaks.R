@@ -26,6 +26,7 @@
 #' reference peak.
 #'
 #' @import tibble
+#' @importFrom rlang :=
 #'
 #' @export
 add_empty_peaks <- function(aligned_df, empty.peaks) {

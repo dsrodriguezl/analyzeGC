@@ -50,14 +50,14 @@ align_chromatograms2 <- function(data2align
     nombre <- names(data2align)
 
     RT <- data2align[[1]] |>
-      mutate(mean_RT = RT) |>
-      select(mean_RT, RT) |>
+      mutate("mean_RT" = get("RT")) |>
+      select(contains("mean_RT"), contains("RT")) |>
       as.data.frame()
     colnames(RT) <- c("mean_RT", nombre)
 
     Area <- data2align[[1]] |>
-      mutate(mean_RT = RT) |>
-      select(mean_RT, Area) |>
+      mutate("mean_RT" = get("RT")) |>
+      select(contains("mean_RT"), contains("Area")) |>
       as.data.frame()
     colnames(Area) <- c("mean_RT", nombre)
 

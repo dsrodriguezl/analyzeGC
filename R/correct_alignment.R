@@ -22,8 +22,8 @@
 #'
 #' The entries of the list should correspond to data.frames/tibbles with two
 #' columns ("peaks_list" and "movement_dirs").
-#' Peaks_list indicates the peaks (e.g. P10, P12) that holds the values to be
-#' displaced within the aligned data frame. Movement_dirs indicates the
+#' peaks_list indicates the peaks (e.g. P10, P12) that holds the values to be
+#' displaced within the aligned data frame. movement_dirs indicates the
 #' direction ("down" or "up") in which the peak value should be displaced along
 #' the column of the indicated sample.
 #'
@@ -43,7 +43,7 @@ correct_alignment <- function(aligned_data, movements_list) {
         # Extract the vector listing the peaks to be displaced,
         # within the corresponding sample, from the movements_list
         peaks_list <- movements_list[[sample]] |>
-          pull(peaks_list)
+          pull("peaks_list")
 
         # Extract the vector listing the displacements to be performed on the
         # peaks of the corresponding sample from the movements_list
@@ -69,8 +69,8 @@ correct_alignment <- function(aligned_data, movements_list) {
           aligned_data <- move_one_peak(aligned_data
                                        , Peak = p
                                        , Dir = peaks_movement |>
-                                         filter(Peaks == p) |>
-                                         pull(Dir)
+                                         filter(get("Peaks") == p) |>
+                                         pull("Dir")
                                        , Sample = sample)
           p_count <- p_count + 1
           cat('\n')

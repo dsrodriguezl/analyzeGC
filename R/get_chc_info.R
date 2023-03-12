@@ -2,17 +2,17 @@
 #'
 #' @description
 #'
-#' @param group.comps.id
+#' @param comps.id
 #'
 #' @export
-get_chc_info <- function(group.comps.id) {
+get_chc_info <- function(comps.id) {
   # Extract compounds information from the comps table
-  group.comps.info <- group.comps.id |>
+  group.comps.info <- comps.id |>
     select(Peak:Compound) |>
-    cbind(data.frame(row.names = rownames(group.comps.id)
+    cbind(data.frame(row.names = rownames(comps.id)
                      , t(
                        as.data.frame(
-                         strsplit(group.comps.id$Compound
+                         strsplit(comps.id$Compound
                                   , "_")
                        )
                      )
@@ -25,10 +25,10 @@ get_chc_info <- function(group.comps.id) {
   # cat('\n')
 
   # Define columns' names
-  colnames(group.comps.info) <- c(colnames(group.comps.id |>
+  colnames(group.comps.info) <- c(colnames(comps.id |>
                                              select(Peak:Compound)
-  )
-  , "Chain.length", "Class", "Mod.position")
+                                           )
+                                  , "Chain.length", "Class", "Mod.position")
   # cat('\n')
   # print("The columns of the comps_info data frame were renamed")
   # cat('\n')

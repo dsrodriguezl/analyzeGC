@@ -86,10 +86,15 @@ diagnostic_heatmap <- function(data, title, alignment.type) {
       pivot_longer(cols = starts_with("P"),
                    names_to = "Peak",
                    values_to = "rel.abundance")  |>
-      ggplot(aes(x = Peak, y = sample)) +
-      geom_raster(aes(fill = log1p(rel.abundance))) +
-      scale_fill_viridis_c(option = "turbo") +
+      ggplot(aes(x = get("Peak"), y = get("sample"))) +
+      geom_raster(aes(fill = log1p(get("rel.abundance")))) +
+      scale_fill_viridis_c(option = "turbo"
+                           , guide = guide_legend(
+                             title = "log(1 + x) of relative abundance (%)")
+                           ) +
       ggtitle(title) +
+      labs(x = "Peak"
+           , y = "sample")
       theme_classic()
   }
   print(p)
