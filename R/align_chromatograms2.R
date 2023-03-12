@@ -17,7 +17,7 @@
 #'
 #' If the given data set contain only one sample, it returns a list with a
 #' similar structure to that of the typical GCalignR::align_chromatograms
-#' output. However, this list is nto a GCalignR object.
+#' output. However, this list is not a GCalignR object.
 #'
 #' @param data2align
 #' Dataset containing peaks that need to be aligned and matched.
@@ -34,7 +34,7 @@
 #' Numeric value indicating the threshold for the partial peak alignment step.
 #'
 #' @param row_merging_threshold
-#' Numeric valuse indicating the threshold for the merging rows step.
+#' Numeric value indicating the threshold for the merging rows step.
 #'
 #' @import tidyr
 #' @import dplyr
