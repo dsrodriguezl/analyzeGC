@@ -22,8 +22,8 @@ the correct data frame within the list.
 
 The entries of the list should correspond to data.frames/tibbles with two
 columns ("peaks_list" and "movement_dirs").
-Peaks_list indicates the peaks (e.g. P10, P12) that holds the values to be
-displaced within the aligned data frame. Movement_dirs indicates the
+peaks_list indicates the peaks (e.g. P10, P12) that holds the values to be
+displaced within the aligned data frame. movement_dirs indicates the
 direction ("down" or "up") in which the peak value should be displaced along
 the column of the indicated sample.}
 }
@@ -32,7 +32,4 @@ Function to correct alignment of peaks across a data frame, as
 indicated by a set of instructions encoded within list of data frames.
 It iterates through the data frame samples, following the given instructions,
  and calls move_one_peak to perform each peak displacement.
-}
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 }

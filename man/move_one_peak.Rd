@@ -25,6 +25,3 @@ bellow/above on the aligned data frame. It is called by correct_alignment for
 manual displacements of peak values within samples in an aligned data frame,
 during the alignment correction process.
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}

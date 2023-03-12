@@ -30,6 +30,3 @@ reference peak.}
 Function to create empty peaks within an aligned area/RT data frame, given a
 set of instructions encoded within list of data frames.
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}

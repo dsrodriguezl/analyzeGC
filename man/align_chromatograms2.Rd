@@ -44,6 +44,3 @@ If the given data set contain only one sample, it returns a list with a
 similar structure to that of the typical GCalignR::align_chromatograms
 output. However, this list is nto a GCalignR object.
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}

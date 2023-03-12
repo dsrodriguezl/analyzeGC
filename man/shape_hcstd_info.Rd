@@ -32,6 +32,3 @@ so.}
 Function to shape the data frame holding the compound
 information for n-alkane standards
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}

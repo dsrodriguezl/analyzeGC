@@ -16,6 +16,7 @@ Imports:
     gplots (>= 3.1.3),
     purrr (>= 1.0.1),
     readr (>= 2.1.4),
+    rlang (>= 1.0.6),
     stringr (>= 1.5.0),
     tibble (>= 3.2.0),
     tidyr (>= 1.2.1),
@@ -23,6 +24,7 @@ Imports:
     withr (>= 2.5.0)
 Suggests: 
     doParallel (>= 1.0.17),
+    here (>= 1.0.1),
     magrittr (>= 2.0.3),
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

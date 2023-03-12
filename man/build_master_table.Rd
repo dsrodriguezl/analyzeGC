@@ -16,6 +16,3 @@ Function to build a master table from a list of group tables.
 It relies on the base::merge function to fuse the group tables together
 into the master table.
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}

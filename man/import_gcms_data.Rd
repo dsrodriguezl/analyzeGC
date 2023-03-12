@@ -25,6 +25,3 @@ sample.
 A function to import the integration results data frames,
 as obtained from MassHunter.
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}

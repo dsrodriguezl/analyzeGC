@@ -21,6 +21,3 @@ function, after adding to its data frames the newly calculated mean RTs.}
 recalculate the mean RT of a list of data frames after alignment
 correction
 }
-\author{
-Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-}
