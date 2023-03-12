@@ -15,7 +15,8 @@ align_chromatograms2.
 
 It is a wrapper around GCalignR::norm_peaks.
 
-Its main purpose is to facilitate the usage of the function with lapply.
+It facilitates the usage of the function with lapply, but its main purpose
+is to be called within diagnostic_heatmap.
 By default set the rt_col_name to "RT", and conc_col_name to "Area".
 
 Automatically labels each peak as P1 to Pn, where n  =  number of peaks

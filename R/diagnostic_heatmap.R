@@ -6,13 +6,35 @@
 #'
 #' It uses gplots::heatmap.2 to produce the plot.
 #'
-#' If the received data frames contains onyl on sample, it returns a heatmap,
+#' If the received data frame contains only on sample, it returns a heatmap,
 #' using ggplot2
 #'
-#' @param df_area_norm
-#' Normalized area data frame, as produced by area_norm
+#' The data is transformed to the log(1 + x) before plotting, so the difference
+#' between peaks with low abundance values (i.e x >= 5%) is observable.
+#'
+#' @param data
+#'
+#' The function can receive different data types from which to produce the
+#' diagnostic plot:
+#'
+#' Aligned data, as obtained from align_chromatograms2, for which you want to
+#' evaluate its alignment. In this case, it calls area_norm to normalize
+#' the aligned area data frame before producing the plot.
+#'
+#' An aligned data.frame of normalized abundance (area), as obtained from
+#' area_norm.
+#'
+#' A corrected aligned data.frame as obtained from correct_alignment.
 #'
 #' @param title Character string with the text for the title of the plot
+#'
+#' @param alignment.type A character string indicating the type of alignment
+#' ("automatic" or "corrected") the data comes from.
+#'
+#' automatic: Aligned data as obtained via align_chromatograms2, with or without
+#' normalizing it via area_norm.
+#'
+#' corrected: A corrected area data.frame, as obtained from correct_alignment.
 #'
 #' @import dplyr
 #' @import tidyr
@@ -22,7 +44,26 @@
 #' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
-diagnostic_heatmap <- function(df_area_norm, title) {
+diagnostic_heatmap <- function(data, title, alignment.type) {
+  if (alignment.type == "automatic") {
+    if (is.list(data)) {
+      df_area_norm <- area_norm(data)
+    }
+
+    if (is.data.frame(data)) {
+      df_area_norm <- data
+    }
+  }
+
+  if (alignment.type == "corrected") {
+    area_2_percent <- function(x) {
+      x <- x / rowSums(x) * 100
+      x
+    }
+
+    df_area_norm <- area_2_percent(data)
+  }
+
   heatmap_colors <- viridis::turbo(200)
 
   if (length(df_area_norm) > 2) {

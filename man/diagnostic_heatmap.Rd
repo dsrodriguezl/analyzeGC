@@ -4,12 +4,30 @@
 \alias{diagnostic_heatmap}
 \title{Plot to evaluate peak alignment}
 \usage{
-diagnostic_heatmap(df_area_norm, title)
+diagnostic_heatmap(data, title, alignment.type)
 }
 \arguments{
-\item{df_area_norm}{Normalized area data frame, as produced by area_norm}
+\item{data}{The function can receive different data types from which to produce the
+diagnostic plot:
+
+Aligned data, as obtained from align_chromatograms2, for which you want to
+evaluate its alignment. In this case, it calls area_norm to normalize
+the aligned area data frame before producing the plot.
+
+An aligned data.frame of normalized abundance (area), as obtained from
+area_norm.
+
+A corrected aligned data.frame as obtained from correct_alignment.}
 
 \item{title}{Character string with the text for the title of the plot}
+
+\item{alignment.type}{A character string indicating the type of alignment
+("automatic" or "corrected") the data comes from.
+
+automatic: Aligned data as obtained via align_chromatograms2, with or without
+normalizing it via area_norm.
+
+corrected: A corrected area data.frame, as obtained from correct_alignment.}
 }
 \description{
 Heatmap + dendrogram of the chemical composition of samples within an aligned
@@ -17,8 +35,11 @@ data frame.
 
 It uses gplots::heatmap.2 to produce the plot.
 
-If the received data frames contains onyl on sample, it returns a heatmap,
+If the received data frame contains only on sample, it returns a heatmap,
 using ggplot2
+
+The data is transformed to the log(1 + x) before plotting, so the difference
+between peaks with low abundance values (i.e x >= 5%) is observable.
 }
 \author{
 Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
