@@ -1,8 +1,12 @@
 #' @title Plot to evaluate peak alignment
 #'
 #' @description
-#' Heatmap + dendrogram of the chemical composition of samples within an aligned
-#' data frame.
+#' Heat map + dendrogram of the chemical composition of samples within an
+#' aligned data frame. The colors filling the heat map cells represent the
+#' abundance of the compounds (columns), and the dendrogram indicates the
+#' similarity between samples (rows).
+#'
+#' The plot facilitates the discovery of miss-alignments.
 #'
 #' It uses gplots::heatmap.2 to produce the plot.
 #'
@@ -39,9 +43,6 @@
 #' @import dplyr
 #' @import tidyr
 #' @import ggplot2
-#'
-#' @author
-#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
 #'
 #' @export
 diagnostic_heatmap <- function(data, title, alignment.type) {

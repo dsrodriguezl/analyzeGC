@@ -7,9 +7,6 @@
 #'
 #' @param aligned_data An aligned data set as produced by align_chromatogram2
 #'
-#' @author
-#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-#'
 #' @export
 RT_df <- function(aligned_data){
   if (length(aligned_data) == 2) {

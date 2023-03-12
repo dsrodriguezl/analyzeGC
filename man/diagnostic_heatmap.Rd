@@ -30,8 +30,12 @@ normalizing it via area_norm.
 corrected: A corrected area data.frame, as obtained from correct_alignment.}
 }
 \description{
-Heatmap + dendrogram of the chemical composition of samples within an aligned
-data frame.
+Heat map + dendrogram of the chemical composition of samples within an
+aligned data frame. The colors filling the heat map cells represent the
+abundance of the compounds (columns), and the dendrogram indicates the
+similarity between samples (rows).
+
+The plot facilitates the discovery of miss-alignments.
 
 It uses gplots::heatmap.2 to produce the plot.
 

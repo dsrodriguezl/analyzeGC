@@ -29,9 +29,6 @@
 #'
 #' @import dplyr
 #'
-#' @author
-#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-#'
 #' @export
 correct_alignment <- function(aligned_data, movements_list) {
   if (nrow(aligned_data) > 1) {

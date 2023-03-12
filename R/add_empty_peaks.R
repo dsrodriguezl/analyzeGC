@@ -27,9 +27,6 @@
 #'
 #' @import tibble
 #'
-#' @author
-#' Daniel S. Rodríguez-Leon <72925497+dsrodriguezl@users.noreply.github.com>
-#'
 #' @export
 add_empty_peaks <- function(aligned_df, empty.peaks) {
 
