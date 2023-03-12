@@ -22,7 +22,7 @@ occur during the initial full alignment step.}
 
 \item{partial_alignment_threshold}{Numeric value indicating the threshold for the partial peak alignment step.}
 
-\item{row_merging_threshold}{Numeric valuse indicating the threshold for the merging rows step.}
+\item{row_merging_threshold}{Numeric value indicating the threshold for the merging rows step.}
 }
 \description{
 Custom function for aligning chromatograms.
@@ -42,5 +42,5 @@ import_gcms_data.
 
 If the given data set contain only one sample, it returns a list with a
 similar structure to that of the typical GCalignR::align_chromatograms
-output. However, this list is nto a GCalignR object.
+output. However, this list is not a GCalignR object.
 }

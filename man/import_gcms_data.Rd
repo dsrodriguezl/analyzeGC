@@ -4,15 +4,15 @@
 \alias{import_gcms_data}
 \title{Import GC integration results from CSV  files}
 \usage{
-import_gcms_data(data.path.list, patterns_2_delete)
+import_gcms_data(data.path.list, patterns_2_delete = " ")
 }
 \arguments{
 \item{data.path.list}{list containing the paths of the CSV files from which
 to import the integration results of each sample.}
 
 \item{patterns_2_delete}{a character type vector, listing the text  patterns
-to be removed from the CSV files' paths, to extract the names of the samples
-from them.}
+to be removed from the CSV files' names, to extract the names of the samples
+from them. This step is performed via str_remove_all.}
 }
 \value{
 A list of tibble data frames with the integration results
@@ -24,4 +24,17 @@ sample.
 \description{
 A function to import the integration results data frames,
 as obtained from MassHunter.
+}
+\examples{
+
+samples_path_data <- list.files(path = system.file("extdata"
+                                                   , package = "analyzeGC")
+                                #  Get all CSV files in the folder
+                                , pattern = ".CSV|.csv"
+                                , full.names = TRUE) |>
+  # Do not include standards
+  stringr::str_subset('STD', negate = TRUE)
+
+import_gcms_data(samples_path_data, patterns_2_delete = "DR_")
+
 }
