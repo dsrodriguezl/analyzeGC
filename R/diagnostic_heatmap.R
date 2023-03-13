@@ -47,12 +47,15 @@
 #' @export
 diagnostic_heatmap <- function(data, title, alignment.type) {
   if (alignment.type == "automatic") {
-    if (is.list(data)) {
-      df_area_norm <- area_norm(data)
-    }
-
     if (is.data.frame(data)) {
-      df_area_norm <- data
+      test <- sum(rep(100, nrow(data)))
+      if (sum(rowSums(data)) == test) {
+        df_area_norm <- data
+      }
+    } else {
+      if (is.list(data)) {
+        df_area_norm <- area_norm(data)
+      }
     }
   }
 
@@ -67,11 +70,11 @@ diagnostic_heatmap <- function(data, title, alignment.type) {
 
   heatmap_colors <- viridis::turbo(200)
 
-  if (length(df_area_norm) > 2) {
+  if (nrow(df_area_norm) > 1) {
     p <- gplots::heatmap.2(as.matrix(df_area_norm |> log1p())
                        , main = title
                        , srtCol = 90
-                       , strRow = 90
+                       , srtRow = 90
                        , offsetRow = 0.02
                        , offsetCol = 0.02
                        , dendrogram = "row"

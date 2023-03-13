@@ -124,7 +124,8 @@ shape_hcstd_info <- function(comps_id.STD
                                             "Compound"))) |>
                                           pull("Chain.length")
                                         , sep = "-")
-  # Change the compound names in the std.info data frame to the correct format names
+  # Change the compound names in the std.info data frame to the correct format
+  # names
   std.info$Compound <- std_names
   std.info
 
@@ -166,19 +167,19 @@ shape_hcstd_info <- function(comps_id.STD
            , "corrected_area" = get("area") / get("area_correction"))
 
   p <- std.info |>
-    ggplot(aes(y = area
-               , x = mean_RT)) +
+    ggplot(aes(y = get("area")
+               , x = get("mean_RT"))) +
     geom_step(direction = "vh"
               , linewidth = 1
               , color = "orange") +
-    geom_text(aes(label = paste0("C", Chain.length))
+    geom_text(aes(label = paste0("C", get("Chain.length")))
               , color = "red") +
-    geom_step(aes(y = corrected_area)
+    geom_step(aes(y = get("corrected_area"))
               , direction = "vh"
               , size = 1.5
               , color = "green") +
-    geom_text(aes(y = corrected_area
-                  , label = paste0("C", Chain.length))) +
+    geom_text(aes(y = get("corrected_area")
+                  , label = paste0("C", get("Chain.length")))) +
     ggside::geom_ysideboxplot(orientation = "x") +
     theme_classic() +
     labs(title = "Abundance (observed and corrected) of standards vs mean

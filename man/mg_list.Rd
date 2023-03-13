@@ -19,3 +19,19 @@ import_gcms_data}
 A function to Group samples gcms integration data frames based
 on unique group labels, within the list containing the data frames.
 }
+\examples{
+
+library(tidyr)
+
+grouping_info <- grouping_info |>
+  unite(group_label
+        , where(is.factor)
+        , sep = "_"
+        , remove = FALSE)
+
+# Nest the data frames in sublists by group
+samples_data_list <- mg_list(sample.info = grouping_info
+                             , group.label = "group_label"
+                             , samples.data.list = samples_data_list)
+
+}

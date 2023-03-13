@@ -3,27 +3,24 @@
 \docType{data}
 \name{samples_data_list}
 \alias{samples_data_list}
-\title{World Health Organization TB data}
+\title{GC/MS integration data of honeybees cuticular hydrocarbon extracts}
 \format{
-\subsection{\code{who}}{
+\subsection{}{
 
-A data frame with 7,240 rows and 60 columns:
+A list with 20 tibble data frames, each with 2 columns:
 \describe{
-\item{country}{Country name}
-\item{iso2, iso3}{2 & 3 letter ISO country codes}
-\item{year}{Year}
-...
+\item{RT}{Retention time measured for each peak within a sample}
+\item{Area}{Area result of the integration of the peaks within a sample}
 }
 }
 }
 \source{
-\url{https://www.who.int/teams/global-tuberculosis-programme/data}
+Data obtained by the author of the package, for educational purposes.
 }
 \usage{
 samples_data_list
 }
 \description{
-A subset of data from the World Health Organization Global Tuberculosis
-Report ...
+GC/MS integration data of honeybees cuticular hydrocarbon extracts
 }
 \keyword{datasets}

@@ -1,31 +1,40 @@
-#' World Health Organization TB data
+#' GC/MS integration data of honeybees cuticular hydrocarbon extracts
 #'
-#' A subset of data from the World Health Organization Global Tuberculosis
-#' Report ...
 #'
-#' @format ## `who`
-#' A data frame with 7,240 rows and 60 columns:
+#'
+#' @format ##
+#' A list with 20 tibble data frames, each with 2 columns:
 #' \describe{
-#'   \item{country}{Country name}
-#'   \item{iso2, iso3}{2 & 3 letter ISO country codes}
-#'   \item{year}{Year}
-#'   ...
+#'   \item{RT}{Retention time measured for each peak within a sample}
+#'   \item{Area}{Area result of the integration of the peaks within a sample}
 #' }
-#' @source <https://www.who.int/teams/global-tuberculosis-programme/data>
+#' @source Data obtained by the author of the package, for educational purposes.
 "samples_data_list"
 
-#' World Health Organization TB data
+#' Group membership information of honeybee samples in the samples_data_list
+#' data
 #'
-#' A subset of data from the World Health Organization Global Tuberculosis
-#' Report ...
 #'
-#' @format ## `who`
-#' A data frame with 7,240 rows and 60 columns:
+#' @format ##
+#' A tibble data frame with 20 rows and 4 columns:
 #' \describe{
-#'   \item{country}{Country name}
-#'   \item{iso2, iso3}{2 & 3 letter ISO country codes}
-#'   \item{year}{Year}
-#'   ...
+#'   \item{Season}{Season during which the samples were collected (all in
+#'   Winter).}
+#'   \item{Task}{}
+#'   \item{Subspecies}{}
+#'   \item{Individual}{}
 #' }
-#' @source <https://www.who.int/teams/global-tuberculosis-programme/data>
-"samples_info"
+#' @source Data obtained by the author of the package, for educational purposes.
+"grouping_info"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"aligned_samples_data_list"

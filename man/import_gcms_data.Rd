@@ -32,7 +32,7 @@ samples_path_data <- list.files(path = system.file("extdata"
                                 #  Get all CSV files in the folder
                                 , pattern = ".CSV|.csv"
                                 , full.names = TRUE) |>
-  # Do not include standards
+  # Do not include standards in the samples' list
   stringr::str_subset('STD', negate = TRUE)
 
 import_gcms_data(samples_path_data, patterns_2_delete = "DR_")

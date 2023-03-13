@@ -44,3 +44,58 @@ If the given data set contain only one sample, it returns a list with a
 similar structure to that of the typical GCalignR::align_chromatograms
 output. However, this list is not a GCalignR object.
 }
+\examples{
+
+library(tidyr)
+
+grouping_info <- grouping_info |>
+  unite(group_label
+        , where(is.factor)
+        , sep = "_"
+        , remove = FALSE)
+
+# Nest the data frames in sublists by group
+samples_data_list <- mg_list(sample.info = grouping_info
+                             , group.label = "group_label"
+                             , samples.data.list = samples_data_list)
+
+# Aligning a single list of data frames
+aligned_samples_data_list <-
+samples_data_list$`Winter_In-hive workers_A. m. mellifera` |>
+  align_chromatograms2(blanks = NULL
+                       , linear_shift_criteria = 0.02
+                       , partial_alignment_threshold = 0.05
+                       , row_merging_threshold = 0.15)
+
+# Using lapply to align all the data lists nested within a list
+aligned_samples_data_list <- samples_data_list |>
+  lapply(align_chromatograms2
+         , blanks = NULL
+         , linear_shift_criteria = 0.02
+         , partial_alignment_threshold = 0.05
+         , row_merging_threshold = 0.15)
+
+# Parallelized alignment of several data group lists nested within a list
+library(doParallel)
+
+## Define the number of cores that will be used for the parallel processes
+no_cores <- 2
+
+## Set a processing cluster
+cl <- makeCluster(no_cores)
+
+## Register the processing cluster to be used for parallel operations
+registerDoParallel(cl)
+
+aligned_samples_data_list <- parLapply(cl
+                                       , samples_data_list
+                                       , align_chromatograms2
+                                       , blanks = NULL
+                                       , linear_shift_criteria = 0.02
+                                       , partial_alignment_threshold = 0.05
+                                       , row_merging_threshold = 0.15)
+
+stopCluster(cl)
+registerDoSEQ()
+
+}
