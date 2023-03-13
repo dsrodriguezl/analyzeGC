@@ -1,13 +1,13 @@
 Type: Package
-Package: analyzeCHC
-Title: Analysis of cuticular hydrocarbons' GC data
+Package: analyzeGC
+Title: Analysis of GC data
 Version: 0.1.0
 Date: Sys.date()
 Author: Daniel S. Rodríguez-Leon
 Maintainer: Daniel S. Rodríguez-Leon
     <72925497+dsrodriguezl@users.noreply.github.com>
 Description: A package to facilitate the analysis of Gas-Chromatography
-    (GC) data of cuticular hydrocarbons in R.
+    (GC) data in R.
 License: GPL (>= 3)
 Imports: 
     dplyr (>= 1.1.0),
