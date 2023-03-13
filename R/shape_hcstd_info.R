@@ -29,7 +29,7 @@
 #' so.
 #'
 #' @import dplyr
-#' @import ggplto2
+#' @import ggplot2
 #' @import ggtext
 #'
 #' @export

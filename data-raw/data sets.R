@@ -6,8 +6,7 @@ load_all()
 
 # Samples_data_list ----
 # Import the CSV files with the samples'integration results
-samples_path_data <- list.files(path = system.file(here("extdata"
-                                                        , "gcms_integration")
+samples_path_data <- list.files(path = system.file("extdata/gcms_integration"
                                                    , package = "analyzeGC")
                                 #  Get all CSV files in the folder
                                 , pattern = ".CSV|.csv"
@@ -15,7 +14,8 @@ samples_path_data <- list.files(path = system.file(here("extdata"
   # Do not include standards
   str_subset('STD', negate = T)
 
-samples_data_list <- import_gcms_data(samples_path_data)
+samples_data_list <- import_gcms_data(samples_path_data
+                                      , patterns_2_delete = "DR_")
 
 # Create the samples_data _list data file for the package
 use_data(samples_data_list, overwrite = TRUE)
