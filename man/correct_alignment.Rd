@@ -31,5 +31,5 @@ the column of the indicated sample.}
 Function to correct alignment of peaks across a data frame, as
 indicated by a set of instructions encoded within list of data frames.
 It iterates through the data frame samples, following the given instructions,
- and calls move_one_peak to perform each peak displacement.
+and calls move_one_peak to perform each peak displacement.
 }

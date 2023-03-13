@@ -43,5 +43,5 @@ If the received data frame contains only on sample, it returns a heatmap,
 using ggplot2
 
 The data is transformed to the log(1 + x) before plotting, so the difference
-between peaks with low abundance values (i.e x >= 5%) is observable.
+between peaks with low abundance values (i.e x >= 5\%) is observable.
 }
