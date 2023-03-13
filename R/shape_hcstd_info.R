@@ -29,6 +29,8 @@
 #' so.
 #'
 #' @import dplyr
+#' @import ggplto2
+#' @import ggtext
 #'
 #' @export
 shape_hcstd_info <- function(comps_id.STD
@@ -162,5 +164,34 @@ shape_hcstd_info <- function(comps_id.STD
     mutate("median_area" = stats::median(get("area"))
            , "area_correction" = get("area") / get("median_area")
            , "corrected_area" = get("area") / get("area_correction"))
-  std.info
+
+  p <- std.info |>
+    ggplot(aes(y = area
+               , x = mean_RT)) +
+    geom_step(direction = "vh"
+              , linewidth = 1
+              , color = "orange") +
+    geom_text(aes(label = paste0("C", Chain.length))
+              , color = "red") +
+    geom_step(aes(y = corrected_area)
+              , direction = "vh"
+              , size = 1.5
+              , color = "green") +
+    geom_text(aes(y = corrected_area
+                  , label = paste0("C", Chain.length))) +
+    ggside::geom_ysideboxplot(orientation = "x") +
+    theme_classic() +
+    labs(title = "Abundance (observed and corrected) of standards vs mean
+         retention time"
+         , x = "mean RT"
+         , y = "Abundance (area)"
+         , subtitle = "Observed abundance is represented by an
+         <span style = 'color:orange';>**orange**</span> line with
+         <span style = 'color:red';>**labels**</span>, while the corrected
+         abundance is represeneted by a
+         <span style = 'color:green';>**green**</span> line with
+         <span style = 'color:black';>**labels**</span>")
+  print(p)
+
+  return(std.info)
 }
