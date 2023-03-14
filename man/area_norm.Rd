@@ -22,3 +22,16 @@ By default set the rt_col_name to "RT", and conc_col_name to "Area".
 Automatically labels each peak as P1 to Pn, where n  =  number of peaks
 in the data set.
 }
+\examples{
+
+# Normalize a single aligned data set
+Winter_IW <-
+  aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+
+norm_winter_IW <- area_norm(Winter_IW)
+
+# Normalizeseveral aligned data sets within a list
+samples_area_norm_list <- aligned_samples_data_list |>
+  lapply(area_norm)
+
+}

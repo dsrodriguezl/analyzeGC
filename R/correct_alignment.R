@@ -29,8 +29,48 @@
 #'
 #' @import dplyr
 #'
+#' @examples
+#'
+#' # Create a list to guide the displacement of peak values
+#' ## Sample 350 is an In-hive worker
+#' ## Sample 328 is an Out-hive worker
+#'
+#' peaks_movements <- list("350" = data.frame(peaks_list =
+#'                                                       c(paste0("P"
+#'                                                                , c(106, 107
+#'                                                                , 124)))
+#'                                              , movement_dirs = c('up', 'up'
+#'                                                                  , 'up'))
+#'                         , "328" = data.frame(peaks_list =
+#'                                                         c(paste0("P"
+#'                                                                  , c(26, 35
+#'                                                                      , 85
+#'                                                                      , 124
+#'                                                                      , 128)))
+#'                                              , movement_dirs = c('up', 'up'
+#'                                                                  , 'up'
+#'                                                                  , 'up'
+#'                                                                  , 'up')))
+#' # Correct the alignment of a single aligned area/RT data set
+#' area_IW <- samples_list_area$`Winter_In-hive workers_A. m. mellifera`
+#' area_IW <- correct_alignment(aligned_data = area_IW
+#'                              , movements_list = peaks_movements)
+#'
+#' # Correct the alignment of several aligned area/RT data frames within a list
+#' corrected_samples_list_area <- lapply(samples_list_area
+#'                                       , correct_alignment
+#'                                       , movements_list = peaks_movements)
+#'
+#'
 #' @export
 correct_alignment <- function(aligned_data, movements_list) {
+  if ("mean_RT" %in% colnames(aligned_data)) {
+    aligned_data <- aligned_data |>
+      select(-contains("mean_RT")) |>
+      t() |>
+      as.data.frame()
+  }
+
   if (nrow(aligned_data) > 1) {
     # Loop iterating through samples for the alignment correction
     for (sample in movements_list |> names()) {

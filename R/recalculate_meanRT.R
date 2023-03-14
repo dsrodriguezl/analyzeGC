@@ -17,6 +17,19 @@
 #' @import tidyr
 #' @import tibble
 #'
+#' @examples
+#'
+#' corrected_samples_list_area2 <-
+#'   recalculate_meanRT(RT.list = corrected_samples_list_RT
+#'                      , area.list = corrected_samples_list_area
+#'                      , output.list = "Area")
+#'
+#' corrected_samples_list_RT2 <-
+#'   recalculate_meanRT(RT.list = corrected_samples_list_RT
+#'                      , area.list = corrected_samples_list_area
+#'                      , output.list = "RT")
+#'
+#'
 #' @export
 recalculate_meanRT <- function(RT.list
                                , area.list

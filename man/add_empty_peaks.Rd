@@ -30,3 +30,35 @@ reference peak.}
 Function to create empty peaks within an aligned area/RT data frame, given a
 set of instructions encoded within list of data frames.
 }
+\examples{
+
+
+# Create a list to guide the addition of empty peaks
+## Sample 335 is an In-hive worker
+## Sample 339 is an Out-hive worker
+
+library(tibble)
+empty_peaks <- list("335" = tribble(~position.reference, ~direction,
+                                     "P100", "after")
+                    , "339" = tribble(~position.reference, ~direction,
+                                     "P100", "before"))
+
+# Add empty peaks to a single aligned area/RT data frame
+area_IW <- samples_list_area$`Winter_In-hive workers_A. m. mellifera`
+area_OW <- samples_list_area$`Winter_Out-hive workers_A. m. mellifera`
+
+## In-hive workers data frame
+area_IW <- area_IW |>
+  add_empty_peaks(empty.peaks = empty_peaks)
+
+## Out-hive workers data frame
+area_OW <- area_OW |>
+  add_empty_peaks(empty.peaks = empty_peaks)
+
+# Add empty peaks to several aligned area/RT data frames within a list
+samples_list_area <- samples_list_area |>
+  lapply(add_empty_peaks
+         , empty.peaks = empty_peaks)
+
+
+}

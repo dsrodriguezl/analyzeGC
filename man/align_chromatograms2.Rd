@@ -60,8 +60,9 @@ samples_data_list <- mg_list(sample.info = grouping_info
                              , samples.data.list = samples_data_list)
 
 # Aligning a single list of data frames
-aligned_samples_data_list <-
-samples_data_list$`Winter_In-hive workers_A. m. mellifera` |>
+Winter_IW <- samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+
+aligned_samples_data_list <- Winter_IW |>
   align_chromatograms2(blanks = NULL
                        , linear_shift_criteria = 0.02
                        , partial_alignment_threshold = 0.05

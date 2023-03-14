@@ -7,6 +7,18 @@
 #'
 #' @param aligned_data An aligned data set as produced by align_chromatogram2
 #'
+#' @examples
+#'
+#' # Extract area data frame from a single aligned data set
+#' Winter_IW <-
+#'   aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+#'
+#' RT_winter_IW <- RT_df(Winter_IW)
+#'
+#' # Extract area data frame from several aligned data sets within a list
+#' samples_list_RT <- aligned_samples_data_list |>
+#'   lapply(RT_df)
+#'
 #' @export
 RT_df <- function(aligned_data){
   if (length(aligned_data) == 2) {

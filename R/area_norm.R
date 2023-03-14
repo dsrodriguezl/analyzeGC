@@ -15,6 +15,18 @@
 #'
 #' @param aligned_data An aligned data set as produced by align_chromatogram2
 #'
+#' @examples
+#'
+#' # Normalize a single aligned data set
+#' Winter_IW <-
+#'   aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+#'
+#' norm_winter_IW <- area_norm(Winter_IW)
+#'
+#' # Normalizeseveral aligned data sets within a list
+#' samples_area_norm_list <- aligned_samples_data_list |>
+#'   lapply(area_norm)
+#'
 #' @export
 area_norm <- function(aligned_data){
   if (length(aligned_data) > 2) {

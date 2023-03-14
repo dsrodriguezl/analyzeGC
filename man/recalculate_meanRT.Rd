@@ -21,3 +21,17 @@ function, after adding to its data frames the newly calculated mean RTs.}
 recalculate the mean RT of a list of data frames after alignment
 correction
 }
+\examples{
+
+corrected_samples_list_area2 <-
+  recalculate_meanRT(RT.list = corrected_samples_list_RT
+                     , area.list = corrected_samples_list_area
+                     , output.list = "Area")
+
+corrected_samples_list_RT2 <-
+  recalculate_meanRT(RT.list = corrected_samples_list_RT
+                     , area.list = corrected_samples_list_area
+                     , output.list = "RT")
+
+
+}

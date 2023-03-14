@@ -44,6 +44,30 @@
 #' @import tidyr
 #' @import ggplot2
 #'
+#' @examples
+#'
+#' # Get the diagnostic heat map of a single aligned data set
+#' Winter_IW <-
+#'   aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+#'
+#' norm_winter_IW <- area_norm(Winter_IW)
+#'
+#' diagnostic_heatmap(data =  norm_winter_IW
+#'                    , title = "Alignment of IW CHCs"
+#'                    , alignment.type = "automatic")
+#'
+#' # Get the diagnostic heat map of several aligned data sets within a list
+#'
+#' samples_area_norm_list <- aligned_samples_data_list |>
+#'   lapply(area_norm)
+#'
+#' for (df in names(samples_area_norm_list)) {
+#'   diagnostic_heatmap(samples_area_norm_list[[df]]
+#'                      , title = paste0("Alignment of ", df)
+#'                      , alignment.type = "automatic")
+#' }
+#'
+#'
 #' @export
 diagnostic_heatmap <- function(data, title, alignment.type) {
   if (alignment.type == "automatic") {
