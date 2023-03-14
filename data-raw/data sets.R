@@ -61,15 +61,15 @@ aligned_samples_data_list <- samples_data_list |>
 # Create the aligned_samples_data_list data file for the package
 use_data(aligned_samples_data_list, overwrite = TRUE)
 
-# samples_list_RT and samples_list_area ----
-
-samples_list_RT <- aligned_samples_data_list |>
-  lapply(RT_df)
-use_data(samples_list_RT, overwrite = TRUE)
-
-samples_list_area <- aligned_samples_data_list |>
-  lapply(area_df)
-use_data(samples_list_area, overwrite = TRUE)
+# # samples_list_RT and samples_list_area ----
+#
+# samples_list_RT <- aligned_samples_data_list |>
+#   lapply(RT_df)
+# use_data(samples_list_RT, overwrite = TRUE)
+#
+# samples_list_area <- aligned_samples_data_list |>
+#   lapply(area_df)
+# use_data(samples_list_area, overwrite = TRUE)
 
   ## Trying functions to diagnose alignment
 samples_area_norm_list <- aligned_samples_data_list |>
@@ -87,23 +87,23 @@ for (df in names(samples_area_norm_list)) {
                      , alignment.type = "automatic")
 }
 
-# corrected_samples_list_area and  corrected_samples_list_RT ----
+# corrected_samples_list ----
  ## Trying code for adding empty peaks
 empty_peaks <- list("335" = tribble(~position.reference, ~direction,
                                         "P100", "after")
                     , "339" = tribble(~position.reference, ~direction,
                                           "P100", "before"))
 
-area_IW <- samples_list_area$`Winter_In-hive workers_A. m. mellifera`
-area_OW <- samples_list_area$`Winter_Out-hive workers_A. m. mellifera`
+IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+OW <- aligned_samples_data_list$`Winter_Out-hive workers_A. m. mellifera`
 
-area_IW <- area_IW |>
+IW <- IW |>
   add_empty_peaks(empty.peaks = empty_peaks)
 
-area_OW <- area_OW |>
+OW <- OW |>
   add_empty_peaks(empty.peaks = empty_peaks)
 
-samples_list_area |>
+aligned_samples_data_list |>
   lapply(add_empty_peaks
          , empty.peaks = empty_peaks)
 
@@ -156,39 +156,32 @@ peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
                                              , movement_dirs = c('up', 'up'))
                         )
 
-corrected_samples_list_area <- lapply(samples_list_area
+corrected_samples_list <- lapply(aligned_samples_data_list
                                       , correct_alignment
                                       , movements_list = peaks_movements)
-use_data(corrected_samples_list_area, overwrite = TRUE)
-
-corrected_samples_list_RT <- lapply(samples_list_RT
-                                    , correct_alignment
-                                    , movements_list = peaks_movements)
-use_data(corrected_samples_list_RT, overwrite = TRUE)
+use_data(corrected_samples_list, overwrite = TRUE)
 
 # Trying code to diagnose alignment correction
-for (df in names(corrected_samples_list_area)) {
+for (df in names(corrected_samples_list)) {
   dev.new()
-  diagnostic_heatmap(corrected_samples_list_area[[df]]
+  print(df)
+  diagnostic_heatmap(corrected_samples_list[[df]]
                      , title = paste0("corrected alignment of "
                                       , df)
                      , alignment.type = "corrected")
 }
 
-# corrected_samples_list_area2 and corrected_samples_list_RT2 ----
-corrected_samples_list_area2 <-
-  recalculate_meanRT(RT.list = corrected_samples_list_RT
-                     , area.list = corrected_samples_list_area
-                     , output.list = "Area")
-use_data(corrected_samples_list_area2, overwrite = TRUE)
+# corrected_samples_list2----
+corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
 
-corrected_samples_list_RT2 <-
-  recalculate_meanRT(RT.list = corrected_samples_list_RT
-                     , area.list = corrected_samples_list_area
-                     , output.list = "RT")
-use_data(corrected_samples_list_RT2, overwrite = TRUE)
+recalculate_meanRT(corrected_IW)
 
+# Generate the data set
+corrected_samples_list2 <- lapply(corrected_samples_list
+                                  , recalculate_meanRT)
+use_data(corrected_samples_list2, overwrite = TRUE)
 
+#  ----
 
 
 

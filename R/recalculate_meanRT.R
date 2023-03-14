@@ -1,17 +1,6 @@
-#' @title recalculate the mean RT of a list of data frames after alignment
-#' correction
+#' @title recalculate the mean RT of data set after alignment correction
 #'
-#' @param RT.list
-#' List containing the RT aligned data frames after alignment correction with
-#' correct_alignment.
-#'
-#' @param area.list
-#' List containing the area aligned data frames after alignment correction with
-#' correct_alignment.
-#'
-#' @param output.list
-#'  A character string indicating which of the lists ("Area" or "RT") by the
-#'  function, after adding to its data frames the newly calculated mean RTs.
+#' @param aligned_data Aligned data set as obtained with [correct_alignment]
 #'
 #' @import dplyr
 #' @import tidyr
@@ -19,93 +8,61 @@
 #'
 #' @examples
 #'
-#' corrected_samples_list_area2 <-
-#'   recalculate_meanRT(RT.list = corrected_samples_list_RT
-#'                      , area.list = corrected_samples_list_area
-#'                      , output.list = "Area")
+#' # Recalculate the mean RT for a single data set
+#' corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
 #'
-#' corrected_samples_list_RT2 <-
-#'   recalculate_meanRT(RT.list = corrected_samples_list_RT
-#'                      , area.list = corrected_samples_list_area
-#'                      , output.list = "RT")
+#' corrected_IW <-recalculate_meanRT(corrected_IW)
 #'
+#' # Recalculate the mean RT for several data sets within a list
+#' corrected_samples_list2 <- lapply(corrected_samples_list, recalculate_meanRT)
 #'
 #' @export
-recalculate_meanRT <- function(RT.list
-                               , area.list
-                               , output.list) {
+recalculate_meanRT <- function(aligned_data) {
+
   # Function to remove rows with empty peaks
   drop_empty_peaks <- function(table) {
-    table <- table |>
-      select(-all_of(colnames(table[colSums(table) == 0])))
+    if (length(colnames(table[colSums(table) == 0])) > 0) {
+      table <- table |>
+        select(-all_of(colnames(table[colSums(table) == 0])))
+    }
     table
   }
 
-  # Remove empty peaks from both area and RT data frames within the lists
-  RT.list <- RT.list |>
-    lapply(drop_empty_peaks)
+  # Iterate through RT and Area data frames within aligned_data
+  for (df_name in names(aligned_data)) {
+    # cat('\n')
+    # print(df_name)
+    aligned_df <- aligned_data[[df_name]]
 
-  area.list <- area.list |>
-    lapply(drop_empty_peaks)
+    # Remove empty peaks
+    aligned_df <- drop_empty_peaks(aligned_df)
 
-  # Calculate the new mean RT for each data frame within the list
-  mean.RT.list <- list()
-  # Iterate through the data frames in the list
-  for (RT.table in names(RT.list)) {
-    # Extract the RT data frame in turn for the current iteration
-    temp.RT.table <- RT.list[[RT.table]] |>
-      t() |>
-      as.data.frame()
-
-    # Replace 0s with NAs
-    temp.RT.table[temp.RT.table == 0] <- NA
-
-    # Calculate the new mean RT for the given data frame and store it in the
-    # mean.RT.list, with the corresponding name
-    mean.RT.list[[RT.table]] <- temp.RT.table |>
-      transmute(mean_RT = rowMeans(temp.RT.table
-                                   ,na.rm = TRUE))
-  }
-  # mean.RT.list
-
-  # Define which list will be returned by the function
-  if (output.list == "Area") {
-    list_2_return <- area.list
-  }
-  if (output.list == "RT") {
-    list_2_return <- RT.list
+    # Overwrite old version of aligned_df inside aligned_data
+    aligned_data[[df_name]] <- aligned_df
   }
 
-  # add new mean RT to the data frames in the list that will be returned
-  for (table in names(list_2_return)) {
-    # Extract the corresponding table form the list
-    table.mean.RT <- mean.RT.list[[table]]
+  # Extract the RT data frame in turn for the current iteration
+  temp.RT.table <- aligned_data[["RT"]] |>
+    t() |>
+    as.data.frame()
 
-    # Shape the table
-    tmp.table <- cbind.data.frame("Peak" = row.names(table.mean.RT)
-                                  , "mean_RT" = table.mean.RT$mean_RT
-                                  # Place samples as columns
-                                  , list_2_return[[table]] |>
-                                    t() |>
-                                    as.data.frame() |>
-                                    # Order them in descending order
-                                    # , regarding their total abundance
-                                    select(all_of(area.list[[table]] |>
-                                                    rowSums() |>
-                                                    sort(decreasing = T) |>
-                                                    names()
-                                                  )
-                                           )
-                                  ) |>
-      # Add column with peak label
-      mutate("Peak" = paste0("P", 1:ncol(list_2_return[[table]]))) |>
-      # Place the peak label as the first column
-      select(contains("Peak"), everything()) |>
-      # turn the data frame into a tibble
-      as_tibble()
+  # Replace 0s with NAs
+  temp.RT.table[temp.RT.table == 0] <- NA
 
-    # replace the table in the list to return with its reshaped version
-    list_2_return[[table]] <- tmp.table
-  }
-  list_2_return
+  # Calculate the new mean RT for the given data frame and store it in the
+  # mean.RT.list, with the corresponding name
+  aligned_data[["RT"]] <- temp.RT.table |>
+    mutate("Peak" = paste0("P", 1:nrow(temp.RT.table))
+           , mean_RT = rowMeans(temp.RT.table
+                                ,na.rm = TRUE)) |>
+    select(contains("Peak"), contains("mean_RT"), everything()) |>
+    as_tibble()
+
+  aligned_data[["Area"]] <- aligned_data[["RT"]] |>
+    select(contains("Peak"), contains("mean_RT")) |>
+    bind_cols(aligned_data[["Area"]] |>
+                t() |>
+                as.data.frame())
+
+  aligned_data
 }

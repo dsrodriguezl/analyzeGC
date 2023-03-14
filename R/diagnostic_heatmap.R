@@ -8,7 +8,7 @@
 #'
 #' The plot facilitates the discovery of miss-alignments.
 #'
-#' It uses gplots::heatmap.2 to produce the plot.
+#' It uses [gplots::heatmap.2] to produce the plot.
 #'
 #' If the received data frame contains only on sample, it returns a heatmap,
 #' using ggplot2
@@ -21,7 +21,7 @@
 #' The function can receive different data types from which to produce the
 #' diagnostic plot:
 #'
-#' Aligned data, as obtained from align_chromatograms2, for which you want to
+#' Aligned data, as obtained from [align_chromatograms2], for which you want to
 #' evaluate its alignment. In this case, it calls area_norm to normalize
 #' the aligned area data frame before producing the plot.
 #'
@@ -36,9 +36,9 @@
 #' ("automatic" or "corrected") the data comes from.
 #'
 #' automatic: Aligned data as obtained via align_chromatograms2, with or without
-#' normalizing it via area_norm.
+#' normalizing it via [area_norm].
 #'
-#' corrected: A corrected area data.frame, as obtained from correct_alignment.
+#' corrected: A corrected area data.frame, as obtained from [correct_alignment].
 #'
 #' @import dplyr
 #' @import tidyr
@@ -89,6 +89,7 @@ diagnostic_heatmap <- function(data, title, alignment.type) {
       x
     }
 
+    data <- data[["Area"]]
     df_area_norm <- area_2_percent(data)
   }
 
@@ -125,4 +126,5 @@ diagnostic_heatmap <- function(data, title, alignment.type) {
       theme_classic()
   }
   print(p)
+  p
 }

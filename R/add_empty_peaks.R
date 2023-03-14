@@ -4,8 +4,8 @@
 #' Function to create empty peaks within an aligned area/RT data frame, given a
 #' set of instructions encoded within list of data frames.
 #'
-#' @param aligned_df
-#' aligned area/RT data frame, as obtained with area_df or RT_df functions.
+#' @param aligned_data
+#' aligned data set, as obtained with [align_chromatograms2]
 #'
 #' @param empty.peaks
 #' List with instructions for adding empty peaks to the data frames.
@@ -42,65 +42,84 @@
 #'                                      "P100", "before"))
 #'
 #' # Add empty peaks to a single aligned area/RT data frame
-#' area_IW <- samples_list_area$`Winter_In-hive workers_A. m. mellifera`
-#' area_OW <- samples_list_area$`Winter_Out-hive workers_A. m. mellifera`
+#' IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+#' OW <- aligned_samples_data_list$`Winter_Out-hive workers_A. m. mellifera`
 #'
 #' ## In-hive workers data frame
-#' area_IW <- area_IW |>
+#' IW <- IW |>
 #'   add_empty_peaks(empty.peaks = empty_peaks)
 #'
 #' ## Out-hive workers data frame
-#' area_OW <- area_OW |>
+#' OW <- OW |>
 #'   add_empty_peaks(empty.peaks = empty_peaks)
 #'
 #' # Add empty peaks to several aligned area/RT data frames within a list
-#' samples_list_area <- samples_list_area |>
+#' aligned_samples_data_list <- aligned_samples_data_list |>
 #'   lapply(add_empty_peaks
 #'          , empty.peaks = empty_peaks)
 #'
 #'
 #' @export
-add_empty_peaks <- function(aligned_df, empty.peaks) {
-  if ("mean_RT" %in% colnames(aligned_df)) {
-    aligned_df <- aligned_df |>
-      select(-contains("mean_RT")) |>
-      t() |>
-      as.data.frame()
+add_empty_peaks <- function(aligned_data, empty.peaks) {
+
+  if (length(aligned_data) > 2) {
+    aligned_data <- aligned_data[["aligned"]]
+  } else {
+    aligned_data <- aligned_data
   }
 
-  if (nrow(aligned_df) > 1) {
-    # Loop iterating through samples for the alignment correction
-    for (sample in empty.peaks |> names()) {
+  # tmp_aligned_data <- list()
+  for (df_name in names(aligned_data)) {
+    cat('\n')
+    print(df_name)
+    aligned_df <- aligned_data[[df_name]]
 
-      if (sample %in% row.names(aligned_df)) {
-        cat('\n')
-        paste0("Adding empty peaks to sample ", sample) |>
-          print()
+    rownames(aligned_df) <- paste0("P", 1:nrow(aligned_df))
 
-        df <- empty.peaks[[sample]]
-        for (row in row.names(df) |> as.integer()) {
-          paste0("Empty peak number ", row) |>
+    if ("mean_RT" %in% colnames(aligned_df)) {
+      aligned_df <- aligned_df |>
+        select(-contains("mean_RT")) |>
+        t() |>
+        as.data.frame()
+    }
+
+    if (nrow(aligned_df) > 1) {
+      # Loop iterating through samples for the alignment correction
+      for (sample in names(empty.peaks)) {
+
+        if (sample %in% row.names(aligned_df)) {
+          cat('\n')
+          paste0("Adding empty peaks to sample ", sample) |>
             print()
 
-          new_peak <- paste(df$direction[row]
-                            , df$position.reference[row]
-                            , sep = "_")
-          paste0("Name of new peak: ", new_peak) |>
-            print()
+          df <- empty.peaks[[sample]]
+          for (row in row.names(df) |> as.integer()) {
+            paste0("Empty peak number ", row) |>
+              print()
 
-          if (df$direction[row] == "before") {
-            aligned_df <- aligned_df |>
-              add_column("{new_peak}" := 0
-                         , .before = df$position.reference[row])
-          }
-          if (df$direction[row] == "after") {
-            aligned_df <- aligned_df |>
-              add_column("{new_peak}" := 0
-                         , .after = df$position.reference[row])
+            new_peak <- paste(df$direction[row]
+                              , df$position.reference[row]
+                              , sep = "_")
+            paste0("Name of new peak: ", new_peak) |>
+              print()
+
+            if (df$direction[row] == "before") {
+              aligned_df <- aligned_df |>
+                add_column("{new_peak}" := 0
+                           , .before = df$position.reference[row])
+            }
+            if (df$direction[row] == "after") {
+              aligned_df <- aligned_df |>
+                add_column("{new_peak}" := 0
+                           , .after = df$position.reference[row])
+            }
           }
         }
       }
     }
+
+    # tmp_aligned_data[[df_name]] <- aligned_df
+    aligned_data[[df_name]] <- aligned_df
   }
-  aligned_df
+  aligned_data
 }
