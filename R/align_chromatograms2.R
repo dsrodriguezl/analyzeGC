@@ -1,26 +1,26 @@
 #' @title Aligning peaks based on retention times
 #'
 #' @description Custom function for aligning chromatograms.
-#' It is a wrapper around GCalignR::align_chromatograms function, thus it is
-#' recommended to check its documentation (?GCalignR::align_chromatograms).
+#' It is a wrapper around [GCalignR::align_chromatograms] function, thus it is
+#' recommended to check its documentation.
 #'
 #' Its main purpose is to facilitate the usage of the
-#' function with lapply, and within portable scripts.
+#' function with [lapply], and within portable scripts.
 #'
-#' It sets a seed before applying using GCalignR::align_chromatograms.
+#' It sets a seed before applying using [GCalignR::align_chromatograms].
 #'
 #' The name of the alignment criteria parameters are more similar to their
 #' description in the original paper on the GCalignR package.
 #'
 #' rt_col_name is set to "RT" by default, as it is the name given by
-#' import_gcms_data.
+#' [import_gcms_data].
 #'
 #' If the given data set contain only one sample, it returns a list with a
-#' similar structure to that of the typical GCalignR::align_chromatograms
+#' similar structure to that of the typical [GCalignR::align_chromatograms]
 #' output. However, this list is not a GCalignR object.
 #'
 #' @param data2align
-#' Dataset containing peaks that need to be aligned and matched.
+#' Data set containing peaks that need to be aligned and matched.
 #'
 #' @param blanks
 #' Character vector of names of negative controls.

@@ -7,7 +7,8 @@
 correct_alignment(aligned_data, movements_list)
 }
 \arguments{
-\item{aligned_data}{Aligned data frame as obtained with the area_df or RT_df functions.}
+\item{aligned_data}{Aligned data set as obtained with \link{align_chromatograms2} or
+\link{add_empty_peaks} functions.}
 
 \item{movements_list}{List with instructions to displace the peak area/RT values within the sample
 columns of the aligned data frame.
@@ -15,10 +16,10 @@ columns of the aligned data frame.
 The names of the list entries correspond to the name of the samples for which
 the peak area/RT values should be displaced. The function only performs the
 indicated peak displacements, if it finds the sample within the given data
-frame.
-This facilitates the usage of the function on a list of aligned data frames
-with lapply, as the function will perform the correct peaks displacements to
-the correct data frame within the list.
+set.
+This facilitates the usage of the function on a list of aligned data sets
+with \link{lapply}, as the function will perform the correct peaks displacements
+to the correct data set within the list.
 
 The entries of the list should correspond to data.frames/tibbles with two
 columns ("peaks_list" and "movement_dirs").
@@ -28,10 +29,10 @@ direction ("down" or "up") in which the peak value should be displaced along
 the column of the indicated sample.}
 }
 \description{
-Function to correct alignment of peaks across a data frame, as
-indicated by a set of instructions encoded within list of data frames.
+Function to correct alignment of peaks across an aligned data
+set as indicated by a set of instructions encoded within list of data frames.
 It iterates through the data frame samples, following the given instructions,
-and calls move_one_peak to perform each peak displacement.
+and calls \link{move_one_peak} to perform each peak displacement.
 }
 \examples{
 
@@ -56,12 +57,12 @@ peaks_movements <- list("350" = data.frame(peaks_list =
                                                                  , 'up'
                                                                  , 'up')))
 # Correct the alignment of a single aligned area/RT data set
-area_IW <- samples_list_area$`Winter_In-hive workers_A. m. mellifera`
-area_IW <- correct_alignment(aligned_data = area_IW
+IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+IW <- correct_alignment(aligned_data = IW
                              , movements_list = peaks_movements)
 
 # Correct the alignment of several aligned area/RT data frames within a list
-corrected_samples_list_area <- lapply(samples_list_area
+corrected_samples_list_area <- lapply(aligned_samples_data_list
                                       , correct_alignment
                                       , movements_list = peaks_movements)
 

@@ -7,16 +7,16 @@
 area_norm(aligned_data)
 }
 \arguments{
-\item{aligned_data}{An aligned data set as produced by align_chromatogram2}
+\item{aligned_data}{An aligned data set as produced by \link{align_chromatograms2}}
 }
 \description{
 Function to normalize the aligned area data frame produced by
-align_chromatograms2.
+\link{align_chromatograms2}.
 
-It is a wrapper around GCalignR::norm_peaks.
+It is a wrapper around \link[GCalignR:norm_peaks]{GCalignR::norm_peaks}.
 
-It facilitates the usage of the function with lapply, but its main purpose
-is to be called within diagnostic_heatmap.
+It facilitates the usage of the function with \link{lapply}, but its main purpose
+is to be called within \link{diagnostic_heatmap}.
 By default set the rt_col_name to "RT", and conc_col_name to "Area".
 
 Automatically labels each peak as P1 to Pn, where n  =  number of peaks
@@ -30,7 +30,7 @@ Winter_IW <-
 
 norm_winter_IW <- area_norm(Winter_IW)
 
-# Normalizeseveral aligned data sets within a list
+# Normalize several aligned data sets within a list
 samples_area_norm_list <- aligned_samples_data_list |>
   lapply(area_norm)
 

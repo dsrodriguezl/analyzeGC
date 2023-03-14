@@ -10,7 +10,7 @@ diagnostic_heatmap(data, title, alignment.type)
 \item{data}{The function can receive different data types from which to produce the
 diagnostic plot:
 
-Aligned data, as obtained from align_chromatograms2, for which you want to
+Aligned data, as obtained from \link{align_chromatograms2}, for which you want to
 evaluate its alignment. In this case, it calls area_norm to normalize
 the aligned area data frame before producing the plot.
 
@@ -25,9 +25,9 @@ A corrected aligned data.frame as obtained from correct_alignment.}
 ("automatic" or "corrected") the data comes from.
 
 automatic: Aligned data as obtained via align_chromatograms2, with or without
-normalizing it via area_norm.
+normalizing it via \link{area_norm}.
 
-corrected: A corrected area data.frame, as obtained from correct_alignment.}
+corrected: A corrected area data.frame, as obtained from \link{correct_alignment}.}
 }
 \description{
 Heat map + dendrogram of the chemical composition of samples within an
@@ -37,7 +37,7 @@ similarity between samples (rows).
 
 The plot facilitates the discovery of miss-alignments.
 
-It uses gplots::heatmap.2 to produce the plot.
+It uses \link[gplots:heatmap.2]{gplots::heatmap.2} to produce the plot.
 
 If the received data frame contains only on sample, it returns a heatmap,
 using ggplot2

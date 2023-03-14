@@ -4,10 +4,10 @@
 \alias{add_empty_peaks}
 \title{Add empty peak rows to an aligned data frame}
 \usage{
-add_empty_peaks(aligned_df, empty.peaks)
+add_empty_peaks(aligned_data, empty.peaks)
 }
 \arguments{
-\item{aligned_df}{aligned area/RT data frame, as obtained with area_df or RT_df functions.}
+\item{aligned_data}{aligned data set, as obtained with \link{align_chromatograms2}}
 
 \item{empty.peaks}{List with instructions for adding empty peaks to the data frames.
 
@@ -44,19 +44,19 @@ empty_peaks <- list("335" = tribble(~position.reference, ~direction,
                                      "P100", "before"))
 
 # Add empty peaks to a single aligned area/RT data frame
-area_IW <- samples_list_area$`Winter_In-hive workers_A. m. mellifera`
-area_OW <- samples_list_area$`Winter_Out-hive workers_A. m. mellifera`
+IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+OW <- aligned_samples_data_list$`Winter_Out-hive workers_A. m. mellifera`
 
 ## In-hive workers data frame
-area_IW <- area_IW |>
+IW <- IW |>
   add_empty_peaks(empty.peaks = empty_peaks)
 
 ## Out-hive workers data frame
-area_OW <- area_OW |>
+OW <- OW |>
   add_empty_peaks(empty.peaks = empty_peaks)
 
 # Add empty peaks to several aligned area/RT data frames within a list
-samples_list_area <- samples_list_area |>
+aligned_samples_data_list <- aligned_samples_data_list |>
   lapply(add_empty_peaks
          , empty.peaks = empty_peaks)
 

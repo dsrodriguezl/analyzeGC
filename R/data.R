@@ -49,7 +49,7 @@
 #'   \item{}{}
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
-"samples_list_RT"
+"corrected_samples_list"
 
 #' GC/MS data of honeybees cuticular hydrocarbons aligned by group
 #'
@@ -61,54 +61,8 @@
 #'   \item{}{}
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
-"samples_list_area"
+"corrected_samples_list2"
 
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"corrected_samples_list_area"
 
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"corrected_samples_list_RT"
-
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"corrected_samples_list_area2"
-
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"corrected_samples_list_RT2"
 
 

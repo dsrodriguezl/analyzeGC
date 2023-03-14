@@ -2,36 +2,24 @@
 % Please edit documentation in R/recalculate_meanRT.R
 \name{recalculate_meanRT}
 \alias{recalculate_meanRT}
-\title{recalculate the mean RT of a list of data frames after alignment
-correction}
+\title{recalculate the mean RT of data set after alignment correction}
 \usage{
-recalculate_meanRT(RT.list, area.list, output.list)
+recalculate_meanRT(aligned_data)
 }
 \arguments{
-\item{RT.list}{List containing the RT aligned data frames after alignment correction with
-correct_alignment.}
-
-\item{area.list}{List containing the area aligned data frames after alignment correction with
-correct_alignment.}
-
-\item{output.list}{A character string indicating which of the lists ("Area" or "RT") by the
-function, after adding to its data frames the newly calculated mean RTs.}
+\item{aligned_data}{Aligned data set as obtained with \link{correct_alignment}}
 }
 \description{
-recalculate the mean RT of a list of data frames after alignment
-correction
+recalculate the mean RT of data set after alignment correction
 }
 \examples{
 
-corrected_samples_list_area2 <-
-  recalculate_meanRT(RT.list = corrected_samples_list_RT
-                     , area.list = corrected_samples_list_area
-                     , output.list = "Area")
+# Recalculate the mean RT for a single data set
+corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
 
-corrected_samples_list_RT2 <-
-  recalculate_meanRT(RT.list = corrected_samples_list_RT
-                     , area.list = corrected_samples_list_area
-                     , output.list = "RT")
+corrected_IW <-recalculate_meanRT(corrected_IW)
 
+# Recalculate the mean RT for several data sets within a list
+corrected_samples_list2 <- lapply(corrected_samples_list, recalculate_meanRT)
 
 }
