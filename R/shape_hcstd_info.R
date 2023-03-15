@@ -14,9 +14,10 @@
 #' The rest of the data frame, is just as it can be obtained via the RT_df
 #' function, or after alignment correction.
 #'
-#' @param std_area
-#' Aligned area data frame for the standards, as it is obtained with area_df,
-#' or after alignment correction.
+#' @param aligned_std
+#' An object holding the aligned standards, as obtained from
+#' [align_chromatograms2], or [recalculate_meanRT] in case their alignment
+#' required to be corrected.
 #'
 #' @param short_std_pattern
 #' Character string pattern to identify the short chain-length standards (until
@@ -32,11 +33,22 @@
 #' @import ggplot2
 #' @import ggtext
 #'
+#' std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
+#'                              , aligned_std = aligned_standards
+#'                              , short_std_pattern = "L"
+#'                              , long_std_pattern = "H")
+#'
 #' @export
 shape_hcstd_info <- function(comps_id.STD
-                              , std_area
+                              , aligned_std
                               , short_std_pattern
                               , long_std_pattern) {
+
+  if (length(aligned_std) > 2) {
+    aligned_std <- aligned_std[["aligned"]]
+  }
+  std_area <- aligned_std[["Area"]]
+
   # Temporal data frame
   std_df <- comps_id.STD
 
@@ -116,11 +128,11 @@ shape_hcstd_info <- function(comps_id.STD
   std_names <- std.info$Compound
   # Set the name of the compound inside the standard samples
   std_names[!is.na(std_names)] <- paste(std.info |>
-                                          filter(!is.na(contains(
+                                          filter(!is.na(get(
                                             "Compound"))) |>
                                           pull("Class")
                                         , std.info |>
-                                          filter(!is.na(contains(
+                                          filter(!is.na(get(
                                             "Compound"))) |>
                                           pull("Chain.length")
                                         , sep = "-")
