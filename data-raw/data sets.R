@@ -143,19 +143,31 @@ aligned_samples_data_list |>
 
 # Generate the data set
 peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
-                                                                 , c(108)))
-                                           , movement_dirs = c('up'))
+                                                                 , c(108
+                                                                     , 126)))
+                                           , movement_dirs = c('up', 'up'))
                         , "351" = data.frame(peaks_list = c(paste0("P"
                                                                    , c(107
                                                                        , 108
                                                                        , 119
-                                                                       , 120)))
+                                                                       , 120
+                                                                       , 126)))
                                              , movement_dirs = c('up','up'
-                                                                 , 'up', 'up'))
+                                                                 , 'up', 'up'
+                                                                 , 'up'))
                         , "352" = data.frame(peaks_list = c(paste0("P"
                                                                    , c(107
-                                                                       , 108)))
-                                             , movement_dirs = c('up','up'))
+                                                                       , 108
+                                                                       , 126)))
+                                             , movement_dirs = c('up','up'
+                                                                 , 'up'))
+                        , "333" = data.frame(peaks_list = c(paste0("P"
+                                                                   , c(26)))
+                                             , movement_dirs = c('down'))
+                        , "345" = data.frame(peaks_list = c(paste0("P"
+                                                                   , c(106
+                                                                       , 107)))
+                                             , movement_dirs = c('up', 'up'))
                         )
 
 corrected_samples_list <- lapply(aligned_samples_data_list
