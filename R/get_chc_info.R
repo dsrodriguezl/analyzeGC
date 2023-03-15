@@ -7,8 +7,8 @@
 #' data frame with the compound information for the hydrocarbons found in each
 #' sample.
 #'
-#' The data frame should have a **"Compound"** and a **"mean_RT"** columns, plus a
-#' column for every sample.
+#' The data frame should have a **"Compound"** and a **"mean_RT"** columns, plus
+#'  a column for every sample.
 #'
 #' The Compound column should have the name of the hydrocarbons with the
 #' following format:

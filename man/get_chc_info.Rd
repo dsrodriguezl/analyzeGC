@@ -10,8 +10,8 @@ get_chc_info(comps.id)
 \item{comps.id}{data frame with the compound information for the hydrocarbons found in each
 sample.
 
-The data frame should have a \strong{"Compound"} and a \strong{"mean_RT"} columns, plus a
-column for every sample.
+The data frame should have a \strong{"Compound"} and a \strong{"mean_RT"} columns, plus
+a column for every sample.
 
 The Compound column should have the name of the hydrocarbons with the
 following format:

@@ -103,18 +103,21 @@ align_chromatograms2 <- function(data2align
                                  , row_merging_threshold){
   if (length(data2align) == 1) {
     nombre <- names(data2align)
+    row_names <- paste0("P", 1:nrow(data2align[[1]]))
 
     RT <- data2align[[1]] |>
       mutate("mean_RT" = get("RT")) |>
       select(contains("mean_RT"), contains("RT")) |>
       as.data.frame()
     colnames(RT) <- c("mean_RT", nombre)
+    row.names(RT) <- row_names
 
     Area <- data2align[[1]] |>
       mutate("mean_RT" = get("RT")) |>
       select(contains("mean_RT"), contains("Area")) |>
       as.data.frame()
     colnames(Area) <- c("mean_RT", nombre)
+    row.names(Area) <- row_names
 
     df <- list("RT" = RT, "Area" = Area)
   }
@@ -128,6 +131,11 @@ align_chromatograms2 <- function(data2align
                               , min_diff_peak2peak = row_merging_threshold
                               , blanks = blanks
     )
+
+    row.names(df[["aligned"]][["RT"]]) <-
+      paste0("P", 1:nrow(df[["aligned"]][["RT"]]))
+    row.names(df[["aligned"]][["Area"]]) <-
+      paste0("P", 1:nrow(df[["aligned"]][["Area"]]))
   }
 
   df
