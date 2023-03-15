@@ -33,6 +33,8 @@
 #' @import ggplot2
 #' @import ggtext
 #'
+#' @examples
+#'
 #' std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
 #'                              , aligned_std = aligned_standards
 #'                              , short_std_pattern = "L"
@@ -181,29 +183,43 @@ shape_hcstd_info <- function(comps_id.STD
   p <- std.info |>
     ggplot(aes(y = get("area")
                , x = get("mean_RT"))) +
+    geom_vline(aes(xintercept = get("mean_RT"))
+               , linetype = "dotted") +
     geom_step(direction = "vh"
               , linewidth = 1
               , color = "orange") +
-    geom_text(aes(label = paste0("C", get("Chain.length")))
-              , color = "red") +
+    geom_point(color = "black"
+              , fill = "red"
+              , shape = 21
+              , size = 4) +
     geom_step(aes(y = get("corrected_area"))
               , direction = "vh"
-              , size = 1.5
+              , size = 1
               , color = "green") +
-    geom_text(aes(y = get("corrected_area")
-                  , label = paste0("C", get("Chain.length")))) +
+    geom_point(aes(y = get("corrected_area"))
+               , color = "black"
+                 , fill = "black"
+                 , shape = 21
+               , size = 4) +
+    geom_richtext(aes(x = get("mean_RT")
+                      , y = max(get("area")) + 1500000
+                      , label = paste0("C", get("Chain.length")))
+                  , size = 3.5
+                  , angle = 270
+                  , fontface = "bold") +
     ggside::geom_ysideboxplot(orientation = "x") +
     theme_classic() +
-    labs(title = "Abundance (observed and corrected) of standards vs mean
-         retention time"
-         , x = "mean RT"
+    labs(title = paste0("Abundance of standards (observed an corrected) vs"
+                        , " mean retention time")
+         , x = "mean RT (minutes)"
          , y = "Abundance (area)"
-         , subtitle = "Observed abundance is represented by an
-         <span style = 'color:orange';>**orange**</span> line with
-         <span style = 'color:red';>**labels**</span>, while the corrected
-         abundance is represeneted by a
-         <span style = 'color:green';>**green**</span> line with
-         <span style = 'color:black';>**labels**</span>")
+         , subtitle = "**Observed abundance:**
+         <span style = 'color:red'>**red dots**</span> connected by an
+         <span style = 'color:orange'>**orange line**</span>. <br>
+         **Corrected abundance:**
+         <span style = 'color:black'>**black dots**</span> connected by a
+         <span style = 'color:green'>**green line**</span>") +
+    theme(plot.subtitle = element_markdown())
   print(p)
 
   return(std.info)
