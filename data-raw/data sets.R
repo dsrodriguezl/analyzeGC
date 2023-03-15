@@ -32,6 +32,22 @@ grouping_info <- grouping_info |>
 # Create the samples_info data file for the package
 use_data(grouping_info, overwrite = TRUE)
 
+# standards_data_list ----
+# Import the CSV files with the samples' integration results
+standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
+                                                   , package = "analyzeGC")
+                                #  Get all CSV files in the folder
+                                , pattern = ".CSV|.csv"
+                                , full.names = T) |>
+  # Do not include standards
+  str_subset('STD')
+
+standards_data_list <- import_gcms_data(standards_path_data
+                                      , patterns_2_delete = "STD")
+
+# Create the standards_data_list data file for the package
+use_data(standards_data_list, overwrite = TRUE)
+
 # aligned_samples_data_list ----
 
 grouping_info <- grouping_info |>
@@ -60,6 +76,21 @@ aligned_samples_data_list <- samples_data_list |>
 
 # Create the aligned_samples_data_list data file for the package
 use_data(aligned_samples_data_list, overwrite = TRUE)
+
+# aligned_standards ----
+
+aligned_standards <- align_chromatograms2(standards_data_list
+                                          , blanks = NULL
+                                          , linear_shift_criteria = 0.02
+                                          , partial_alignment_threshold = 0.05
+                                          , row_merging_threshold = 0.15)
+
+aligned_standards |>
+  diagnostic_heatmap(title = "Alignment of standards"
+                     , alignment.type = "automatic")
+
+# Create the aligned_standards data file for the package
+use_data(aligned_standards, overwrite = TRUE)
 
 # # samples_list_RT and samples_list_area ----
 #
@@ -181,9 +212,18 @@ corrected_samples_list2 <- lapply(corrected_samples_list
                                   , recalculate_meanRT)
 use_data(corrected_samples_list2, overwrite = TRUE)
 
+# comps_id_std ----
+comps_id_std <- here("data-raw", "std_compounds-id.csv") |>
+  readr::read_csv()
+
+use_data(comps_id_std, overwrite = T)
+
 #  ----
 
-
+std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
+                             , aligned_std = aligned_standards
+                             , short_std_pattern = "L"
+                             , long_std_pattern = "H")
 
 
 
