@@ -4,7 +4,12 @@
 \alias{shape_hcstd_info}
 \title{Shape the standards information data frame}
 \usage{
-shape_hcstd_info(comps_id.STD, std_area, short_std_pattern, long_std_pattern)
+shape_hcstd_info(
+  comps_id.STD,
+  aligned_std,
+  short_std_pattern,
+  long_std_pattern
+)
 }
 \arguments{
 \item{comps_id.STD}{data frame with the compound information for the n-alkane standards.
@@ -17,8 +22,9 @@ following format: C"numeric chain length"_ane_NA.
 The rest of the data frame, is just as it can be obtained via the RT_df
 function, or after alignment correction.}
 
-\item{std_area}{Aligned area data frame for the standards, as it is obtained with area_df,
-or after alignment correction.}
+\item{aligned_std}{An object holding the aligned standards, as obtained from
+\link{align_chromatograms2}, or \link{recalculate_meanRT} in case their alignment
+required to be corrected.}
 
 \item{short_std_pattern}{Character string pattern to identify the short chain-length standards (until
 C20). The function relies on the dplyr::starts_with selection helper to do

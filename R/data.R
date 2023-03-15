@@ -11,6 +11,15 @@
 #' @source Data obtained by the author of the package, for educational purposes.
 "samples_data_list"
 
+#' @format ##
+#' A list with 20 tibble data frames, each with 2 columns:
+#' \describe{
+#'   \item{RT}{Retention time measured for each peak within a sample}
+#'   \item{Area}{Area result of the integration of the peaks within a sample}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"standards_data_list"
+
 #' Group membership information of honeybee samples in the samples_data_list
 #' data
 #'
@@ -49,6 +58,18 @@
 #'   \item{}{}
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
+"aligned_standards"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
 "corrected_samples_list"
 
 #' GC/MS data of honeybees cuticular hydrocarbons aligned by group
@@ -64,5 +85,16 @@
 "corrected_samples_list2"
 
 
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"comps_id_std"
 
 
