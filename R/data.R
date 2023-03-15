@@ -11,6 +11,8 @@
 #' @source Data obtained by the author of the package, for educational purposes.
 "samples_data_list"
 
+#' TITLE
+#'
 #' @format ##
 #' A list with 20 tibble data frames, each with 2 columns:
 #' \describe{

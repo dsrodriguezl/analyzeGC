@@ -38,3 +38,11 @@ so.}
 Function to shape the data frame holding the compound
 information for n-alkane standards
 }
+\examples{
+
+std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
+                             , aligned_std = aligned_standards
+                             , short_std_pattern = "L"
+                             , long_std_pattern = "H")
+
+}
