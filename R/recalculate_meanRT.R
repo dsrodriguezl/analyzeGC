@@ -54,7 +54,8 @@ recalculate_meanRT <- function(aligned_data) {
   aligned_data[["RT"]] <- temp.RT.table |>
     mutate("Peak" = paste0("P", 1:nrow(temp.RT.table))
            , mean_RT = rowMeans(temp.RT.table
-                                ,na.rm = TRUE)) |>
+                                ,na.rm = TRUE) |>
+             round(digits = 3)) |>
     select(contains("Peak"), contains("mean_RT"), everything()) |>
     as_tibble()
 
