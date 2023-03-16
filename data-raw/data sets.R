@@ -1,7 +1,6 @@
 ## code to prepare `data sets` dataset goes here
 
 library(here)
-library(dplyr)
 # load the functions of the package
 load_all()
 
@@ -107,8 +106,7 @@ use_data(aligned_standards, overwrite = TRUE)
 # write.csv(aligned_standards$aligned$RT
 #           , here("data-raw", "std_compounds-id.csv"))
 
-# # samples_list_RT and samples_list_area ----
-  ## Trying functions to diagnose alignment
+# Trying functions to diagnose alignment ----
 samples_area_norm_list <- aligned_samples_data_list |>
   lapply(area_norm)
 
@@ -192,7 +190,7 @@ for (df in names(corrected_samples_list)) {
                      , alignment.type = "corrected")
 }
 
-# corrected_samples_list2----
+# corrected_samples_list2 ----
 corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
 
 recalculate_meanRT(corrected_IW)
@@ -219,23 +217,53 @@ comps_id_std <- here("data-raw", "std_compounds-id.csv") |>
 
 use_data(comps_id_std, overwrite = T)
 
-# ----
+# std_info ----
 
 std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
                              , aligned_std = aligned_standards
                              , short_std_pattern = "L"
                              , long_std_pattern = "H")
 
+use_data(std_info, overwrite = T)
+
 # comps_id_samples ----
-list.files(here("data-raw")
+comps_id_paths <- list.files(here("data-raw")
            , pattern = "compounds-id"
            , full.names = T) |>
   stringr::str_subset("std", negate = T)
 
+comps_id_list <- comps_id_paths |>
+  lapply(readr::read_csv)
 
+names(comps_id_list) <- comps_id_paths |>
+  stringr::str_split("/"
+                     , simplify = T) |>
+  stringr::str_subset(".CSV|.csv") |>
+  stringr::str_split("-i"
+                     , simplify = T) |>
+  stringr::str_subset("Winter")
 
+use_data(comps_id_list, overwrite = T)
 
+# comps_info_list ----
+comps_info_list <- comps_id_list |>
+  lapply(get_chc_info)
 
+use_data(comps_info_list, overwrite = T)
+
+# adjusted_samples_list ----
+pdf(here("data-raw"
+         , "samples_correction-plots.pdf")
+    , width = 18
+    , height = 8)
+adjusted_samples_list <- corrected_samples_list2 |>
+  lapply(adjust_abundance, std.info = std_info)
+
+dev.off()
+
+use_data(adjusted_samples_list, overwrite = T)
+
+#  ----
 
 
 
