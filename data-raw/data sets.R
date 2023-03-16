@@ -219,12 +219,18 @@ comps_id_std <- here("data-raw", "std_compounds-id.csv") |>
 
 use_data(comps_id_std, overwrite = T)
 
-#  ----
+# ----
 
 std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
                              , aligned_std = aligned_standards
                              , short_std_pattern = "L"
                              , long_std_pattern = "H")
+
+# comps_id_samples ----
+list.files(here("data-raw")
+           , pattern = "compounds-id"
+           , full.names = T) |>
+  stringr::str_subset("std", negate = T)
 
 
 
