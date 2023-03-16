@@ -100,3 +100,55 @@
 "comps_id_std"
 
 
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"std_info"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"comps_id_list"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"comps_info_list"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"adjusted_samples_list"
+
+
+
+
+

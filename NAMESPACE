@@ -2,6 +2,7 @@
 
 export(RT_df)
 export(add_empty_peaks)
+export(adjust_abundance)
 export(align_chromatograms2)
 export(area_df)
 export(area_norm)
