@@ -1,6 +1,7 @@
 ## code to prepare `data sets` dataset goes here
 
 library(here)
+library(dplyr)
 # load the functions of the package
 load_all()
 
@@ -100,6 +101,12 @@ aligned_standards |>
 # Create the aligned_standards data file for the package
 use_data(aligned_standards, overwrite = TRUE)
 
+# Export CSV to make the comps_id data sets
+## It is commented to avoid overwriting the file after adding to it the
+## compounds' ids
+# write.csv(aligned_standards$aligned$RT
+#           , here("data-raw", "std_compounds-id.csv"))
+
 # # samples_list_RT and samples_list_area ----
   ## Trying functions to diagnose alignment
 samples_area_norm_list <- aligned_samples_data_list |>
@@ -195,9 +202,20 @@ corrected_samples_list2 <- lapply(corrected_samples_list
                                   , recalculate_meanRT)
 use_data(corrected_samples_list2, overwrite = TRUE)
 
+# Export CSV to make the comps_id data sets
+## It is commented to avoid overwriting the file after adding to it the
+## compounds' ids
+# for (dataset in names(corrected_samples_list2)) {
+#   write.csv(corrected_samples_list2[[dataset]][["RT"]]
+#             , here("data-raw", paste0(dataset, "_compounds-id.csv"))
+#             , row.names = F)
+# }
+
+
 # comps_id_std ----
 comps_id_std <- here("data-raw", "std_compounds-id.csv") |>
-  readr::read_csv()
+  readr::read_csv() |>
+  rename("Peak" = contains(".1"))
 
 use_data(comps_id_std, overwrite = T)
 
@@ -207,6 +225,9 @@ std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
                              , aligned_std = aligned_standards
                              , short_std_pattern = "L"
                              , long_std_pattern = "H")
+
+
+
 
 
 
