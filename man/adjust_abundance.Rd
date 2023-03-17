@@ -2,16 +2,29 @@
 % Please edit documentation in R/adjust_abundance.R
 \name{adjust_abundance}
 \alias{adjust_abundance}
-\title{Adjust the abundance of the peaks within samples}
+\title{Adjust abundance values within samples and display diagnostic plots}
 \usage{
 adjust_abundance(aligned_data, std.info)
 }
 \arguments{
-\item{aligned_data}{Aligned data set, as obtained with \link{recalculate_meanRT}}
+\item{aligned_data}{Aligned data set, as obtained with \link{recalculate_meanRT}.}
 
 \item{std.info}{Data frame with the standards information, as obtained
-from \link{shape_hcstd_info}}
+from \link{shape_hcstd_info}.
+It must contains columns "mean_RT" and "area_correction".}
 }
 \description{
-Adjust the abundance of the peaks within samples
+Adjust abundance values within samples and display diagnostic plots
+}
+\examples{
+
+# Adjusting the abundance for a single data set
+IW_data <- corrected_samples_list2$`Winter_In-hive workers_A. m. mellifera`
+  adjusted_IW <- adjust_area_and_plot(aligned_data = IW_data
+                                        , std_info = std_info)
+
+# Adjusting the abundance for several data sets within a list
+filtered_samples_list <- unfiltered_samples_list |>
+  lapply(trace_comps, threshold = 0.01)
+
 }
