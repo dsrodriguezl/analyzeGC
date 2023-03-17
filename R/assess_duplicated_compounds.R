@@ -13,7 +13,7 @@
 #' @import purrr
 #' @import ggplot2
 #'
-#' @examples
+#' @export
 assess_duplicated_compounds <- function(group.tables.list, plot = T) {
   # Find duplicated compound names in teh group tables
   duplicated_compounds <- group.tables.list |>
