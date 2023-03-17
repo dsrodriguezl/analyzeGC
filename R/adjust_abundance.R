@@ -14,12 +14,12 @@
 #'
 #' # Adjusting the abundance for a single data set
 #' IW_data <- corrected_samples_list2$`Winter_In-hive workers_A. m. mellifera`
-#'   adjusted_IW <- adjust_area_and_plot(aligned_data = IW_data
-#'                                         , std_info = std_info)
+#'   adjusted_IW <- adjust_abundance(aligned_data = IW_data
+#'                                         , std.info = std_info)
 #'
 #' # Adjusting the abundance for several data sets within a list
-#' filtered_samples_list <- unfiltered_samples_list |>
-#'   lapply(adjust_area_and_plot, std_info = std_info)
+#' filtered_samples_list <- corrected_samples_list2 |>
+#'   lapply(adjust_abundance, std.info = std_info)
 #'
 #' @export
 adjust_abundance <- function(aligned_data, std.info) {
@@ -71,7 +71,7 @@ adjust_abundance <- function(aligned_data, std.info) {
     # of the standard with the highest mean_RT and RT > mean_RT with the lowest
     # mean_RT
     tmp <- area_table |>
-      filter(min(interval) < get("mean_RT") &
+      filter(get("mean_RT") > min(interval) &
                get("mean_RT") <= max(interval)) |>
       mutate_at(area_table |>
                   select(-(contains("Peak"):contains("mean_RT"))) |>
@@ -87,9 +87,9 @@ adjust_abundance <- function(aligned_data, std.info) {
       # Adjust the abundance of peaks, within every sample, with RT > mean_Rt
       # of the last standard
       tmp <- area_table |>
-        filter(max(interval) <  get("mean_RT")) |>
+        filter(get("mean_RT") > max(interval)) |>
         mutate_at(area_table |>
-                    select(-(contains("Peak"):get("mean_RT"))) |>
+                    select(-(contains("Peak"):contains("mean_RT"))) |>
                     colnames()
                   , adjust.area)
 

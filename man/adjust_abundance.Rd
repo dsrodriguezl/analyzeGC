@@ -20,11 +20,11 @@ Adjust abundance values within samples and display diagnostic plots
 
 # Adjusting the abundance for a single data set
 IW_data <- corrected_samples_list2$`Winter_In-hive workers_A. m. mellifera`
-  adjusted_IW <- adjust_area_and_plot(aligned_data = IW_data
-                                        , std_info = std_info)
+  adjusted_IW <- adjust_abundance(aligned_data = IW_data
+                                        , std.info = std_info)
 
 # Adjusting the abundance for several data sets within a list
-filtered_samples_list <- unfiltered_samples_list |>
-  lapply(trace_comps, threshold = 0.01)
+filtered_samples_list <- corrected_samples_list2 |>
+  lapply(adjust_abundance, std.info = std_info)
 
 }
