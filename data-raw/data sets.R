@@ -1,8 +1,4 @@
-## code to prepare `data sets` dataset goes here
-
-library(here)
-# load the functions of the package
-load_all()
+## code to prepare data sets for the package
 
 # Samples_data_list ----
 # Import the CSV files with the samples' integration results
@@ -22,7 +18,7 @@ use_data(samples_data_list, overwrite = TRUE)
 
 # Samples_info ----
 # Load the samples list
-grouping_info  <- here("data-raw", "samples-list.csv") |>
+grouping_info  <- here::here("data-raw", "samples-list.csv") |>
   readr::read_csv()
 
 grouping_info <- grouping_info |>
@@ -80,7 +76,7 @@ use_data(aligned_samples_data_list, overwrite = TRUE)
 # Export alignments
 for (df in names(aligned_samples_data_list)) {
   write.csv(aligned_samples_data_list[[df]][["aligned"]][["RT"]]
-            , here("data-raw"
+            , here::here("data-raw"
                    , paste0("aligned-RT_", df, ".csv")))
   rm(df)
 }
@@ -104,7 +100,7 @@ use_data(aligned_standards, overwrite = TRUE)
 ## It is commented to avoid overwriting the file after adding to it the
 ## compounds' ids
 # write.csv(aligned_standards$aligned$RT
-#           , here("data-raw", "std_compounds-id.csv"))
+#           , here::here("data-raw", "std_compounds-id.csv"))
 
 # Trying functions to diagnose alignment ----
 samples_area_norm_list <- aligned_samples_data_list |>
@@ -114,7 +110,7 @@ samples_area_norm_list$`Winter_In-hive workers_A. m. mellifera` |>
   diagnostic_heatmap(title = "Alignment of IW CHCs"
                      , alignment.type = "automatic")
 
-pdf(here("data-raw"
+pdf(here::here("data-raw"
          , "uncorrected-alignment-plots.pdf")
     , width = 30
     , height = 15)
@@ -205,13 +201,13 @@ use_data(corrected_samples_list2, overwrite = TRUE)
 ## compounds' ids
 # for (dataset in names(corrected_samples_list2)) {
 #   write.csv(corrected_samples_list2[[dataset]][["RT"]]
-#             , here("data-raw", paste0(dataset, "_compounds-id.csv"))
+#             , here::here("data-raw", paste0(dataset, "_compounds-id.csv"))
 #             , row.names = F)
 # }
 
 
 # comps_id_std ----
-comps_id_std <- here("data-raw", "std_compounds-id.csv") |>
+comps_id_std <- here::here("data-raw", "std_compounds-id.csv") |>
   readr::read_csv() |>
   rename("Peak" = contains(".1"))
 
@@ -227,7 +223,7 @@ std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
 use_data(std_info, overwrite = T)
 
 # comps_id_samples ----
-comps_id_paths <- list.files(here("data-raw")
+comps_id_paths <- list.files(here::here("data-raw")
            , pattern = "compounds-id"
            , full.names = T) |>
   stringr::str_subset("std", negate = T)
@@ -241,6 +237,9 @@ names(comps_id_list) <- comps_id_paths |>
   stringr::str_subset(".CSV|.csv") |>
   stringr::str_split("-i"
                      , simplify = T) |>
+  stringr::str_subset("Winter") |>
+  stringr::str_split("_c"
+                     , simplify = T) |>
   stringr::str_subset("Winter")
 
 use_data(comps_id_list, overwrite = T)
@@ -252,7 +251,7 @@ comps_info_list <- comps_id_list |>
 use_data(comps_info_list, overwrite = T)
 
 # adjusted_samples_list ----
-pdf(here("data-raw"
+pdf(here::here("data-raw"
          , "samples_correction-plots.pdf")
     , width = 18
     , height = 8)
@@ -263,7 +262,15 @@ dev.off()
 
 use_data(adjusted_samples_list, overwrite = T)
 
-#  ----
+# unfiltered_samples_list ----
+unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
+                                          ,comps.info.list = comps_info_list)
 
+use_data(unfiltered_samples_list, overwrite = T)
 
+# filtered_samples_list ----
+filtered_samples_list <- unfiltered_samples_list |>
+  lapply(trace_comps
+         , threshold = 0.01)
 
+use_data(filtered_samples_list, overwrite = T)

@@ -148,7 +148,28 @@
 #' @source Data obtained by the author of the package, for educational purposes.
 "adjusted_samples_list"
 
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"unfiltered_samples_list"
 
-
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"filtered_samples_list"
 
 
