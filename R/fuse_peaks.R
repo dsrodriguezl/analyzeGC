@@ -37,8 +37,8 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   # column sums while ignoring missing values, transposing the resulting vector,
   # and converting it to a data frame.
   peaks_sum <- master.table |>
-    filter(Peak %in% peaks_to_fuse) |>
-    select(!Peak:RI) |>
+    filter(get("Peak") %in% peaks_to_fuse) |>
+    select(!(contains("Peak"):contains("RI"))) |>
     colSums(na.rm = T) |>
     t() |>
     as.data.frame()
@@ -60,19 +60,19 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   # Calculate median value in the RI column for rows where Peak is in
   # peaks_to_fuse.
   new_RI <- master.table |>
-    filter(Peak %in% peaks_to_fuse) |>
-    pull(RI) |>
-    median()
+    filter(get("Peak") %in% peaks_to_fuse) |>
+    pull("RI") |>
+    stats::median()
 
   # Create a new data frame called new_RI with only the RI column containing
   # new_RI values, repeated as many times as the length of peaks_to_fuse.
-  new_RI <- data.frame(RI = rep(new_RI
+  new_RI <- data.frame("RI" = rep(new_RI
                                 , length(peaks_to_fuse)))
 
   # Add columns from master.table and new_RI to peaks_sum.
   peaks_sum <- cbind(master.table |>
-                       filter(Peak %in% peaks_to_fuse) |>
-                       select(Peak:Mod.position)
+                       filter(get("Peak") %in% peaks_to_fuse) |>
+                       select(contains("Peak"):contains("Mod.position"))
                      , new_RI
                      , peaks_sum) |>
     as_tibble()

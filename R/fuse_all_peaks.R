@@ -12,14 +12,14 @@
 #' @export
 fuse_all_peaks <- function(master.table, fusion.list){
 
-  # Handle case where fusion_list is empty
-  if (length(fusion_list) == 0) {
-    warning("fusion_list is empty; no fusions will be performed")
-    return(master_table)
+  # Handle case where fusion.list is empty
+  if (length(fusion.list) == 0) {
+    warning("fusion.list is empty; no fusions will be performed")
+    return(master.table)
   }
 
-  # Handle case where fusion_list has only one item
-  if (length(fusion_list) == 1 ) {
+  # Handle case where fusion.list has only one item
+  if (length(fusion.list) == 1 ) {
     warning("fusion list has only one item; only one peak will be fused.")
     return(master.table)
   }
@@ -39,7 +39,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
     cat('\n')
     # Print the peaks status before fusion
     print("Peaks before fusion")
-    master.table |> filter(Peak %in% i) |> print()
+    master.table |> filter(get("Peak") %in% i) |> print()
 
     # Fuse peaks using fuse_peaks
     master.table <- fuse_peaks(master.table = master.table, peaks_to_fuse = i)
@@ -47,7 +47,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
     cat('\n')
     # Print the peaks status after fusion
     print("Peaks after fusion")
-    master.table |> filter(Peak %in% i) |> print()
+    master.table |> filter(get("Peak") %in% i) |> print()
 
     # Increment the fusion count
     f_count <- f_count + 1
@@ -63,7 +63,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
   # Remove empty peaks that were created during the peaks fusing procedure
   master.table <- master.table |>
     filter(master.table |>
-             select(!Peak:RI) |>
+             select(!(contains("Peak"):contains("RI"))) |>
              rowSums(na.rm = T) > 0)
 
   # Report that the empty peaks were removed
@@ -73,7 +73,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
   #  Correct peak numbering and transform into a tibble
   master.table <- master.table |>
     # Correct the peaks numbering
-    mutate(Peak = paste0("P", 1:nrow(master.table))) |>
+    mutate("Peak" = paste0("P", 1:nrow(master.table))) |>
     as_tibble()
 
   return(master.table)

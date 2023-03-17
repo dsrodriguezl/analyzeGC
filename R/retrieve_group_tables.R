@@ -35,12 +35,12 @@ retrieve_group_tables <- function(group.label
    group.table[is.na(group.table)] <- 0
 
    group.table <- group.table |>
-     mutate(present = ifelse(group.table |>
+     mutate("present" = ifelse(group.table |>
                                select(-all_of(comps.vars)) |>
                                rowSums() > 0
                              , T
                              , F)) |>
-     relocate(present, .after = all_of(comps.vars))
+     relocate(contains("present"), .after = all_of(comps.vars))
 
    group.tables.list[[group]] <- group.table
   }
