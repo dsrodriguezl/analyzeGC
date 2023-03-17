@@ -1,5 +1,13 @@
 #' @title Filter out compounds of low abundance within samples
 #'
+#' @description
+#' The function filters out low-abundance compounds within samples
+#' from an aligned data set list. The user specifies a threshold for
+#' the minimum percentage of a sample that a peak must represent. The
+#' function removes peaks below this threshold and updates the group
+#' area and RT data accordingly. The mean retention time is recalculated
+#' and added to the data.
+#'
 #' @param unfiltered_group An aligned data set list that includes comps.info.
 #'
 #' @param threshold A numeric threshold, indicating the minimum % of a sample a

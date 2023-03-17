@@ -13,5 +13,10 @@ trace_comps(unfiltered_group, threshold)
 peak must represent to remain in the data set.}
 }
 \description{
-Filter out compounds of low abundance within samples
+The function filters out low-abundance compounds within samples
+from an aligned data set list. The user specifies a threshold for
+the minimum percentage of a sample that a peak must represent. The
+function removes peaks below this threshold and updates the group
+area and RT data accordingly. The mean retention time is recalculated
+and added to the data.
 }
