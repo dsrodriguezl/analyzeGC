@@ -16,10 +16,11 @@ samples_data_list <- import_gcms_data(samples_path_data
 # Create the samples_data _list data file for the package
 use_data(samples_data_list, overwrite = TRUE)
 
-# Samples_info ----
+# grouping_info ----
 # Load the samples list
 grouping_info  <- here::here("data-raw", "samples-list.csv") |>
-  readr::read_csv()
+  readr::read_csv() |>
+  mutate("Individual" = as.character(get("Individual")))
 
 grouping_info <- grouping_info |>
   mutate_at(vars(!matches("Individual"))
@@ -283,5 +284,48 @@ filtered_samples_list2 <- filtered_samples_list |>
   lapply(drop_na_compounds)
 
 use_data(filtered_samples_list2, overwrite = T)
+
+# samples_data_list ----
+samples_plus_ri_list <- filtered_samples_list2 |>
+  lapply(kovats_retention_index, std.info = std_info)
+
+use_data(samples_plus_ri_list, overwrite = T)
+
+# group_tables_list ----
+group_tables_list <- samples_plus_ri_list |>
+  lapply(shape_group_table)
+
+use_data(group_tables_list, overwrite = T)
+
+# master_table ----
+master_table <- build_master_table(group_tables_list)
+
+write.csv(master_table
+          , here::here("data-raw", "master_table.csv")
+          , row.names = F)
+
+use_data(master_table, overwrite = T)
+
+# group_tables_list2 ----
+grouping_info <- grouping_info |>
+  unite(group_label
+        , where(is.factor)
+        , sep = "_"
+        , remove = FALSE)
+
+group_tables_list2 <- retrieve_group_tables(group.label = "group_label"
+                                            , master.table = master_table
+                                            , grouping.info = grouping_info)
+
+use_data(group_tables_list2, overwrite = T)
+
+# duplicated_compounds_presence ----
+pdf(here::here("data-raw"
+         , 'density-distribution_duplicated-compounds.pdf')
+    , width = 18, height = 8)
+duplicated_compounds_presence <- assess_duplicated_compounds(group_tables_list2)
+dev.off()
+
+use_data(duplicated_compounds_presence, overwrite = T)
 
 #  ----
