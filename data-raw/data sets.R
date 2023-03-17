@@ -329,3 +329,66 @@ dev.off()
 use_data(duplicated_compounds_presence, overwrite = T)
 
 #  ----
+fusion_list <- list(c(paste0("P"
+                             , c(1, 2)))
+                    , c(paste0("P"
+                               , c(7, 8)))
+                    , c(paste0("P"
+                               , c(9, 10)))
+                    , c(paste0("P"
+                               , c(13, 14)))
+                    , c(paste0("P"
+                               , c(15, 16)))
+                    , c(paste0("P"
+                               , c(19, 20)))
+                    , c(paste0("P"
+                               , c(24, 25)))
+                    , c(paste0("P"
+                               , c(27, 28)))
+                    , c(paste0("P"
+                               , c(29, 30)))
+                    , c(paste0("P"
+                               , c(32, 33)))
+                    , c(paste0("P"
+                               , c(38, 39)))
+                    , c(paste0("P"
+                               , c(40, 41)))
+                    , c(paste0("P"
+                               , c(42, 43)))
+                    , c(paste0("P"
+                               , c(44, 45)))
+                    , c(paste0("P"
+                               , c(46, 47)))
+                    , c(paste0("P"
+                               , c(49, 50)))
+                    , c(paste0("P"
+                               , c(52, 53)))
+                    , c(paste0("P"
+                               , c(58, 59)))
+                    , c(paste0("P"
+                               , c(60, 61)))
+                    , c(paste0("P"
+                               , c(62, 63)))
+                    , c(paste0("P"
+                               , c(66, 67)))
+                    , c(paste0("P"
+                               , c(69, 70)))
+                    , c(paste0("P"
+                               , c(72, 73)))
+                    , c(paste0("P"
+                               , c(74, 75)))
+                    , c(paste0("P"
+                               , c(80, 81)))
+                    , c(paste0("P"
+                               , c(82, 83)))
+                    , c(paste0("P"
+                               , c(84, 85)))
+                    , c(paste0("P"
+                               , c(86, 87)))
+                    , c(paste0("P"
+                               , c(88, 89))))
+fusion_list
+
+master_table2 <- fuse_all_peaks(master.table = master_table
+                                , fusion.list = fusion_list)
+use_data(master_table2, overwrite = T)

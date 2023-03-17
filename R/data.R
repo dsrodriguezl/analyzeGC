@@ -241,3 +241,15 @@
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
 "duplicated_compounds_presence"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"master_table2"
