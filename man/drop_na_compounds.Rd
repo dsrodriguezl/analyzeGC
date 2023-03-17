@@ -14,3 +14,13 @@ The function takes a list of data frames and removes peaks (rows) that do not
 contain compounds of interest. Peaks are considered to not contain compounds
 of interest if corresponding entry in the "Compound" column is NA.
 }
+\examples{
+# Removing the NA compounds from a single data set
+IW_filtered <- filtered_samples_list$`Winter_In-hive workers_A. m. mellifera`
+drop_na_compounds(IW_filtered)
+
+# Removing NA compounds from sevreal data sets within a list
+filtered_samples_list2 <- filtered_samples_list |>
+  lapply(drop_na_compounds)
+
+}

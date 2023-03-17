@@ -7,7 +7,8 @@
 build_master_table(tables.list)
 }
 \arguments{
-\item{tables.list}{List of group tables.
+\item{tables.list}{List of group tables, as obtained from
+\link{shape_group_table}.
 The group tables must contain an integer RI column, indicating the retention
 index of the peaks (rows).}
 }
