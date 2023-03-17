@@ -10,11 +10,6 @@
 #' @import tidyr
 #' @import tibble
 #'
-#' @returns A list containing two elements: a data frame with adjusted area
-#' values and a data frame containing the RT values.
-#' It also prints bar plots representing both the un-corrected and corrected
-#' abundance values of each sample, using ggplot2.
-#'
 #' @examples
 #'
 #' # Adjusting the abundance for a single data set
@@ -24,7 +19,7 @@
 #'
 #' # Adjusting the abundance for several data sets within a list
 #' filtered_samples_list <- unfiltered_samples_list |>
-#'   lapply(trace_comps, threshold = 0.01)
+#'   lapply(adjust_area_and_plot, std_info = std_info)
 #'
 #' @export
 adjust_abundance <- function(aligned_data, std.info) {
