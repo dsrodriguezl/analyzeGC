@@ -33,12 +33,12 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
 
   # Create a new data frame called peaks_sum by filtering rows in
   # master.table where the value of Peak is in peaks_to_fuse, selecting all
-  # columns except for those between (and including) Peak and RI, calculating
-  # column sums while ignoring missing values, transposing the resulting vector,
-  # and converting it to a data frame.
+  # columns except for those between (and including) Peak and Mod. position,
+  # calculating column sums while ignoring missing values, transposing the
+  # resulting vector, and converting it to a data frame.
   peaks_sum <- master.table |>
     filter(get("Peak") %in% peaks_to_fuse) |>
-    select(!(contains("Peak"):contains("RI"))) |>
+    select(!contains("Peak"):contains("Mod.position")) |>
     colSums(na.rm = T) |>
     t() |>
     as.data.frame()
@@ -62,7 +62,10 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   new_RI <- master.table |>
     filter(get("Peak") %in% peaks_to_fuse) |>
     pull("RI") |>
-    stats::median()
+    stats::median() |>
+    # Round RI and ensure that is an integer
+    round(digits = 0) |>
+    as.integer()
 
   # Create a new data frame called new_RI with only the RI column containing
   # new_RI values, repeated as many times as the length of peaks_to_fuse.
@@ -72,13 +75,12 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   # Add columns from master.table and new_RI to peaks_sum.
   peaks_sum <- cbind(master.table |>
                        filter(get("Peak") %in% peaks_to_fuse) |>
-                       select(contains("Peak"):contains("Mod.position"))
+                       select(contains("Peak")
+                              , contains("Compound"):contains("Mod.position"))
                      , new_RI
                      , peaks_sum) |>
+    relocate(contains("RI"), .before = contains("Compound")) |>
     as_tibble()
-
-  # Convert values in the RI column of peaks_sum to integers.
-  peaks_sum$RI <- peaks_sum$RI |> as.integer()
 
   # Concatenate the information of the compounds contained by the fused peaks,
   # if it differs, it avoids loosing that information.

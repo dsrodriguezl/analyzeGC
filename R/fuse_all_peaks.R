@@ -11,7 +11,6 @@
 #'
 #' @export
 fuse_all_peaks <- function(master.table, fusion.list){
-
   # Handle case where fusion.list is empty
   if (length(fusion.list) == 0) {
     warning("fusion.list is empty; no fusions will be performed")
@@ -28,26 +27,28 @@ fuse_all_peaks <- function(master.table, fusion.list){
   f_count <- 1
 
   # Loop through each item in the fusion list
-  for (i in fusion.list) {
+  for (peaks_2_fuse in fusion.list) {
     cat('\n')
+
     # Report the current fusion number and peaks to be fused
     print(paste("Fusion No.", f_count, sep = " "))
-    print(paste(length(i)
+    print(paste(length(peaks_2_fuse)
                 ,"peaks to be fused:"
-                , paste(i, collapse = " ")
+                , paste(peaks_2_fuse, collapse = " ")
                 , sep = " "))
     cat('\n')
     # Print the peaks status before fusion
     print("Peaks before fusion")
-    master.table |> filter(get("Peak") %in% i) |> print()
+    master.table |> filter(get("Peak") %in% peaks_2_fuse) |> print()
 
     # Fuse peaks using fuse_peaks
-    master.table <- fuse_peaks(master.table = master.table, peaks_to_fuse = i)
+    master.table <- fuse_peaks(master.table = master.table
+                               , peaks_to_fuse = peaks_2_fuse)
 
     cat('\n')
     # Print the peaks status after fusion
     print("Peaks after fusion")
-    master.table |> filter(get("Peak") %in% i) |> print()
+    master.table |> filter(get("Peak") %in% peaks_2_fuse) |> print()
 
     # Increment the fusion count
     f_count <- f_count + 1
@@ -63,7 +64,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
   # Remove empty peaks that were created during the peaks fusing procedure
   master.table <- master.table |>
     filter(master.table |>
-             select(!(contains("Peak"):contains("RI"))) |>
+             select(!contains("Peak"):contains("Mod.position")) |>
              rowSums(na.rm = T) > 0)
 
   # Report that the empty peaks were removed
