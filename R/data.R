@@ -1,7 +1,5 @@
 #' GC/MS integration data of honeybees cuticular hydrocarbon extracts
 #'
-#'
-#'
 #' @format ##
 #' A list with 20 tibble data frames, each with 2 columns:
 #' \describe{
@@ -171,5 +169,17 @@
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
 "filtered_samples_list"
+
+#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
+#'
+#'
+#' @format ##
+#' A list with two GCalignR objects:
+#' \describe{
+#'   \item{}{}
+#'   \item{}{}
+#' }
+#' @source Data obtained by the author of the package, for educational purposes.
+"filtered_samples_list2"
 
 

@@ -274,3 +274,14 @@ filtered_samples_list <- unfiltered_samples_list |>
          , threshold = 0.01)
 
 use_data(filtered_samples_list, overwrite = T)
+
+# filtered_samples_list2 ----
+IW_filtered <- filtered_samples_list$`Winter_In-hive workers_A. m. mellifera`
+drop_na_compounds(IW_filtered)
+
+filtered_samples_list2 <- filtered_samples_list |>
+  lapply(drop_na_compounds)
+
+use_data(filtered_samples_list2, overwrite = T)
+
+#  ----

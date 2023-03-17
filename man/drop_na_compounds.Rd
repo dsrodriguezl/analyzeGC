@@ -7,8 +7,10 @@
 drop_na_compounds(filtered_data)
 }
 \arguments{
-\item{filtered_data}{}
+\item{filtered_data}{An aligned data set list, as obtained with \link{trace_comps}.}
 }
 \description{
-Remove the peaks that do not contain compounds of interest
+The function takes a list of data frames and removes peaks (rows) that do not
+contain compounds of interest. Peaks are considered to not contain compounds
+of interest if corresponding entry in the "Compound" column is NA.
 }
