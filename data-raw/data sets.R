@@ -410,5 +410,6 @@ group_tables_list2 <- retrieve_group_tables(group.label = "group_label"
   lapply(group_frequency_filter)
 use_data(group_tables_list2, overwrite = T)
 
-# master_table_final ----
-build_master_table(group_tables_list2)
+# master_table_reassembled ----
+master_table_reassembled <- build_master_table(group_tables_list2)
+use_data(master_table_reassembled, overwrite = T)
