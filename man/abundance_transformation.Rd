@@ -2,31 +2,56 @@
 % Please edit documentation in R/abundance_transformation.R
 \name{abundance_transformation}
 \alias{abundance_transformation}
-\title{Transform a numeric master_daten frame}
+\title{Transform peak abundance values in a master table}
 \usage{
 abundance_transformation(
   master.table,
   transformation = c("percentage", "proportion", "scale"),
   internal_standard_peak = NULL,
-  internal_standard_amount = NULL
+  internal_standard_amount = NULL,
+  calibration_plot = T
 )
 }
 \arguments{
 \item{master.table}{A master table, for which the abundance values should be
 transformed.}
 
-\item{transformation}{The type of transformation to perform.
-Can be one of "percentage", "proportion", or "scale".
-Defaults to "percentage".}
+\item{transformation}{TA character string specifying the type of
+transformation to perform. Possible values: "percentage" (default),
+"proportion", or "scale".}
 
-\item{internal_standard_peak}{A character specifying the Peak (e.g. "P2") that
-contians the internal standard added to the samples, to be used
-\code{transformation} is set to "scale".}
+\item{internal_standard_peak}{A character string specifying the Peak
+(e.g., "P2") containing the internal standard added to the samples,
+to be used when the \code{transformation} argument is set to "scale".}
 
-\item{internal_standard_amount}{A numeric value, indicating the known amount
-of internal standard that was added to the samples.}
+\item{internal_standard_amount}{A numeric value indicating the known amount
+of internal standard added to the samples.}
+
+\item{calibration_plot}{A logical value indicating whether to generate
+calibration plots for each sample column when \code{transformation} is set to
+"scale".}
 }
 \description{
-This function takes a master table and transforms the peak abundance values
-within each sample, based on the specified transformation option.
+This function takes a master table and transforms the peak
+abundance values within each sample, based on the specified transformation
+option.
+}
+\examples{
+# Percentage transformation
+master_table_transformed <-
+abundance_transformation(master_table_reassembled)
+
+# Proportion transformation
+master_table_transformed <-
+abundance_transformation(master_table_reassembled
+                         , transformation = "proportion")
+
+# Scale transformation
+master_table_transformed <-
+abundance_transformation(master_table_reassembled
+                         , transformation = "scale"
+                         , internal_standard_peak = "P4"
+                         , internal_standard_amount = 250
+                         , calibration_plot = F)
+
 }

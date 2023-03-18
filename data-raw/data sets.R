@@ -414,4 +414,18 @@ use_data(group_tables_list2, overwrite = T)
 master_table_reassembled <- build_master_table(group_tables_list2)
 use_data(master_table_reassembled, overwrite = T)
 
+# master_table_transformed ----
+
+#  Trying the scale transformation
+# pdf(here::here("data-raw", "calibration_curves.pdf"))
+# abundance_transformation(master.table = master_table_reassembled
+#                          , transformation = "scale"
+#                          , internal_standard_peak = "P4"
+#                          , internal_standard_amount = 250
+#                          , calibration_plot = T)
+# dev.off()
+
+master_table_transformed <- abundance_transformation(master_table_reassembled)
+use_data(master_table_transformed, overwrite = T)
+
 #  ----
