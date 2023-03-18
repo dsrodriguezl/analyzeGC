@@ -26,24 +26,6 @@
 #' @import purrr
 #' @import ggplot2
 #'
-#' @examples
-#'
-#' # Percentage transformation
-#' master_table_transformed <-
-#' abundance_transformation(master_table_reassembled)
-#'
-#' # Proportion transformation
-#' master_table_transformed <-
-#' abundance_transformation(master_table_reassembled
-#'                          , transformation = "proportion")
-#'
-#' # Scale transformation
-#' master_table_transformed <-
-#' abundance_transformation(master_table_reassembled
-#'                          , transformation = "scale"
-#'                          , internal_standard_peak = "P4"
-#'                          , internal_standard_amount = 250
-#'                          , calibration_plot = F)
 #'
 abundance_transformation <- function(master.table
                                      , transformation = c("percentage"
