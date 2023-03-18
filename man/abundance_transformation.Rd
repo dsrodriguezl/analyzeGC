@@ -36,22 +36,3 @@ This function takes a master table and transforms the peak
 abundance values within each sample, based on the specified transformation
 option.
 }
-\examples{
-# Percentage transformation
-master_table_transformed <-
-abundance_transformation(master_table_reassembled)
-
-# Proportion transformation
-master_table_transformed <-
-abundance_transformation(master_table_reassembled
-                         , transformation = "proportion")
-
-# Scale transformation
-master_table_transformed <-
-abundance_transformation(master_table_reassembled
-                         , transformation = "scale"
-                         , internal_standard_peak = "P4"
-                         , internal_standard_amount = 250
-                         , calibration_plot = F)
-
-}
