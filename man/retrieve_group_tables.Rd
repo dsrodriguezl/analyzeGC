@@ -8,7 +8,9 @@ retrieve_group_tables(group.label, master.table, grouping.info)
 }
 \arguments{
 \item{group.label}{Character indicating the column of grouping.info
-that contains the labels of the groups that define the group tables.}
+that contains the labels of the groups that define the group tables.
+It is meant to be use din a pipe line with \link{assess_duplicated_compounds} or
+\link{group_frequency_filter}.}
 
 \item{master.table}{master table data frames, as obtained with
 \link{build_master_table}.}

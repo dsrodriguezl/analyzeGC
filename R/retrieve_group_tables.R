@@ -2,6 +2,8 @@
 #'
 #' @param group.label Character indicating the column of grouping.info
 #' that contains the labels of the groups that define the group tables.
+#' It is meant to be use din a pipe line with [assess_duplicated_compounds] or
+#' [group_frequency_filter].
 #'
 #' @param master.table master table data frames, as obtained with
 #' [build_master_table].

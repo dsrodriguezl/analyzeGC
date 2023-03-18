@@ -306,29 +306,33 @@ write.csv(master_table
 
 use_data(master_table, overwrite = T)
 
-# group_tables_list2 ----
+# trying retrieve_group_tables ----
 grouping_info <- grouping_info |>
   unite(group_label
         , where(is.factor)
         , sep = "_"
         , remove = FALSE)
 
-group_tables_list2 <- retrieve_group_tables(group.label = "group_label"
-                                            , master.table = master_table
-                                            , grouping.info = grouping_info)
+retrieve_group_tables(group.label = "group_label"
+                      , master.table = master_table
+                      , grouping.info = grouping_info)
 
-use_data(group_tables_list2, overwrite = T)
+# use_data(group_tables_list2, overwrite = T)
 
 # duplicated_compounds_presence ----
 pdf(here::here("data-raw"
          , 'density-distribution_duplicated-compounds.pdf')
-    , width = 18, height = 8)
-duplicated_compounds_presence <- assess_duplicated_compounds(group_tables_list2)
+    , width = 10, height = 8)
+duplicated_compounds_presence <-
+  retrieve_group_tables(group.label = "group_label"
+                        , master.table = master_table
+                        , grouping.info = grouping_info) |>
+  assess_duplicated_compounds()
 dev.off()
 
 use_data(duplicated_compounds_presence, overwrite = T)
 
-#  ----
+# master_table2 ----
 fusion_list <- list(c(paste0("P"
                              , c(1, 2)))
                     , c(paste0("P"
@@ -392,3 +396,19 @@ fusion_list
 master_table2 <- fuse_all_peaks(master.table = master_table
                                 , fusion.list = fusion_list)
 use_data(master_table2, overwrite = T)
+
+# group_tables_list2 ----
+grouping_info <- grouping_info |>
+  unite(group_label
+        , where(is.factor)
+        , sep = "_"
+        , remove = FALSE)
+
+group_tables_list2 <- retrieve_group_tables(group.label = "group_label"
+                                            , master.table = master_table2
+                                            , grouping.info = grouping_info) |>
+  lapply(group_frequency_filter)
+use_data(group_tables_list2, overwrite = T)
+
+# master_table_final ----
+build_master_table(group_tables_list2)
