@@ -9,6 +9,8 @@ Maintainer: Daniel S. Rodríguez-Leon
 Description: A package to facilitate the analysis of Gas-Chromatography
     (GC) data in R.
 License: GPL (>= 3)
+Depends: 
+    R (>= 2.10)
 Imports: 
     dplyr (>= 1.1.0),
     GCalignR (>= 1.0.3),
@@ -34,7 +36,5 @@ Suggests:
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
-Depends: 
-    R (>= 2.10)
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
