@@ -111,7 +111,7 @@ correct_alignment <- function(aligned_data, movements_list) {
           p_count <- 1
 
           # Loop iterating through each peak to be displaced within the sample
-          # to perfomr the displacement of its value
+          # to perform the displacement of its value
           for (p in peaks_movement$Peaks) {
             cat('\n')
 

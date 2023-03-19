@@ -26,7 +26,7 @@ entry in the \strong{"Compound"} column, and replaces it by the correct name.
 If a peak contains more than one compound with unsaturations /
 methyl-branches, they must be separated by a ";" (e.g. C20_Me_13-;15-
 for a peak containing both 13-Me C20 and 15-Me C20).
-\subsection{Class abbreviations are accepted by the function:}{
+\subsection{Class abbreviations accepted by the function:}{
 
 n-alkanes: ane
 alkene: ene
@@ -35,8 +35,8 @@ monomethyl-branched alkanes: Me
 Dimethyl-branched alkanes: Dime
 Trimethyl-branched alkanes: Trime
 
-The rest of the data frame, is just as it can be obtained via the \code{\link[=RT_df]{RT_df()}}
-function, or after alignment correction.
+The rest of the data frame should be just as it was extracted from the RT
+entry of the aligned standards.
 }}
 }
 \description{

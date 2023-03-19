@@ -10,6 +10,7 @@
 #' @param peaks_to_fuse A character vector specifying the peaks to be fused.
 #'
 #' @import dplyr
+#'
 #' @export
 fuse_peaks <- function(master.table, peaks_to_fuse){
 

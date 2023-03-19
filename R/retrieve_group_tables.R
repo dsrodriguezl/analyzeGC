@@ -11,6 +11,9 @@
 #' @param grouping.info Data frame with information of the samples, within which
 #' the group labels can be found.
 #'
+#' @import dplyr
+#' @import tidyr
+#'
 #' @export
 retrieve_group_tables <- function(group.label
                                  , master.table

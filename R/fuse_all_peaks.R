@@ -9,6 +9,9 @@
 #'
 #' @param fusion.list List of data frames specifying the fusions to be performed.
 #'
+#' @import dplyr
+#' @import tidyr
+#'
 #' @export
 fuse_all_peaks <- function(master.table, fusion.list){
   # Handle case where fusion.list is empty

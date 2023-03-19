@@ -8,7 +8,7 @@ Maintainer: Daniel S. Rodríguez-Leon
     <72925497+dsrodriguezl@users.noreply.github.com>
 Description: A package to facilitate the analysis of Gas-Chromatography
     (GC) data in R.  This package was built for educational and research
-    purposes for checmical ecology. The objective was to provide a tool
+    purposes for chemical ecology. The objective was to provide a tool
     set for using R to analyze GC, and in particular GC-MS (GC coupled
     with Mass-spectrometry) data, to establish a standardized and
     reproducible workflow.
@@ -28,7 +28,7 @@ Imports:
     magrittr (>= 2.0.3),
     purrr (>= 1.0.1),
     readr (>= 2.1.4),
-    rlang (>= 1.0.6),
+    rlang (>= 1.1.0),
     stats (>= 4.2.2),
     stringr (>= 1.5.0),
     tibble (>= 3.2.0),

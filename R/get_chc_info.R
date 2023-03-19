@@ -25,7 +25,7 @@
 #' for a peak containing both 13-Me C20 and 15-Me C20).
 #'
 #'
-#' ## Class abbreviations are accepted by the function:
+#' ## Class abbreviations accepted by the function:
 #' n-alkanes: ane
 #' alkene: ene
 #' alkadiene: diene
@@ -33,8 +33,11 @@
 #' Dimethyl-branched alkanes: Dime
 #' Trimethyl-branched alkanes: Trime
 #'
-#' The rest of the data frame, is just as it can be obtained via the [RT_df()]
-#' function, or after alignment correction.
+#' The rest of the data frame should be just as it was extracted from the RT
+#' entry of the aligned standards.
+#'
+#' @import dplyr
+#' @import tidyr
 #'
 #' @export
 get_chc_info <- function(comps.id) {
