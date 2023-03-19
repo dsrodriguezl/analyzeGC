@@ -16,10 +16,19 @@ designed considering that specific type of data. However, most of the
 functions should be useful for analyzing other types of chemical ecology
 GC data.
 
+The package provides a couple of functions to prepare the data as
+obtained from the propietary GC software to be able to perform the peak
+alignment.
+
 The package relies on the
 [GCalignR](https://github.com/mottensmann/GCalignR) package for the
 alignment of GC peaks data across samples, based on the retention time
-of the peaks.
+of the peaks. A wrapper around the `GCalignR::align_chromatograms` is
+defined within the package for this purpose.
+
+The rest of the functions of the package are oriented to aid in the
+further correcting of the peak alignments, and preparation for the data
+for its statistical analysis within R.
 
 ## Installation
 
