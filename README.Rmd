@@ -35,8 +35,8 @@ package for the alignment of GC peaks data across samples, based on the
 retention time of the peaks. A wrapper around the 
 `GCalignR::align_chromatograms` is defined within the package for this purpose.
 
-The rest of the functions of the package are oriented to aid in the further
-correcting of the peak alignments, and preparation for the data for its
+The rest of the functions of the package are oriented to aid the further
+correction of the peaks alignment, and preparation of the data for its
 statistical analysis within R.
 
 ## Installation

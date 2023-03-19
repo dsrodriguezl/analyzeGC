@@ -38,6 +38,7 @@ Imports:
 Suggests: 
     doParallel (>= 1.0.17),
     here (>= 1.0.1),
+    openxlsx (>= 4.2.5.2),
     testthat (>= 3.0.0),
     vegan (>= 2.6.4)
 Config/testthat/edition: 3
