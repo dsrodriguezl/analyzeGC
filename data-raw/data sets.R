@@ -10,7 +10,7 @@ samples_path_data <- list.files(path = system.file("extdata/gcms_integration"
   # Do not include standards
   str_subset('STD', negate = T)
 
-samples_data_list <- import_gcms_data(samples_path_data
+samples_data_list <- import_mh_data(samples_path_data
                                       , patterns_2_delete = "DR_")
 
 # Create the samples_data _list data file for the package
@@ -36,10 +36,10 @@ standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
                                 #  Get all CSV files in the folder
                                 , pattern = ".CSV|.csv"
                                 , full.names = T) |>
-  # Do not include standards
+  # Only include standards
   str_subset('STD')
 
-standards_data_list <- import_gcms_data(standards_path_data
+standards_data_list <- import_mh_data(standards_path_data
                                       , patterns_2_delete = "STD")
 
 # Create the standards_data_list data file for the package

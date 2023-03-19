@@ -1,6 +1,6 @@
 #' @title group samples within a list
 #'
-#' @description A function to Group samples gcms integration data frames based
+#' @description A function to Group integration data frames of samples, based
 #' on unique group labels, within the list containing the data frames.
 #'
 #' @param sample.info
@@ -12,7 +12,7 @@
 #'
 #' @param samples.data.list
 #' List of data frames with integration results per sample, as produced by
-#' import_gcms_data
+#' [import_mh_data]
 #'
 #' @import dplyr
 #' @import purrr

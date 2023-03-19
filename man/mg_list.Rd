@@ -13,10 +13,10 @@ mg_list(sample.info, group.label, samples.data.list)
 the group names by which the samples should be grouped}
 
 \item{samples.data.list}{List of data frames with integration results per sample, as produced by
-import_gcms_data}
+\link{import_mh_data}}
 }
 \description{
-A function to Group samples gcms integration data frames based
+A function to Group integration data frames of samples, based
 on unique group labels, within the list containing the data frames.
 }
 \examples{

@@ -30,11 +30,11 @@
 #'   # Do not include standards in the samples' list
 #'   stringr::str_subset('STD', negate = TRUE)
 #'
-#' import_gcms_data(samples_path_data, patterns_2_delete = "DR_")
+#' import_mh_data(samples_path_data, patterns_2_delete = "DR_")
 #'
 #' @export
 
-import_gcms_data <- function(data.path.list
+import_mh_data <- function(data.path.list
                              , patterns_2_delete = " "){
 
   names_list <- str_split(data.path.list

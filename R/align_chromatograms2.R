@@ -13,7 +13,7 @@
 #' description in the original paper on the GCalignR package.
 #'
 #' rt_col_name is set to "RT" by default, as it is the name given by
-#' [import_gcms_data].
+#' [import_mh_data].
 #'
 #' If the given data set contain only one sample, it returns a list with a
 #' similar structure to that of the typical [GCalignR::align_chromatograms]

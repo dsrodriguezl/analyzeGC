@@ -38,7 +38,7 @@ The name of the alignment criteria parameters are more similar to their
 description in the original paper on the GCalignR package.
 
 rt_col_name is set to "RT" by default, as it is the name given by
-\link{import_gcms_data}.
+\link{import_mh_data}.
 
 If the given data set contain only one sample, it returns a list with a
 similar structure to that of the typical \link[GCalignR:align_chromatograms]{GCalignR::align_chromatograms}
