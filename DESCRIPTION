@@ -7,8 +7,14 @@ Author: Daniel S. Rodríguez-Leon
 Maintainer: Daniel S. Rodríguez-Leon
     <72925497+dsrodriguezl@users.noreply.github.com>
 Description: A package to facilitate the analysis of Gas-Chromatography
-    (GC) data in R.
+    (GC) data in R.  This package was built for educational and research
+    purposes for checmical ecology. The objective was to provide a tool
+    set for using R to analyze GC, and in particular GC-MS (GC coupled
+    with Mass-spectrometry) data, to establish a standardized and
+    reproducible workflow.
 License: GPL (>= 3)
+URL: https://github.com/dsrodriguezl/analyzeGC
+BugReports: https://github.com/dsrodriguezl/analyzeGC/issues
 Depends: 
     R (>= 2.10)
 Imports: 
@@ -32,7 +38,8 @@ Imports:
 Suggests: 
     doParallel (>= 1.0.17),
     here (>= 1.0.1),
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    vegan (>= 2.6.4)
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
