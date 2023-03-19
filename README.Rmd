@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-analyzeGC was built for educational and research purposes for
+This package was built for educational and research purposes for
 chemical ecology. The objective was to provide a tool set for using R to 
 analyze GC, and in particular GC-MS (GC coupled with Mass-spectrometry) data, 
 to establish a standardized and reproducible workflow. As I mainly work with 

@@ -6,11 +6,11 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-analyzeGC was built for educational and research purposes for chemical
-ecology. The objective was to provide a tool set for using R to analyze
-GC, and in particular GC-MS (GC coupled with Mass-spectrometry) data, to
-establish a standardized and reproducible workflow. As I mainly work
-with cuticular hydrocarbons (CHCs) the workflow implied within the
+This package was built for educational and research purposes for
+chemical ecology. The objective was to provide a tool set for using R to
+analyze GC, and in particular GC-MS (GC coupled with Mass-spectrometry)
+data, to establish a standardized and reproducible workflow. As I mainly
+work with cuticular hydrocarbons (CHCs) the workflow implied within the
 package was  
 designed considering that specific type of data. However, most of the
 functions should be useful for analyzing other types of chemical ecology
