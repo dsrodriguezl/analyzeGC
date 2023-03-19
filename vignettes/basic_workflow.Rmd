@@ -1,0 +1,64 @@
+---
+title: "The basic workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{import_gc_data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+My colleagues and I follow a similar, if not the same, methodology for the 
+analysis of cuticular hydrocarbons (CHCs), considering the overall description 
+of the methods (e.g.extraction and Gas chromatography-Mass spectrometry (GC-MS)
+analysis of these compounds). However, we have noticed that for the data 
+processing and analysis (statistics aside), we all have developed different
+approaches/workflows, which are not always (entirely) reproducible. In fact, 
+they sometimes lead to confusion among us, regarding how exactly the data sets 
+of each other were/are being built. The so-called "master tables" (our final 
+data sets), as well as the steps to produce them, end up having structures that
+very much depend on each individual, regardless of the data, the statistical
+analyses that will be applied to them, or the objective of the study they were
+produced for.
+
+Furthermore, every time that we have to explain to a student how to process the
+data to build up the master table and analyze the resulting data sets, the
+student has to face the confusion delivered by the incompatibilities/differences
+of the different steps of the processes from each of us. Besides, each of us has
+to make an excessive time investment, by trying to connect the different steps
+and methods, in order to explain them to the students (or anybody else).
+
+Therefore, I decided to build up this package to facilitate the process of
+analyzing this and similar types of GC data in R, thus providing a tool set and
+reference for a semi-automated and reproducible workflow.
+
+This guide offers a step-by-step explanation of such workflow, focusing on the
+analysis of GC-MS data of cuticular hydrocarbons. That said, my intention here 
+is not to teach (nor show) how to extract CHCs, perform a GC-MS run with such
+extracts, or to interpret the resulting chromatograms and mass-spectra to
+assess their composition.
+
+Assuming that you already have an idea to do this, this guides start from the 
+point at which we would have already run a all our samples (extracts) in the
+GC-MS machine, and integrated their resulting total ion count (TIC) 
+chromatograms. Therefore, we have a collection of tabular files (i.e. CSV)
+containing these results.
+
+Now, let us begin by loading the package in our R session, ot be able to access
+its functions.
+
+```{r setup}
+library(analyzeGC)
+```
+
+# Import the GC-MS integration data
+
+
