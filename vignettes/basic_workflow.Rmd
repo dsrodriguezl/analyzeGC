@@ -16,14 +16,14 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-My colleagues and I follow a similar, if not the same, methodology for the 
-analysis of cuticular hydrocarbons (CHCs), considering the overall description 
+My colleagues and I follow a similar, if not the same, methodology for the
+analysis of cuticular hydrocarbons (CHCs), considering the overall description
 of the methods (e.g.extraction and Gas chromatography-Mass spectrometry (GC-MS)
-analysis of these compounds). However, we have noticed that for the data 
+analysis of these compounds). However, we have noticed that for the data
 processing and analysis (statistics aside), we all have developed different
-approaches/workflows, which are not always (entirely) reproducible. In fact, 
-they sometimes lead to confusion among us, regarding how exactly the data sets 
-of each other were/are being built. The so-called "master tables" (our final 
+approaches/workflows, which are not always (entirely) reproducible. In fact,
+they sometimes lead to confusion among us, regarding how exactly the data sets
+of each other were/are being built. The so-called "master tables" (our final
 data sets), as well as the steps to produce them, end up having structures that
 very much depend on each individual, regardless of the data, the statistical
 analyses that will be applied to them, or the objective of the study they were
@@ -41,14 +41,14 @@ analyzing this and similar types of GC data in R, thus providing a tool set and
 reference for a semi-automated and reproducible workflow.
 
 This guide offers a step-by-step explanation of such workflow, focusing on the
-analysis of GC-MS data of cuticular hydrocarbons. That said, my intention here 
+analysis of GC-MS data of cuticular hydrocarbons. That said, my intention here
 is not to teach (nor show) how to extract CHCs, perform a GC-MS run with such
 extracts, or to interpret the resulting chromatograms and mass-spectra to
 assess their composition.
 
-Assuming that you already have an idea to do this, this guide starts from the 
+Assuming that you already have an idea to do this, this guide starts from the
 point at which we would have already run all our samples (extracts) in the
-GC-MS machine, and integrated their resulting total ion count (TIC) 
+GC-MS machine, and integrated their resulting total ion count (TIC)
 chromatograms. Therefore, we have a collection of tabular files (i.e. CSV)
 containing these results.
 
@@ -61,27 +61,27 @@ library(analyzeGC)
 
 # Import the GC-MS integration data
 
-The very first think we will need to do is to import the CSV files with the 
-integration results of each sample. We need to create a list of data frames, 
-where each data frame corresponds to the integration results of one sample. 
-The rows of the data frames should correspond to the peaks within the sample, 
-and each data frame should have only two columns; one for the retention time, 
-and another for the abundance (area of the peak). The function 
-`analyzeGC::import_mh_data()` is designed to import the CSV files produced by the
-MassHunter Qualitative Navigator proprietary software and shape it into the
-correct format. 
+The very first think we will need to do is to import the CSV files with the
+integration results of each sample. We need to create a list of data frames,
+where each data frame corresponds to the integration results of one sample.
+The rows of the data frames should correspond to the peaks within the sample,
+and each data frame should have only two columns; one for the retention time,
+and another for the abundance (area of the peak). The function
+`analyzeGC::import_mh_data()` is designed to import the CSV files produced by
+the MassHunter Qualitative Navigator proprietary software and shape it into the
+correct format.
 
-To use `import_mh_data()` we need to obtain a list with the paths to the CSV 
+To use `import_mh_data()` we need to obtain a list with the paths to the CSV
 files containing the integration results of each sample. This can be done with
-`list.files()`, providing the path to the folder where the corresponding CSV 
-files are stored, and setting the `pattern` parameter to ".CSV|.csv".
-There are many ways to provide the path to the folder storing the CSV files to 
+`list.files()`, providing the path to the folder where the corresponding CSV
+files are stored, and setting `pattern = ".CSV|.csv"`.
+There are many ways to provide the path to the folder storing the CSV files to
 `list.files()`, like writing it directly. My personal recommendation would
-be to use the function `here::here()`, assuming that we are storing the CSV file
-in a subfolder of an R project that would be used for the entire analysis.
-However, to access the CSV files that are used to build the examples within this
-package we will use `system.file()`, which allows to access files within 
-packages. 
+be to use the function `here::here()`, assuming that we are storing the CSV
+files in a subfolder of an R project that would be used for the entire analysis.
+However, to access the CSV files that are used to build the examples within
+this package we will use `system.file()`, which allows to access files within
+packages.
 
 ```{r}
 library(stringr)
@@ -104,13 +104,14 @@ standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
 ```
 
 In the code above we generated two lists, 'samples_path_data' and
-'standards_path_data'. As their names indicate, the first contains the paths to 
-the files that correspond to the samples, and the later contains the paths to 
+'standards_path_data'. As their names indicate, the first contains the paths to
+the files that correspond to the samples, and the later contains the paths to
 the files corresponding to the external standards (we will elaborate on them
-later).
+later). Notice that we also used `stringr::str_subset()` to decide which CSV
+file paths to keep within the lists.
 
 A code doing the same, but using `here::here()`, thus finding files within an R
-project and not within a package (most likely your case), would look similar to 
+project and not within a package (most likely your case), would look similar to
 the code chunk below.
 ```{r eval=FALSE}
 samples_path_data <- list.files(path = here::here("strings"
@@ -127,23 +128,23 @@ samples_path_data <- list.files(path = here::here("strings"
   str_subset('STD', negate = T)
 ```
 
-Now that we have the paths to the CSV files with the integration results, we can
-use `import_mh_data()` to import the data frames they contain, and store them
-within a list.
+Now that we have the paths to the CSV files with the integration results, we
+can use `import_mh_data()` to import the data frames they contain, and store
+them within a list.
 
-The function takes a second argument 'patterns_2_delete', which should be a 
-string indicating any piece of "text" that should be removed from the name
-of the files to obtain the samples names. I tend to add "DR_" in front of the 
-sample when naming the runs in the GC-MS files, so I can easily differentiate
-my files from those of anybody else, stored in the machine, and the usage of
-"STD" as a label is protocolary for naming the standard runs in the lab I work.
-Therefore, I provide this strings as the 'patterns_2_delete' argument of 
-`import_mh_data()`, for it to get the right name of the samples from their file 
-names. However, naming systems can vary, and you probably will add different  
+The function takes a second argument `patterns_2_delete`, which should be a
+string indicating anything that should be removed from the name of the files to
+obtain the samples names. I tend to add "DR_" in front of the sample when
+naming the runs in the GC-MS files, so I can easily differentiate my files from
+those of anybody else, stored in the machine, and the usage of "STD" as a label
+is protocolary for naming the standard runs in the lab I work.
+Therefore, I provide this strings as the `patterns_2_delete` argument of
+`import_mh_data()`, for it to get the right name of the samples from their file
+names. However, naming systems can vary, and you probably will add different
 type of labels to the name of your run files, the idea is to provide the part
-of the name of the file that does not correspond to the direct name of the 
+of the name of the file that does not correspond to the direct name of the
 sample. In the case nothing should be removed from the name of the file, you
-can omit the 'patterns_2_delete' argument (its default value is an empty 
+can omit the 'patterns_2_delete' argument (its default value is an empty
 string).
 
 ```{r warning=FALSE}
@@ -153,5 +154,3 @@ samples_data_list <- import_mh_data(samples_path_data
 standards_data_list <- import_mh_data(standards_path_data
                                       , patterns_2_delete = "STD")
 ```
-
-

@@ -6,12 +6,11 @@ Date: 2023-03-19
 Author: Daniel S. Rodríguez-Leon
 Maintainer: Daniel S. Rodríguez-Leon
     <72925497+dsrodriguezl@users.noreply.github.com>
-Description: A package to facilitate the analysis of Gas-Chromatography
-    (GC) data in R. This package was built for educational and research
-    purposes for chemical ecology. The objective was to provide a tool set
-    for using R to analyze GC, and in particular GC-MS (GC coupled with
-    Mass-spectrometry) data, to establish a standardized and reproducible
-    workflow.
+Description: This package facilitates the analysis of Gas Chromatography (GC)
+  data in R. It was created for educational and research purposes in the field 
+  of chemical ecology. The objective is to provide a set of tools for analyzing 
+  GC data, particularly GC-MS (Gas Chromatography-Mass Spectrometry) data, in a 
+  standardized and reproducible workflow using R.
 License: GPL (>= 3)
 URL: https://github.com/dsrodriguezl/analyzeGC
 BugReports: https://github.com/dsrodriguezl/analyzeGC/issues

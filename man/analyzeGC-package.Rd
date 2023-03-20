@@ -6,7 +6,7 @@
 \alias{analyzeGC-package}
 \title{analyzeGC: Analysis of GC data}
 \description{
-A package to facilitate the analysis of Gas-Chromatography (GC) data in R. This package was built for educational and research purposes for chemical ecology. The objective was to provide a tool set for using R to analyze GC, and in particular GC-MS (GC coupled with Mass-spectrometry) data, to establish a standardized and reproducible workflow.
+This package facilitates the analysis of Gas Chromatography (GC) data in R. It was created for educational and research purposes in the field of chemical ecology. The objective is to provide a set of tools for analyzing GC data, particularly GC-MS (Gas Chromatography-Mass Spectrometry) data, in a standardized and reproducible workflow using R.
 }
 \seealso{
 Useful links:
