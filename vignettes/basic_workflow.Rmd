@@ -1,13 +1,15 @@
 ---
 title: "The basic workflow"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    df_print: kable
 vignette: >
   %\VignetteIndexEntry{The basic workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -52,11 +54,15 @@ GC-MS machine, and integrated their resulting total ion count (TIC)
 chromatograms. Therefore, we have a collection of tabular files (i.e. CSV)
 containing these results.
 
-Now, let us begin by loading the package in our R session, to be able to access
-its functions.
+Now, let us begin by loading the `analyzeGC` package, as well as some other
+package we will use along this guide, to be able to access their functions.
 
-```{r setup}
+```{r message=FALSE, warning=FALSE}
 library(analyzeGC)
+library(GCalignR)
+library(stringr)
+library(dplyr)
+library(tidyr)
 ```
 
 # Import the GC-MS integration data
@@ -84,8 +90,6 @@ this package we will use `system.file()`, which allows to access files within
 packages.
 
 ```{r}
-library(stringr)
-
 samples_path_data <- list.files(path = system.file("extdata/gcms_integration"
                                                    , package = "analyzeGC")
                                 #  Get all CSV files in the folder
@@ -144,7 +148,7 @@ names. However, naming systems can vary, and you probably will add different
 type of labels to the name of your run files, the idea is to provide the part
 of the name of the file that does not correspond to the direct name of the
 sample. In the case nothing should be removed from the name of the file, you
-can omit the 'patterns_2_delete' argument (its default value is an empty
+can omit the `patterns_2_delete` argument (its default value is an empty
 string).
 
 ```{r warning=FALSE}
@@ -154,3 +158,148 @@ samples_data_list <- import_mh_data(samples_path_data
 standards_data_list <- import_mh_data(standards_path_data
                                       , patterns_2_delete = "STD")
 ```
+
+With the previous code we just imported the data frames contained in the CSV
+files, and stored them as tibbles within a list (`samples_data_list` or
+`standards_data_list`). `import_mh_data()` automatically recognizes the columns 
+within the CSV files that correspond to the retention time (RT) and abundance 
+(Area) of each peak within a sample and removes any other column from them, thus
+shaping the data frames in the format that is required within the `GCalignR`
+package for the automatic alignment of peaks across samples. Additionally, each 
+entry in the lists got named after the sample/run they belong.
+
+We can verify this by calling any of the entries within the lists.
+
+```{r}
+samples_data_list[1:2]
+
+standards_data_list[1:2]
+```
+
+We can further verify that both of our lists have the right format to be used
+with the `GCalignR` algorithm, by using the `GCalignR::check_input()`function.
+
+```{r}
+check_input(samples_data_list)
+
+check_input(standards_data_list)
+
+```
+
+
+# Align the data 
+
+The `GCalignR` algorithm relies, as it is a common practice, on the RT values,
+for the alignment of the peaks. This means that peaks with similar RT
+values will be placed in the same row, for the data frame containing the aligned
+data set, where each column will correspond to a sample. This method relies on
+the fact that the RT of a compound depends on its physicochemical properties,
+thus a given compound should theoretically have the same RT across samples.
+However, RT values are prone to variation due to random and usually
+uncontrollable factors. In consequence, the alignment of peaks across samples,
+based on their RT values, should be performed by taking some considerations,
+even when algorithms like that provided by `GCalignR`. 
+
+Data from samples with very different composition, or that have been run on
+different machines (even if having the same specifications, and following the
+same protocol), or even using the same machine but at different times (e.g.
+months of the year), might be very difficult to properly align with an automatic
+procedure based on the RT values of the peaks detected within them. All these
+cases are not precisely uncommon in chemical ecology. Your intention might be 
+to compare the composition of very different samples (e.g. CHC extracts of
+different insect species, castes, or populations), or you could have a very 
+large sample size (thus needing to either use more than one machine, or run 
+your samples along a big time span). You will probably end up having to 
+manually correct some of the alignments produced by the algorithm.
+
+Therefore, here I propose some modifications, to the workflow suggested by the 
+`GCalignR` package, that aim to extend the reproducibility provided by coding
+to further steps of the preparation of GC data in the context of chemical 
+ecology. 
+
+The first thing we can consider is to perform an automatic RT driven alignment
+among samples that are more similar. They could be samples that were run in the 
+same machine, at very close times, and that belong to the same group within our
+analysis. To further clarify this point, let us consider the data set included
+in this package. We just imported 20 data frames (contained in
+`samples_data_list`), each of which corresponds to the integration results of 
+the GC-MS data from the CHC extract of a honeybee (_Apis mellifera mellifera_)
+worker. All these  were run in the same machine, one after the other, within 
+two consecutive days. So, in principle there should be very low random 
+variation among them, and to align them altogether might actually be a very
+valid approach. However, these bees represent two different task-performance
+groups. The bees were sampled at the end of the winter, in February (2020),
+distinguishing between in-hive and out-hive workers, with the intention to
+compare the CHC composition of both groups. 
+
+As the name indicates, in-hive workers were bees collected directly from the
+inside of the hives. Meanwhile, the out-hive workers were flying bees (possibly
+foragers) returning to their hive, collected at the entrance of the respective
+hive. Thus, another possible approach, and the one suggested here, would be to
+perform an initial automatic RT-wise alignment for the samples of each of these
+groups by separate, and merge both alignments results at a later step. This way,
+we reduce the  variability between the initially aligned samples, thus reducing
+the number corrections to be performed over that initial alignment.
+
+The `mg_list()`, which is intended to be an abbreviation for "many groups list",
+allows us to nest the data frames within a list in sub-lists representing the
+different groups contained in our data set. To use this function, we need 
+another data frame that contains the information regarding which samples belong 
+to which group, which something that you most probably have already built as 
+part of your sampling process. The package includes such a data frame under the
+name of `grouping_info`.
+
+```{r}
+grouping_info
+```
+
+As it was mentioned before, the task (in- or out-hive workers) is the only 
+factor that differentiates the samples within the data set. Thus, it makes sense
+to use the factor task to nest the data frames within the `samples_data_list`
+object. Nevertheless, to illustrate the option of nesting samples from groups
+resulting from a more complex experimental design, with nested factors, here we
+will do it for the three factors (Season, task, and subspecies). This will not
+affect the final grouping of data frames, for our data set, as again, the only
+factor differentiating the samples is task, so as long as we use this factor, 
+it does not matter how many of the other factors we use to group them together.
+
+To do this, we need to create a new factor, within the `grouping_info` data
+frame, that indicates the group of the samples considering the combination of
+all the factors of interest (Season, task, and subspecies). This process can be
+achieved with the following pipe line.
+
+```{r}
+grouping_info <- grouping_info |>
+  unite(group_label
+        , where(is.factor)
+        , sep = "_"
+        , remove = F)
+grouping_info
+```
+
+Now we can use `mg_list()` to nest the samples within `samples_data_list` in
+sub-lists defined by the `group_label` column within `grouping_info`.
+
+```{r}
+samples_data_list <- mg_list(sample.info = grouping_info
+                             , group.label = "group_label"
+                             , samples.data.list = samples_data_list)
+
+summary(samples_data_list)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
