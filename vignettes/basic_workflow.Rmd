@@ -216,6 +216,8 @@ Therefore, here I propose some modifications, to the workflow suggested by the
 to further steps of the preparation of GC data in the context of chemical 
 ecology. 
 
+## Group your samples
+
 The first thing we can consider is to perform an automatic RT driven alignment
 among samples that are more similar. They could be samples that were run in the 
 same machine, at very close times, and that belong to the same group within our
@@ -287,6 +289,7 @@ samples_data_list <- mg_list(sample.info = grouping_info
 
 summary(samples_data_list)
 ```
+
 The new version of `samples_data_list` is a list of two lists, containing 10
 data frames each, where every sub-list represents one of the groups defined
 within the `group_label` column in `grouping_info`. Now, we can apply functions
@@ -299,14 +302,249 @@ samples_data_list |>
   lapply(check_input)
 ```
 
+## What about the standards? 
+The standards are commercial artificial mixtures of n-alkanes, in which each
+compound is in a 40mg/l concentration. In our lab we use two different mixtures,
+which correspond to the two data frames in `standards_data_list` (H2005, and
+L2005). L2005 corresponds to a mixture of the n-alkanes C8 to C20, and H2005
+corresponds to a mixture of the n-alkanes C21 to C40. The "L" and "H" in their
+names state for "low"and "high" given their relative RT values, as the longer
+n-alkanes have higher RT values than the shorter ones. The "2005" in their name,
+indicates the Year (2020) and month (May)  when they were run in the GC-MS (we
+run them at least once a month in the lab). The point of regularly running the
+standards, is that they give very important information regarding the status of
+the machine, within a given time window. This is the reason why we include them
+in our analysis workflow, and they will be used for two very specific procedures
+within this guide. But we will discuss them in detail later, first we need to
+perform our alignments.
 
+This package includes the `align_chromatograms2()` function, which is a wrapper 
+around `GCalignR::align_chromatograms()`, so you should credit them as well if 
+you use `align_chromatograms2()`. The main difference of the function, is that
+it sets a default seed (It uses `withr::local_seed()` for this, so do not worry,
+the execution of the function does not change the status of the random number
+generator outside of the function's environment) before performing an
+alignment process, which guarantees that using a given set of parameters for
+a given data set, you will always get the same alignment result.
 
+## The alignment parameters
 
+`align_chromatograms2()` requires the same parameters as
+`GCalignR::align_chromatograms()` to perform the alignment of your samples,
+which are very well explained in the original `GCalignR`
+[paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0198311), so please go and check it. The difference here, is that I changed
+the name of the function parameters to more closely reflect the name of the 
+alignment step the `GCalignR` algorithm uses them for.
 
+But how do we determine the values we can give to this parameters?
 
+For the linear shift, the default value in `GCalignR::align_chromatograms()`,
+but `align_chromatograms2()` has no default for the corresponding parameter
+(`linear_shift_criteria`) to force you to be explicit with your alignment
+criteria, as this is usually a very arbitrary criteria. My advice would be to
+keep it as a very small value (a fair conservative approach could be to just 
+set it as 0), on the end you should not be aligning samples that have a very
+strong RT variability for a given compound (at least, under the considerations
+of the workflow presented here). Here we will just take the original default
+value of 0.02, as it seemed to work well for the data set during my initial
+trials of the function. Some possible approaches to define a linear shift that
+is more bounded to the specific data set, thus less arbitrary, would be to have
+standard runs before and after running a set of samples and use the average
+difference in RT between homologous peaks. This implies that you think in
+advance the number of samples you can run between standard runs, without
+separating them too much in time, and would not be possible if you want to 
+analyze GC-MS runs from the past (re-running the samples might also not be a
+viable option in some cases). Also, if you used an internal standard with
+your samples, for absolute quantification, you could use the average RT
+difference of the internal standard peak across samples. However, an internal
+standard is not always used (sometimes is not possible), and once the sample has
+been extracted there is no use to adding one to the extract. Therefore, it might
+be just easier to stick to lower values and dare to play a bit with them to find
+one that seems to produce few miss-alignments (you must probably will have some)
+with your given data set.
 
+In the case of the partial peak alignment, a very recommendable approach would
+be to use `GCalignR::peak_interspace()` to get an idea of the minimum 
+separation between neighboring (adjacent) peaks within samples, and use this value.
+We can easily apply this function to each of the list inside `samples_data_list`
+with `lapply()`.
 
+```{r}
+lapply(samples_data_list
+       , peak_interspace
+       , rt_col_name = "RT"
+       , quantile_range = c(0, 0.5)
+       , quantiles = 0.05)
+```
 
+The previous plots and tables tell us that there are no peaks separated by less
+than 0.04 minutes within all the samples of our data set. So, if we set this
+value as the `partial_alignment_threshold`, any pair of peaks with that or
+higher RT difference between samples in our data frames will be considered as
+different peaks (rows). This approach could be a very easy and precise way to
+set the parameter, with particular benefits for data set with lots of samples
+that include lots of compounds, and my preferred approach to any realistic
+research data set. However, here I will take advantage on the fact that our 
+data set is not so big (20 samples), and I actually already know it very well 
+(I had to analyze it in advance to be able to assess the benefits of the
+workflow, and I can tell you it cut at least 30% of the time I needed to 
+produce the same result, and now the process is more reproducible).
+
+In consequence, I will set the `partial_alignment_threshold` to 0.05, as I 
+could not find, during my initial analysis of the data set, any separated
+hydrocarbon peaks within the samples with a separation lower than this value.
+Nevertheless, we do not normally know such details of a given data set before 
+we have analyze it, with data sets of bigger size such procedure could be very
+time consuming and prone to errors, and it is certainly not a reproducible
+method. So, I would recommend to not use such approach, and stick to the
+previously described approach in any realistic research scenario. 
+I am only using this approach here, because I used it for the initial 
+assessment of the `GCalignR` workflow, and have confirmed that it works
+properly.
+
+Finally we have to determine the threshold for the row merging step, 
+`row_merging_threshold` within `align_chromatograms2()`. 
+One possible approach would be to use `GCalignR::peak_interspace()` again, but
+setting the quantile range to the upper part of the variance (i.e. from 0.6 to
+0.9) and use the highest value, but in my experience is difficult to decide
+within any set of arbitrary variance roof values for this range (e.g. between
+0.9 and 0.95) as they might differ very strongly, and in my particular case
+I could not really find a "sweet spot" to stay with while testing this approach.
+If I was to use such approach I would probably just stick to the highest value
+obtained by using a 0.6 to 0.9 quantile range.
+Another approach could be to use the maximum distance between homologous peaks
+between standard runs before and after our samples, or between the peaks of an
+internal standard among samples, similar to the
+`linear_shift_criteria`. But, as previously said, these approaches might not
+always be possible. Therefore, taking advantage of my previous knowledge on the
+data set we are using here, I decided to set the `row_merging_threshold` to 
+0.15, which was the maximum separation I could find between peaks of any given
+hydrocarbon among the samples. Again, this approach might only make sense 
+(at least time-wise) with small data sets, and or data set about which we have 
+a good amount of prior knowledge, and it would not be really reproducible.
+
+On the end, the most important thing, when deciding for the alignment 
+parameters, is to explicitly report them, as well as why and how did we decided 
+to use them.
+
+So, now that we have decided for the values of our alignment parameters, we can 
+use `align_chromatograms2()` to perform the automatic alignment of our data.
+We can easily apply this function to every list within `samples_data_list`
+with `lapply()`, but in the case we have a data set with several groups, it 
+might take a while until we get the alignment of all the group lists within
+our `samples_data_list`. Therefore, here I will show an example of code that
+parallelize this alignment operations.
+
+```{r}
+# We need the doParallel package 
+library(doParallel)
+
+## Define the number of cores that will be used for the parallel processes
+no_cores <- 2
+
+## Set a processing cluster
+cl <- makeCluster(no_cores)
+
+## Register the processing cluster to be used for parallel operations
+registerDoParallel(cl)
+
+aligned_samples_data_list <- parLapply(cl
+                                       , samples_data_list
+                                       , align_chromatograms2
+                                       , linear_shift_criteria = 0.02
+                                       , partial_alignment_threshold = 0.05
+                                       , row_merging_threshold = 0.15)
+
+stopCluster(cl)
+registerDoSEQ()
+```
+
+In the code above we used the `doParallel` package to register a processing
+cluster, using two of our processor cores, and then with this cluster we 
+used `parLapply()` to align the lists within `samples_data_list` in parallel.
+`parLapply()` works like `lapply()`, but unlike `lapply()`, it performs the
+processes in parallel (not consecutively). As we use two cores for this, we
+effectively cut by half the time the process would have taken if using
+`lapply()`. However, be careful wen paralleling processes in R, more cores
+are not always better, and you should consider the capabilities of the PC you 
+are using before registering any bigger processing cluster. In general I would
+recommend you to read carefully the `doParallel` package before trying to 
+parallelize processes with it.
+
+In the case of the `standards_data_list` we can just directly use
+`align_chromatograms2()` on it. The standards usually have much more discrete 
+RT values than the samples, so using the same alignment parameters as with the
+samples would most probably give a very good alignment result (which do not 
+tend to contain miss-alignments).
+
+```{r}
+aligned_standards <- standards_data_list |> 
+  align_chromatograms2(linear_shift_criteria = 0.02
+                       , partial_alignment_threshold = 0.05
+                       , row_merging_threshold = 0.15)
+```
+
+## Check the precision of the alignments
+The goal of the automatic alignment is to minimize the number of 
+miss-alignments in the aligned data frames, to reduce as much as possible the
+time and effort required to manually correct them. At the same time,
+it is crucial to reliably find possible miss-alignments within the data frames,
+as the process of manually compare every peak across every sample in a data
+frame, using proprietary software like MassHunter, can be very time
+consuming, not reproducible, and prone to errors. 
+
+The `GCalignR` package provides the `gc_heatmap()` function, which can generate
+two different types of heat maps, designed to help finding peaks that might not
+be properly aligned, and are properly explained among the package documentation.
+However, we have not found such plots particularly helpful to spot
+miss-alignments within the aligned data frames. In the lab we came with an 
+alternative heat map plot, which displays the normalized abundance of the peaks
+(%) for every sample. Additionally, the samples are ordered regarding their
+similarity within the plot, via a hierarchical cluster that is displayed as a
+dendrogram. For us, such plot has resulted considerably more useful for finding
+possible miss-alignments, while it also offers a first overall view of the data
+within each aligned group data set. As a result, this package includes a 
+function `diagnostic_heatmap()` that produces this plot. 
+
+We can normalize the abundance data in advance with `area_norm()`, which is a 
+wrapper around `GCalignR::norm_peaks()`, before using `diagnostic_heatmap()`
+to generate the alignment diagnostic plot. Alternatively, it is also possible 
+to directly provide an aligned data set object to `diagnostic_heatmap()`, as
+it calls `area_norm()`, if the provided data set has not yet been normalized.
+
+Given the illustrative purposes of this guide, we will first normalize the 
+data sets with `area_norm()`.
+
+```{r}
+samples_area_norm_list <- aligned_samples_data_list |>
+  lapply(area_norm)
+
+standards_area_norm <- area_norm(aligned_standards)
+```
+
+Now, we can generate the diagnostic plots with `diagnostic_heatmap()`.
+```{r eval=F, include=T}
+for (df in names(samples_area_norm_list)) {
+  diagnostic_heatmap(samples_area_norm_list[[df]]
+                     , title = paste0("Alignment of "
+                                      , df)
+                     , alignment.type = "automatic")
+}
+```
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics(system.file("extdata/uncorrected-alignment-IW.png", package = "analyzeGC"))
+
+knitr::include_graphics(system.file("extdata/uncorrected-alignment-OW.png", package = "analyzeGC"))
+```
+
+```{r eval=FALSE, include=T}
+diagnostic_heatmap(standards_area_norm
+                   , title = "Alignment of standards"
+                   , alignment.type = "automatic")
+```
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics(system.file("extdata/uncorrected-alignment-std.png", package = "analyzeGC"))
+```
 
 
 
