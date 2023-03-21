@@ -121,6 +121,11 @@ for (df in names(samples_area_norm_list)) {
                                       , df)
                      , alignment.type = "automatic")
 }
+
+diagnostic_heatmap(aligned_standards |>
+                     area_norm()
+                   , title = paste0("Alignment of standards")
+                   , alignment.type = "automatic")
 dev.off()
 
 # corrected_samples_list ----

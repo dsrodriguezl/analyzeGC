@@ -43,6 +43,7 @@
 #' @import dplyr
 #' @import tidyr
 #' @import ggplot2
+#' @importFrom gplots heatmap.2
 #'
 #' @examples
 #'
