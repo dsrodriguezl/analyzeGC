@@ -177,7 +177,7 @@ standards_data_list[1:2]
 ```
 
 We can further verify that both of our lists have the right format to be used
-with the `GCalignR` algorithm, by using the `GCalignR::check_input()`function.
+with the `GCalignR` algorithm, by using the `GCalignR::check_input()` function.
 
 ```{r}
 check_input(samples_data_list)
@@ -185,7 +185,6 @@ check_input(samples_data_list)
 check_input(standards_data_list)
 
 ```
-
 
 # Align the data 
 
@@ -198,7 +197,7 @@ thus a given compound should theoretically have the same RT across samples.
 However, RT values are prone to variation due to random and usually
 uncontrollable factors. In consequence, the alignment of peaks across samples,
 based on their RT values, should be performed by taking some considerations,
-even when algorithms like that provided by `GCalignR`. 
+even when using algorithms like that provided by `GCalignR`. 
 
 Data from samples with very different composition, or that have been run on
 different machines (even if having the same specifications, and following the
@@ -209,7 +208,7 @@ cases are not precisely uncommon in chemical ecology. Your intention might be
 to compare the composition of very different samples (e.g. CHC extracts of
 different insect species, castes, or populations), or you could have a very 
 large sample size (thus needing to either use more than one machine, or run 
-your samples along a big time span). You will probably end up having to 
+your samples along a big time span). So, you will probably end up having to 
 manually correct some of the alignments produced by the algorithm.
 
 Therefore, here I propose some modifications, to the workflow suggested by the 
@@ -234,20 +233,20 @@ compare the CHC composition of both groups.
 
 As the name indicates, in-hive workers were bees collected directly from the
 inside of the hives. Meanwhile, the out-hive workers were flying bees (possibly
-foragers) returning to their hive, collected at the entrance of the respective
+foragers) returning to their hive, collected at the entrance of their respective
 hive. Thus, another possible approach, and the one suggested here, would be to
 perform an initial automatic RT-wise alignment for the samples of each of these
-groups by separate, and merge both alignments results at a later step. This way,
+groups by separate, and merge both alignment results at a later step. This way,
 we reduce the  variability between the initially aligned samples, thus reducing
-the number corrections to be performed over that initial alignment.
+the number of corrections to be performed over that initial alignment.
 
-The `mg_list()`, which is intended to be an abbreviation for "many groups list",
-allows us to nest the data frames within a list in sub-lists representing the
-different groups contained in our data set. To use this function, we need 
-another data frame that contains the information regarding which samples belong 
-to which group, which something that you most probably have already built as 
-part of your sampling process. The package includes such a data frame under the
-name of `grouping_info`.
+The `mg_list()` function, the name is intended to be an abbreviation for 
+"many groups list", allows us to nest the data frames within a list in 
+sub-lists representing the different groups contained in our data set. To use
+this function, we need another data frame that contains the information
+regarding which samples belong to which group, which something that you most
+probably have already built as part of your sampling process. The package
+includes such a data frame under the name of `grouping_info`.
 
 ```{r}
 grouping_info
@@ -258,10 +257,11 @@ factor that differentiates the samples within the data set. Thus, it makes sense
 to use the factor task to nest the data frames within the `samples_data_list`
 object. Nevertheless, to illustrate the option of nesting samples from groups
 resulting from a more complex experimental design, with nested factors, here we
-will do it for the three factors (Season, task, and subspecies). This will not
-affect the final grouping of data frames, for our data set, as again, the only
-factor differentiating the samples is task, so as long as we use this factor, 
-it does not matter how many of the other factors we use to group them together.
+will do it for the combination of the three factors (Season, task, and
+subspecies). This will not affect the final grouping of data frames, for our
+data set, as again, the only factor differentiating the samples is task, so as
+long as we use this factor, it does not matter how many of the other factors we
+use to group them together, they will only differentiate within the task factor.
 
 To do this, we need to create a new factor, within the `grouping_info` data
 frame, that indicates the group of the samples considering the combination of
@@ -286,6 +286,17 @@ samples_data_list <- mg_list(sample.info = grouping_info
                              , samples.data.list = samples_data_list)
 
 summary(samples_data_list)
+```
+The new version of `samples_data_list` is a list of two lists, containing 10
+data frames each, where every sub-list represents one of the groups defined
+within the `group_label` column in `grouping_info`. Now, we can apply functions
+to each of these list separately, using `lapply`. For example, we could apply
+`GCalignR::check_input()` to verify that each of them can be aligned with the
+`GCalignR` algorithm.
+
+```{r}
+samples_data_list |> 
+  lapply(check_input)
 ```
 
 
