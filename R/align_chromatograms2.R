@@ -17,7 +17,8 @@
 #'
 #' If the given data set contain only one sample, it returns a list with a
 #' similar structure to that of the typical [GCalignR::align_chromatograms]
-#' output. However, this list is not a GCalignR object.
+#' output, after giving a warning. However, the returned list is not a GCalignR
+#' object.
 #'
 #' @param data2align
 #' Data set containing peaks that need to be aligned and matched.
@@ -102,6 +103,10 @@ align_chromatograms2 <- function(data2align
                                  , partial_alignment_threshold
                                  , row_merging_threshold){
   if (length(data2align) == 1) {
+    warning(paste("data2align contains only one sample!"
+                  , "The data will be formated in a list with the RT"
+                  , "and Area values separated, but no alignment procedure"
+                  , "will be performed"))
     nombre <- names(data2align)
     row_names <- paste0("P", 1:nrow(data2align[[1]]))
 

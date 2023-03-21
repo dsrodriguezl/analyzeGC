@@ -42,7 +42,8 @@ rt_col_name is set to "RT" by default, as it is the name given by
 
 If the given data set contain only one sample, it returns a list with a
 similar structure to that of the typical \link[GCalignR:align_chromatograms]{GCalignR::align_chromatograms}
-output. However, this list is not a GCalignR object.
+output, after giving a warning. However, the returned list is not a GCalignR
+object.
 }
 \examples{
 
