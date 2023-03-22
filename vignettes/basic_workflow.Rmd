@@ -11,8 +11,8 @@ vignette: >
 
 ```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+  collapse = TRUE
+  , comment = "#>"
 )
 ```
 
@@ -523,6 +523,11 @@ standards_area_norm <- area_norm(aligned_standards)
 ```
 
 Now, we can generate the diagnostic plots with `diagnostic_heatmap()`.
+
+_Note: The diagnostic plot tends to be very big, so I would normally recommend_
+_you to use `pdf()` to generate the plots within a PDF document, where they_
+_will be easier to explore. Given the illustrative purposes of this guide, I_
+_am not doing that to be able show the plots here._ 
 ```{r eval=F, include=T}
 for (df in names(samples_area_norm_list)) {
   diagnostic_heatmap(samples_area_norm_list[[df]]
@@ -537,6 +542,23 @@ knitr::include_graphics(system.file("extdata/uncorrected-alignment-IW.png", pack
 knitr::include_graphics(system.file("extdata/uncorrected-alignment-OW.png", package = "analyzeGC"))
 ```
 
+In the plots, the columns represent peaks (which are labeled as P1 to Pn), 
+and the rows correspond to the samples. Also, as the abundance of the peaks 
+vary within a broad scale, the function transforms the normalized abundance (%)
+to the log(1+x) (where x is the normalized abundance of a peak within a sample),
+so peaks with low abundance are discernible in the plot.
+
+These plots are very useful to highlight possible miss-alignments, as they
+appear as breaks in the color columns of each peak, which we tend to call
+“stairs” due to their appearance. Within the PDF file is easy to zoom in and
+out to check the number of the peaks and samples IDs for a cell that is causing
+the stair, to then confirm if it corresponds or not to a miss-alignment.
+
+In the case of the standards, the plot tends to be less impressive, as no short
+chain-length standard is wrongly aligned with a long chain-length standard.
+However, if you have several standard runs, it is recommended to pay attention
+to the plot, as some miss-alignments might occur between different runs of the
+same standards.
 ```{r eval=FALSE, include=T}
 diagnostic_heatmap(standards_area_norm
                    , title = "Alignment of standards"
@@ -546,7 +568,47 @@ diagnostic_heatmap(standards_area_norm
 knitr::include_graphics(system.file("extdata/uncorrected-alignment-std.png", package = "analyzeGC"))
 ```
 
+By looking at the plot, you can easily, and rapidly, spot possible
+miss-alignments, and identify to which peaks and samples do the miss-aligned
+values correspond. Once you know the peak label and the sample for which a peak
+value could be miss-aligned, you can look after it within the RT data frame of 
+the corresponding aligned data set. The package includes the `extract_RT()`
+function to facilitate this, as it extracts the RT data frame from an aligned 
+data set.
 
+```{r}
+RT_df_list <- aligned_samples_data_list |> 
+  lapply(extract_RT)
+
+```
+
+After extracting the RT data frames, we can look into them for the possible
+miss-alignments we identified within the diagnostic plots. One way would be to 
+export the data frame tables into XLSX or CSV files, to be able to easily 
+explore them. For practicity, in the example I will show you here, I will just
+filter for three consecutive peaks within the in-hive workers that contain 
+miss-alignments.
+
+```{r}
+RT_df_list$`Winter_In-hive workers_A. m. mellifera` |> 
+  filter(row.names(RT_df_list$`Winter_In-hive workers_A. m. mellifera`) %in% 
+           c("P106", "P107", "P108"))
+
+```
+
+As you can see, the rows of the peaks break at samples 351 an 350, for the peaks
+P106 and P107 respectively. These breaks look like stairs, which is why I call
+them this way. So, now that we know the RT values of the peaks where there could
+be a miss-alignment, we can check them within the chromatograms, and in the case
+of GC-MS data, we could even check the mass spectra. By such process we can
+verify if the rows forming a stair do actually correspond to the same peak, thus
+being a miss-alignment.
+
+# Correct the alignment
+Once all the miss-alignments have been identified, it is necessary to correct
+them. The miss-alignments correction consist on the displacement of peaks from
+samples, to obtain a data frame where each row corresponds to the same 
+peak, thus same compound(s), across samples.
 
 
 
