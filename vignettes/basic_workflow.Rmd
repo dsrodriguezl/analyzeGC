@@ -524,10 +524,10 @@ standards_area_norm <- area_norm(aligned_standards)
 
 Now, we can generate the diagnostic plots with `diagnostic_heatmap()`.
 
-_Note: The diagnostic plot tends to be very big, so I would normally recommend_
-_you to use `pdf()` to generate the plots within a PDF document, where they_
-_will be easier to explore. Given the illustrative purposes of this guide, I_
-_am not doing that to be able show the plots here._ 
+_Note: The diagnostic plot tends to be very big, so I recommend you to use_
+_`pdf()` to generate the plots within a PDF document, where they will be easier_
+_to explore. Given the illustrative purposes of this guide, I am not doing that_
+_to be able show the plots here._ 
 ```{r eval=F, include=T}
 for (df in names(samples_area_norm_list)) {
   diagnostic_heatmap(samples_area_norm_list[[df]]
