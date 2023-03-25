@@ -404,24 +404,19 @@ properly.
 
 Finally we have to determine the threshold for the row merging step, 
 `row_merging_threshold` within `align_chromatograms2()`. 
-One possible approach would be to use `GCalignR::peak_interspace()` again, but
-setting the quantile range to the upper part of the variance (i.e. from 0.6 to
-0.9) and use the highest value, but in my experience is difficult to decide
-within any set of arbitrary variance roof values for this range (e.g. between
-0.9 and 0.95) as they might differ very strongly, and in my particular case
-I could not really find a "sweet spot" to stay with while testing this approach.
-If I was to use such approach I would probably just stick to the highest value
-obtained by using a 0.6 to 0.9 quantile range.
-Another approach could be to use the maximum distance between homologous peaks
-between standard runs before and after our samples, or between the peaks of an
-internal standard among samples, similar to the
-`linear_shift_criteria`. But, as previously said, these approaches might not
-always be possible. Therefore, taking advantage of my previous knowledge on the
-data set we are using here, I decided to set the `row_merging_threshold` to 
-0.15, which was the maximum separation I could find between peaks of any given
-hydrocarbon among the samples. Again, this approach might only make sense 
-(at least time-wise) with small data sets, and or data set about which we have 
-a good amount of prior knowledge, and it would not be really reproducible.
+One possible approach would be to use the maximum distance between homologous
+peaks between standard runs before and after our samples, or between the peaks 
+of an internal standard among samples, similar to the `linear_shift_criteria`.
+But, as previously said, these approaches might not always be possible.
+Therefore, taking advantage of my previous knowledge on the data set we are
+using here, I decided to set the `row_merging_threshold` to 0.15, which was the
+maximum separation I could find between peaks of any given hydrocarbon among 
+the samples. Again, this approach might only make sense (at least time-wise)
+with small data sets, and or data set about which we have a good prior
+knowledge, it might not be really reproducible, and may not apply to other 
+types of GC data (i.e. non-CHC  extracts). However, I have not been able to 
+find a better alternative, in the case the first mentioned approach is not
+applicable.
 
 On the end, the most important thing, when deciding for the alignment 
 parameters, is to explicitly report them, as well as why and how did we decided 
