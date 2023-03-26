@@ -77,9 +77,13 @@ correct_alignment <- function(aligned_data, movements_list) {
     aligned_df <- aligned_data[[df_name]]
 
     if ("mean_RT" %in% colnames(aligned_df)) {
-      rownames(aligned_df) <- paste0("P", 1:nrow(aligned_df))
+      # rownames(aligned_df) <- paste0("P", 1:nrow(aligned_df))
       aligned_df <- aligned_df |>
         select(-contains("mean_RT")) |>
+        t() |>
+        as.data.frame()
+    } else {
+      aligned_df <- aligned_df |>
         t() |>
         as.data.frame()
     }

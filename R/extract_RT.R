@@ -29,6 +29,6 @@ extract_RT <- function(aligned_data){
     aligned_data_RT <- aligned_data$aligned$RT
   }
 
-  rownames(aligned_data_RT) <- paste0("P", 1:nrow(aligned_data_RT))
+  # rownames(aligned_data_RT) <- paste0("P", 1:nrow(aligned_data_RT))
   aligned_data_RT
 }

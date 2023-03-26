@@ -74,7 +74,7 @@ add_empty_peaks <- function(aligned_data, empty.peaks) {
     print(df_name)
     aligned_df <- aligned_data[[df_name]]
 
-    rownames(aligned_df) <- paste0("P", 1:nrow(aligned_df))
+    # rownames(aligned_df) <- paste0("P", 1:nrow(aligned_df))
 
     if ("mean_RT" %in% colnames(aligned_df)) {
       aligned_df <- aligned_df |>
@@ -119,7 +119,9 @@ add_empty_peaks <- function(aligned_data, empty.peaks) {
     }
 
     # tmp_aligned_data[[df_name]] <- aligned_df
-    aligned_data[[df_name]] <- aligned_df
+    aligned_data[[df_name]] <- aligned_df |>
+      t() |>
+      as.data.frame()
   }
   aligned_data
 }
