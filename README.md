@@ -37,7 +37,9 @@ You can install the development version of analyzeGC from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("dsrodriguezl/analyzeGC")
+devtools::install_github("dsrodriguezl/analyzeGC"
+  , dependencies = TRUE
+  , build_vignettes = TRUE)
 ```
 
 ## Get started
