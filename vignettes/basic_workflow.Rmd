@@ -472,7 +472,7 @@ RT values than the samples, so using the same alignment parameters as with the
 samples would most probably give a very good alignment result (which do not 
 tend to contain miss-alignments).
 
-```{r}
+```{r message=FALSE, warning=FALSE, results='hide'}
 aligned_standards <- standards_data_list |> 
   align_chromatograms2(linear_shift_criteria = 0.02
                        , partial_alignment_threshold = 0.05
@@ -520,7 +520,7 @@ standards_area_norm <- area_norm(aligned_standards)
 Now, we can generate the diagnostic plots with `diagnostic_heatmap()`.
 
 _Note: The diagnostic plot tends to be very big, so I recommend you to use_
-_`pdf()` to generate the plots within a PDF document, where they will be easier_
+`pdf()` _to generate the plots within a PDF document, where they will be easier_
 _to explore. Given the illustrative purposes of this guide, I am not doing that_
 _to be able show the plots here._ 
 ```{r eval=F, include=T}
@@ -591,19 +591,87 @@ RT_df_list$`Winter_In-hive workers_A. m. mellifera` |>
 
 ```
 
-As you can see, the rows of the peaks break at samples 351 an 350, for the peaks
-P106 and P107 respectively. These breaks look like stairs, which is why I call
-them this way. So, now that we know the RT values of the peaks where there could
-be a miss-alignment, we can check them within the chromatograms, and in the case
-of GC-MS data, we could even check the mass spectra. By such process we can
-verify if the rows forming a stair do actually correspond to the same peak, thus
-being a miss-alignment.
+As you can see, the rows of the peaks break at samples 351 and 350, for the
+peaks P106 and P107 respectively. These breaks look like stairs, which is why I
+call them this way. So, now that we know the RT values of the peaks where there
+could be a miss-alignment, we can check them within the chromatograms, and in
+the case of GC-MS data, we could even check the mass spectra. 
+By such process we can verify if the rows forming a stair do actually
+correspond to the same peak, thus being a miss-alignment.
 
 # Correct the alignment
 Once all the miss-alignments have been identified, it is necessary to correct
-them. The miss-alignments correction consist on the displacement of peaks from
-samples, to obtain a data frame where each row corresponds to the same 
-peak, thus same compound(s), across samples.
+them. 
+The correction of miss-alignments consist on the displacement of the peaks'
+Area and RT values within samples, to obtain a data frame where each row
+corresponds to the same peak, thus same compound(s), across samples. 
+This can be done using the `add_empty_peaks()` and `correct_alignment()`
+functions. 
+These functions take an aligned data set to modify, and a list of
+data frames, which indicate the modifications to be performed on the aligned
+data set.
+
+## Add empty peaks
+If the values within a row, corresponds to more than one peak, the miss-aligned
+values should be displaced to the peak before or after.
+However, if the values to displace represent a different peaks to those 
+represented by the rows around, then we need to insert an empty peak (row)
+where we can place the values we need to displace.
+This is not the case of our data set, but for the purpose of this guide, let's 
+assume that we need to create an empty peak after P100 in the aligned data of
+the in-hive workers, and before P100 in that of the out-hive workers.
+`add_empty_peaks()` adds peaks with only 0s to the Area and RT data frames
+within an aligned data set, provided to the function as the `aligned_data`
+parameter. 
+The `empty.peaks` parameter, should be a list of data frames with two columns 
+(`position.reference` and `direction`). 
+`position.reference` indicates a peak (e.g. P10) as a location reference
+within the aligned data set. 
+`direction` ("before" or "after") indicates whether the empty peak should be
+created as the row before or after the reference peak.
+
+First, we need to create a list of data frames, where each entry name 
+correspond to the label of any sample within the aligned group data to modify.
+`add_empty_peaks()` will only create the empty row, if the sample is in the
+data frame it is modifying.
+
+```{r}
+empty_peaks <- list("335" = tribble(~position.reference, ~direction,
+                                        "P100", "after")
+                    , "339" = tribble(~position.reference, ~direction,
+                                          "P100", "before"))
+empty_peaks
+```
+
+We can apply `add_empty_peaks()` to each of the aligned data sets (in-/out-hive
+workers) within `aligned_samples_data_list` with `lapply()`.
+```{r results='hide'}
+example_with_empty_peaks <- aligned_samples_data_list |>
+  lapply(add_empty_peaks
+         , empty.peaks = empty_peaks)
+```
+
+We can confirm that the empty rows where inserted in the right place of each
+group data set, by looking at their RT data frames. 
+```{r}
+example_with_empty_peaks |> 
+  lapply(extract_RT) |> 
+  lapply(slice, 99:102)
+```
+
+As you can see, we have the new empty peaks "after_P100" and "before_P100" in 
+the position we indicated, within the data frame of the right group
+(In-/out-hive workers).
+
+## Displace the peak values to correct the alignment
+In the case of `correct_alignment()`, it allows the displacement of the Area 
+and RT values of peaks, within samples, to correct the alignment.
+
+
+
+
+
+
 
 
 
