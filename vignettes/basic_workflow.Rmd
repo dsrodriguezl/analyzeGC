@@ -614,28 +614,32 @@ data set.
 ## Add empty peaks
 If the values within a row, corresponds to more than one peak, the miss-aligned
 values should be displaced to the peak before or after.
-However, if the values to displace represent a different peaks to those 
+However, if the values to displace represent different peaks to those 
 represented by the rows around, then we need to insert an empty peak (row)
 where we can place the values we need to displace.
 This is not the case of our data set, but for the purpose of this guide, let's 
 assume that we need to create an empty peak after P100 in the aligned data of
 the in-hive workers, and before P100 in that of the out-hive workers.
+
 `add_empty_peaks()` adds peaks with only 0s to the Area and RT data frames
 within an aligned data set, provided to the function as the `aligned_data`
 parameter. 
 The `empty.peaks` parameter, should be a list of data frames with two columns 
 (`position.reference` and `direction`). 
-`position.reference` indicates a peak (e.g. P10) as a location reference
+`position.reference` indicates a peak (e.g. P100) as a location reference
 within the aligned data set. 
 `direction` ("before" or "after") indicates whether the empty peak should be
 created as the row before or after the reference peak.
 
-First, we need to create a list of data frames, where each entry name 
-correspond to the label of any sample within the aligned group data to modify.
-`add_empty_peaks()` will only create the empty row, if the sample is in the
+First, we need to create the list of data frames with the instructions to create
+the empty peaks. In the list, each entry name corresponds to the label of a
+sample (can be any) within the aligned group data to modify.
+`add_empty_peaks()` will only create the empty row if the sample is in the
 data frame it is modifying.
 
 ```{r}
+# Sample 335 is an In-hive worker
+# Sample 339 is an Out-hive worker
 empty_peaks <- list("335" = tribble(~position.reference, ~direction,
                                         "P100", "after")
                     , "339" = tribble(~position.reference, ~direction,
@@ -651,8 +655,8 @@ example_with_empty_peaks <- aligned_samples_data_list |>
          , empty.peaks = empty_peaks)
 ```
 
-We can confirm that the empty rows where inserted in the right place of each
-group data set, by looking at their RT data frames. 
+To confirm that the empty rows where inserted in the right place of each
+group data set,w e just need to look at their RT data frames. 
 ```{r}
 example_with_empty_peaks |> 
   lapply(extract_RT) |> 
@@ -664,8 +668,81 @@ the position we indicated, within the data frame of the right group
 (In-/out-hive workers).
 
 ## Displace the peak values to correct the alignment
-In the case of `correct_alignment()`, it allows the displacement of the Area 
-and RT values of peaks, within samples, to correct the alignment.
+`correct_alignment()` allows the displacement of the Area and RT values of
+peaks, within samples, to correct their alignment.
+It iterates through the samples in an aligned data set (given as the
+`aligned_data` parameter), displacing the RT and Area values within the data
+frames, as indicated by a list of data frames (given as the `movements_list`
+parameter). The entry names in the list provided as `movements_list` should 
+correspond to the sample label within the data, for which the modifications
+encoded in the corresponding data frame within the list should be applied.
+These data frames must have two columns (`peaks_list` and `movement_dirs`), 
+indicating the peaks whose RT and Area values should be displaced (e.g. P100),
+and in what direction ('up' or 'down'), for a given sample.
+
+To be able to use `correct_alignment()`, we first need to create a list of 
+data frames, indicating how to displace the peak RT and Area values of each 
+sample in the data set. We should consider that `correct_alignment()` displaces
+the peak values one after the other, in the order they are listed within a data 
+frame. Hence, we should set the moving instructions in a way that the values of
+one peak do not overwrite the values of another, or we will be losing data.
+For example, if the values of two neighboring peaks should be displaced to the
+upper row, then the values of the first peak should be displaced before other,
+or the values of the latter peak will overwrite the values of the first.
+
+```{r}
+peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
+                                                                 , c(108
+                                                                     , 126)))
+                                           , movement_dirs = c('up', 'up'))
+                        , "351" = data.frame(peaks_list = c(paste0("P"
+                                                                   , c(107
+                                                                       , 108
+                                                                       , 119
+                                                                       , 120
+                                                                       , 126)))
+                                             , movement_dirs = c('up','up'
+                                                                 , 'up', 'up'
+                                                                 , 'up'))
+                        , "352" = data.frame(peaks_list = c(paste0("P"
+                                                                   , c(107
+                                                                       , 108
+                                                                       , 126)))
+                                             , movement_dirs = c('up','up'
+                                                                 , 'up'))
+                        , "333" = data.frame(peaks_list = c(paste0("P"
+                                                                   , c(26)))
+                                             , movement_dirs = c('down'))
+                        , "345" = data.frame(peaks_list = c(paste0("P"
+                                                                   , c(106
+                                                                       , 107)))
+                                             , movement_dirs = c('up', 'up'))
+                        )
+
+peaks_movements
+```
+
+
+
+```{r}
+corrected_samples_list <- lapply(aligned_samples_data_list
+                                      , correct_alignment
+                                      , movements_list = peaks_movements)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
