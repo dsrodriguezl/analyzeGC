@@ -754,7 +754,7 @@ for (df in names(samples_area_norm_list)) {
                      , alignment.type = "corrected")
 }
 ```
-```{r echo=FALSE, out.width="100%", eval=FALSE}
+```{r echo=FALSE, out.width="100%"}
 knitr::include_graphics(system.file("extdata/corrected-alignment-IW.png", package = "analyzeGC"))
 
 knitr::include_graphics(system.file("extdata/corrected-alignment-OW.png", package = "analyzeGC"))
@@ -809,16 +809,26 @@ the other samples of the data frame.
 The idea is to create a new table, modifying the exported RT data frames, that
 will also contain the identification of the compounds contained by the 
 different peaks.
-The data frames contained in these new tables could then by loaded in R for the 
+The data frames contained in these new tables could then be loaded in R for the
 next step of the workflow (the preparation of the group tables).
 The resulting data frames for the data used in this guide are contained in the 
 package as `comps_id_std` and `comps_id_list`.
 
 ```{r}
-comps_id_list
+lapply(comps_id_list, str)
+
+str(comps_id_std)
 ```
 
-
+As you can see, these data frames are very similar to the original RT data 
+frames, except for their second column, which is called "Compound". 
+This is because, when creating these tables, I simply added that column to the
+exported RT data frames. 
+However, the only important columns for these data frames are "Peak" and
+"Compound", the functions of the package will work as long as the data set have
+them in the right format.
+Compound holds the identification of the hydrocarbon(s) contained by each
+peak.
 
 # 
 
