@@ -48,14 +48,14 @@ is not to teach (nor show) how to extract CHCs, perform a GC-MS run with such
 extracts, or to interpret the resulting chromatograms and mass-spectra to
 assess their composition.
 
-Assuming that you already have an idea to do this, this guide starts from the
+Assuming that you already have an idea on how to do this, this guide starts from the
 point at which we would have already run all our samples (extracts) in the
 GC-MS machine, and integrated their resulting total ion count (TIC)
 chromatograms. Therefore, we have a collection of tabular files (i.e. CSV)
 containing these results.
 
 Now, let us begin by loading the `analyzeGC` package, as well as some other
-package we will use along this guide, to be able to access their functions.
+packages we will use along this guide, to be able to access their functions.
 
 ```{r message=FALSE, warning=FALSE}
 library(analyzeGC)
@@ -517,7 +517,10 @@ samples_area_norm_list <- aligned_samples_data_list |>
 standards_area_norm <- area_norm(aligned_standards)
 ```
 
-Now, we can generate the diagnostic plots with `diagnostic_heatmap()`.
+Now, we can generate the diagnostic plots with `diagnostic_heatmap()`. 
+We just need to indicate the function that the data comes from
+`align_chromatograms2()`, by setting the `alignment.type` parameter to 
+"automatic".
 
 _Note: The diagnostic plot tends to be very big, so I recommend you to use_
 `pdf()` _to generate the plots within a PDF document, where they will be easier_
@@ -649,6 +652,7 @@ empty_peaks
 
 We can apply `add_empty_peaks()` to each of the aligned data sets (in-/out-hive
 workers) within `aligned_samples_data_list` with `lapply()`.
+
 ```{r results='hide'}
 example_with_empty_peaks <- aligned_samples_data_list |>
   lapply(add_empty_peaks
@@ -656,7 +660,8 @@ example_with_empty_peaks <- aligned_samples_data_list |>
 ```
 
 To confirm that the empty rows where inserted in the right place of each
-group data set,w e just need to look at their RT data frames. 
+group data set,w e just need to look at their RT data frames.
+
 ```{r}
 example_with_empty_peaks |> 
   lapply(extract_RT) |> 
@@ -722,15 +727,100 @@ peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
 peaks_movements
 ```
 
+Now we can apply `correct_alignment()` to each of the group data sets in 
+`aligned_samples_data_list`, using `lapply)`. 
+If we would only have a single aligned data set (like in the case of the
+standards), instead of a list of them, `correct_alignment()` could be directly
+use on it without `lapply()`
 
+```{r results='hide'}
+corrected_samples_list <- lapply(aligned_samples_data_list
+                                 , correct_alignment
+                                 , movements_list = peaks_movements)
+```
+
+We can check that all the miss-alignments were corrected by using  
+`diagnostic_heatmap()`. 
+However, as the objects returned by `align_chromatograms2()` and
+`correct_alignment()` have different structures, we need to specify that the
+data corresponds to a corrected alignment by setting the parameter
+`alignment.type` to "corrected".
+
+```{r eval=F, include=T}
+for (df in names(samples_area_norm_list)) {
+  diagnostic_heatmap(samples_area_norm_list[[df]]
+                     , title = paste0("corrected alignment of "
+                                      , df)
+                     , alignment.type = "corrected")
+}
+```
+```{r echo=FALSE, out.width="100%", eval=FALSE}
+knitr::include_graphics(system.file("extdata/corrected-alignment-IW.png", package = "analyzeGC"))
+
+knitr::include_graphics(system.file("extdata/corrected-alignment-OW.png", package = "analyzeGC"))
+```
+
+## Recalculate the mean RT
+Along the alignment correction process, the column holding the mean RT is 
+removed from the aligned data sets, which would no longer be correct due tot he 
+displacement of the peak values. 
+We need, in consequence, to recalculate the mean RT and add it to the data sets,
+for which we can use `recalculate_meanRT()`.
+
+`recalculate_meanRT()` can be directly used on a corrected alignment obtained
+with `correct_alignment()`, but in the case of a list of them , like
+`corrected_samples_list`, we need to use `lapply()` to apply the function to 
+every data set contained in the list.
 
 ```{r}
-corrected_samples_list <- lapply(aligned_samples_data_list
-                                      , correct_alignment
-                                      , movements_list = peaks_movements)
+corrected_samples_list2 <- lapply(corrected_samples_list
+                                  , recalculate_meanRT)
+```
+
+`recalculate_meanRT()` does not only recalculate and add the mean RT to the 
+RT and Area data frames. 
+It also erases any empty row that was created during the alignment correction
+process, transform 0s into NAs within the RT data frames, and reorder the
+samples within the data frames. 
+In the new data frames, the samples are in descending order, regarding the sum
+of the abundances of the peaks they contain. 
+
+```{r}
+corrected_samples_list2 |> 
+  lapply(extract_RT)
 ```
 
 
+Now we have the corrected alignment of each group, but we do not now what 
+compounds are contained within each peak. 
+At this point, I would extract the RT data frames of each group, and the
+standards, using `extract_RT()` and export them as CSV or XLSX files, where they
+will be easy to explore.
+The point is to find the peaks of the different samples, within the data frames,
+in their chromatograms, and identify the hydrocarbon(s) they contain, by looking
+at their mass-spectra.
+Here, is where it might result helpful the new order of the samples within the
+data frames. 
+If a sample has a higher total abundance, it means it has more peaks than the others.
+Therefore, if we begin exploring the chromatogram of the first sample of a 
+given data frame, we will be able to identify most of the compounds present in
+the other samples of the data frame.
+
+The idea is to create a new table, modifying the exported RT data frames, that
+will also contain the identification of the compounds contained by the 
+different peaks.
+The data frames contained in these new tables could then by loaded in R for the 
+next step of the workflow (the preparation of the group tables).
+The resulting data frames for the data used in this guide are contained in the 
+package as `comps_id_std` and `comps_id_list`.
+
+```{r}
+comps_id_list
+```
+
+
+
+# 
 
 
 
