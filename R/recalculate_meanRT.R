@@ -41,13 +41,20 @@ recalculate_meanRT <- function(aligned_data) {
     aligned_data[[df_name]] <- aligned_df
   }
 
-  # Extract the RT data frame in turn for the current iteration
+  # Extract the RT data frame
   temp.RT.table <- aligned_data[["RT"]] |>
     t() |>
     as.data.frame()
 
   # Replace 0s with NAs
   temp.RT.table[temp.RT.table == 0] <- NA
+
+  # Get a vector listing the samples in descending order, regarding their total
+  # abundance
+  samples_order <- aligned_data[["Area"]] |>
+    rowSums() |>
+    sort(decreasing = T) |>
+    names()
 
   # Calculate the new mean RT for the given data frame and store it in the
   # mean.RT.list, with the corresponding name
@@ -63,7 +70,9 @@ recalculate_meanRT <- function(aligned_data) {
     select(contains("Peak"), contains("mean_RT")) |>
     bind_cols(aligned_data[["Area"]] |>
                 t() |>
-                as.data.frame())
+                as.data.frame() |>
+                # Order the samples
+                select(all_of(samples_order)))
 
   aligned_data
 }
