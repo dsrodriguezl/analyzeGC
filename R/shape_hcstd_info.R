@@ -50,9 +50,15 @@ shape_hcstd_info <- function(comps_id.STD
     aligned_std <- aligned_std[["aligned"]]
   }
   std_area <- aligned_std[["Area"]]
+  std_RT <- aligned_std[["RT"]]
 
   # Temporal data frame
-  std_df <- comps_id.STD
+  std_df <- comps_id.STD |>
+    select(contains("Peak")
+           , contains("Compound")) |>
+    bind_cols(std_RT)
+
+  std_df[std_df == 0] <- NA
 
   # Extract low standards
   short_std <- std_df |>
@@ -194,7 +200,7 @@ shape_hcstd_info <- function(comps_id.STD
               , size = 4) +
     geom_step(aes(y = get("corrected_area"))
               , direction = "vh"
-              , size = 1
+              , linewidth = 1
               , color = "green") +
     geom_point(aes(y = get("corrected_area"))
                , color = "black"

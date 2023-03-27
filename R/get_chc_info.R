@@ -43,7 +43,7 @@
 get_chc_info <- function(comps.id) {
   # Extract compounds information from the comps table
   group.comps.info <- comps.id |>
-    select(contains("Peak"):contains("mean_RT")) |>
+    select(contains("Peak"), contains("Compound")) |>
     cbind(data.frame(row.names = rownames(comps.id)
                      , t(
                        as.data.frame(
@@ -62,7 +62,7 @@ get_chc_info <- function(comps.id) {
   # Define columns' names
   colnames(group.comps.info) <-
     c(colnames(comps.id |>
-                 select(contains("Peak"):contains("mean_RT")))
+                 select(contains("Peak"):contains("Compound")))
       , "Chain.length", "Class", "Mod.position")
   # cat('\n')
   # print("The columns of the comps_info data frame were renamed")

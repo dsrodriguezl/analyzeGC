@@ -21,7 +21,7 @@ value of should be displaced within the column of the indicated sample
 }
 \description{
 Function for "manually" moving one peak of one sample one row
-bellow/above on the aligned data frame. It is called by correct_alignment for
+bellow/above on an aligned data frame. It is called by correct_alignment for
 manual displacements of peak values within samples in an aligned data frame,
 during the alignment correction process.
 }

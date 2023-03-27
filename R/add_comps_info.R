@@ -19,15 +19,24 @@ add_comps_info <- function(samples.list, comps.info.list) {
     for (data_table in names(aligned_group_list)) {
       samples.list[[aligned_group]][[data_table]] <-
         merge(x = comps.info.list[[aligned_group]] |>
-                select(contains("Peak"):contains("mean_RT"))
+                select(contains("Peak"), contains("Compound"))
               , y = aligned_group_list[[data_table]]
               , all = T
               , sort = F) |>
-        as_tibble()
-
-      samples.list[[aligned_group]][["comps.info"]] <-
-        comps.info.list[[aligned_group]]
+        as_tibble() |>
+        select(contains("Peak")
+               , contains("mean_RT")
+               , contains("Compound")
+               , everything())
     }
+    samples.list[[aligned_group]][["comps.info"]] <-
+      comps.info.list[[aligned_group]] |>
+      bind_cols(samples.list[[aligned_group]][["RT"]] |>
+                  select(contains("mean_RT"))) |>
+      select(contains("Peak")
+             , contains("Compound")
+             , contains("mean_RT")
+             , everything())
   }
   samples.list
 }
