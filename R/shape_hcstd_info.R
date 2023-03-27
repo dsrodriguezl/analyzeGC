@@ -213,7 +213,8 @@ shape_hcstd_info <- function(comps_id.STD
                   , size = 3.5
                   , angle = 270
                   , fontface = "bold") +
-    ggside::geom_ysideboxplot(orientation = "x") +
+    ggside::geom_ysideboxplot(aes(x = NULL)
+                              , orientation = "x") +
     theme_classic() +
     labs(title = paste0("Abundance of standards (observed an corrected) vs"
                         , " mean retention time")
