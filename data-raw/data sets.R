@@ -183,14 +183,17 @@ corrected_samples_list <- lapply(aligned_samples_data_list
 use_data(corrected_samples_list, overwrite = TRUE)
 
 # Trying code to diagnose alignment correction
+pdf(here::here("data-raw"
+               , "corrected-alignment-plots.pdf")
+    , width = 30
+    , height = 15)
 for (df in names(corrected_samples_list)) {
-  dev.new()
-  print(df)
   diagnostic_heatmap(corrected_samples_list[[df]]
                      , title = paste0("corrected alignment of "
                                       , df)
                      , alignment.type = "corrected")
 }
+dev.off()
 
 # corrected_samples_list2 ----
 corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
