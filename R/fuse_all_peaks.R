@@ -42,7 +42,8 @@ fuse_all_peaks <- function(master.table, fusion.list){
     cat('\n')
     # Print the peaks status before fusion
     print("Peaks before fusion")
-    master.table |> filter(get("Peak") %in% peaks_2_fuse) |> print()
+    master.table |> filter(get("Peak") %in% peaks_2_fuse) |>
+      as.data.frame() |>  print()
 
     # Fuse peaks using fuse_peaks
     master.table <- fuse_peaks(master.table = master.table
@@ -51,7 +52,8 @@ fuse_all_peaks <- function(master.table, fusion.list){
     cat('\n')
     # Print the peaks status after fusion
     print("Peaks after fusion")
-    master.table |> filter(get("Peak") %in% peaks_2_fuse) |> print()
+    master.table |> filter(get("Peak") %in% peaks_2_fuse) |>
+      as.data.frame() |>  print()
 
     # Increment the fusion count
     f_count <- f_count + 1

@@ -26,7 +26,7 @@
 #' @import purrr
 #' @import ggplot2
 #'
-#'
+#' @export
 abundance_transformation <- function(master.table
                                      , transformation = c("percentage"
                                                           , "proportion"

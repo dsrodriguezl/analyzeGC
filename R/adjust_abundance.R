@@ -134,7 +134,9 @@ adjust_abundance <- function(aligned_data, std.info) {
       theme_classic() +
       labs(title = paste0("Sample "
                           , muestra
-                          , " before and after abundance adjustment"))
+                          , " before and after abundance adjustment")
+           , x = "mean RT"
+           , y = "Abundance")
     print(p)
   }
 

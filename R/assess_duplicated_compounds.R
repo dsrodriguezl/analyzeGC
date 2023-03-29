@@ -15,7 +15,7 @@
 #'
 #' @export
 assess_duplicated_compounds <- function(group.tables.list, plot = T) {
-  # Find duplicated compound names in teh group tables
+  # Find duplicated compound names in the group tables
   duplicated_compounds <- group.tables.list |>
     lapply(filter, duplicated(get("Compound"))) |>
     lapply(select, "Compound") |>
