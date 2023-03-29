@@ -1044,12 +1044,21 @@ master_table_reassembled
 ## Transform the abundance
 
 ```{r}
-master_table_transformed <- abundance_transformation(master_table_reassembled)
-master_table_transformed
+master_table_final <- abundance_transformation(master_table_reassembled)
+master_table_final
 ```
 
 
+```{r}
+master_comps <-  master_table_final |> 
+  select(Peak:Mod.position)
+```
 
+```{r}
+master_daten <- get_daten(master_table_final)
+
+str(master_daten)
+```
 
 
 
