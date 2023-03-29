@@ -297,4 +297,4 @@
 #'   \item{}{}
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
-"master_table_transformed"
+"master_table_final"
