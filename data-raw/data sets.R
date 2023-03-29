@@ -262,8 +262,8 @@ use_data(comps_info_list, overwrite = T)
 # adjusted_samples_list ----
 pdf(here::here("data-raw"
          , "samples_correction-plots.pdf")
-    , width = 18
-    , height = 8)
+    , width = 12
+    , height = 6)
 adjusted_samples_list <- corrected_samples_list2 |>
   lapply(adjust_abundance, std.info = std_info)
 

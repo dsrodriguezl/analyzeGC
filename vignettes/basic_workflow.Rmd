@@ -1,8 +1,6 @@
 ---
 title: "The basic workflow"
-output: 
-  rmarkdown::html_vignette:
-    df_print: kable
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{The basic workflow}
   %\VignetteEngine{knitr::rmarkdown}
@@ -107,8 +105,7 @@ standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
   str_subset('STD')
 ```
 
-In the code above we generated two lists, 'samples_path_data' and
-'standards_path_data'. As their names indicate, the first contains the paths to
+In the code above we generated two lists, `samples_path_data` and `standards_path_data`. As their names indicate, the first contains the paths to
 the files that correspond to the samples, and the later contains the paths to
 the files corresponding to the external standards (we will elaborate on them
 later). Notice that we also used `stringr::str_subset()` to decide which CSV
@@ -138,7 +135,7 @@ them within a list.
 
 The function takes a second argument `patterns_2_delete`, which should be a
 string indicating anything that should be removed from the name of the files to
-obtain the samples names. I tend to add "DR_" in front of the sample when
+obtain the samples' names. I tend to add "DR_" in front of the sample when
 naming the runs in the GC-MS files, so I can easily differentiate my files from
 those of anybody else, stored in the machine, and the usage of "STD" as a label
 is protocolary for naming the standard runs in the lab I work.
@@ -246,7 +243,7 @@ The `mg_list()` function, the name is intended to be an abbreviation for
 "many groups list", allows us to nest the data frames within a list in 
 sub-lists representing the different groups contained in our data set. To use
 this function, we need another data frame that contains the information
-regarding which samples belong to which group, which something that you most
+regarding which samples belong to which group, which  most
 probably have already built as part of your sampling process. The package
 includes such a data frame under the name of `grouping_info`.
 
@@ -293,7 +290,7 @@ summary(samples_data_list)
 The new version of `samples_data_list` is a list of two lists, containing 10
 data frames each, where every sub-list represents one of the groups defined
 within the `group_label` column in `grouping_info`. Now, we can apply functions
-to each of these list separately, using `lapply`. For example, we could apply
+to each of these lists separately, using `lapply`. For example, we could apply
 `GCalignR::check_input()` to verify that each of them can be aligned with the
 `GCalignR` algorithm.
 
@@ -338,30 +335,31 @@ alignment step the `GCalignR` algorithm uses them for.
 
 But how do we determine the values we can give to this parameters?
 
-For the linear shift, the default value in `GCalignR::align_chromatograms()`,
-but `align_chromatograms2()` has no default for the corresponding parameter
-(`linear_shift_criteria`) to force you to be explicit with your alignment
-criteria, as this is usually a very arbitrary criteria. My advice would be to
-keep it as a very small value (a fair conservative approach could be to just 
-set it as 0), on the end you should not be aligning samples that have a very
-strong RT variability for a given compound (at least, under the considerations
-of the workflow presented here). Here we will just take the original default
-value of 0.02, as it seemed to work well for the data set during my initial
-trials of the function. Some possible approaches to define a linear shift that
-is more bounded to the specific data set, thus less arbitrary, would be to have
-standard runs before and after running a set of samples and use the average
-difference in RT between homologous peaks. This implies that you think in
-advance the number of samples you can run between standard runs, without
-separating them too much in time, and would not be possible if you want to 
-analyze GC-MS runs from the past (re-running the samples might also not be a
-viable option in some cases). Also, if you used an internal standard with
-your samples, for absolute quantification, you could use the average RT
-difference of the internal standard peak across samples. However, an internal
-standard is not always used (sometimes is not possible), and once the sample has
-been extracted there is no use to adding one to the extract. Therefore, it might
-be just easier to stick to lower values and dare to play a bit with them to find
-one that seems to produce few miss-alignments (you must probably will have some)
-with your given data set.
+For the linear shift, the default value in `GCalignR::align_chromatograms()` 
+is 0.02, but `align_chromatograms2()` has no default for the corresponding
+parameter (`linear_shift_criteria`) to force you to be explicit with your
+alignment criteria, as this is usually a very arbitrary criteria. My advice
+would be to keep it as a very small value (a fair conservative approach could
+be to just set it as 0), on the end you should not be aligning samples that
+have a very strong RT variability for a given compound (at least, under the
+considerations of the workflow presented here). Here we will just take the
+original default value of 0.02, as it seemed to work well for the data set
+during my initial trials of the function. Some possible approaches to define a
+linear shift that is more bounded to the specific data set, thus less
+arbitrary, would be to have standard runs before and after running a set of
+samples and use the average difference in RT between homologous peaks. This
+implies that you think in advance the number of samples you can run between
+standard runs, without separating them too much in time, and would not be
+possible if you want to analyze GC-MS runs from the past (re-running the
+samples might also not be a viable option in some cases). Also, if you used an
+internal standard with your samples, for absolute quantification, you could use
+the average RT difference of the internal standard peak across samples.
+However, an internal standard is not always used (sometimes is not possible),
+and once the sample has been extracted there is no use to adding one to the
+extract. 
+Therefore, it might be just easier to stick to lower values and dare to play a
+bit with them to find one that seems to produce few miss-alignments (you must
+probably will have some) with your given data set.
 
 In the case of the partial peak alignment, a very recommendable approach would
 be to use `GCalignR::peak_interspace()` to get an idea of the minimum 
@@ -533,7 +531,7 @@ for (df in names(samples_area_norm_list)) {
                      , alignment.type = "automatic")
 }
 ```
-```{r echo=FALSE, out.width="100%"}
+```{r echo=FALSE, warning=FALSE, out.width="100%"}
 knitr::include_graphics(system.file("extdata/uncorrected-alignment-IW.png", package = "analyzeGC"))
 
 knitr::include_graphics(system.file("extdata/uncorrected-alignment-OW.png", package = "analyzeGC"))
@@ -561,7 +559,7 @@ diagnostic_heatmap(standards_area_norm
                    , title = "Alignment of standards"
                    , alignment.type = "automatic")
 ```
-```{r echo=FALSE, out.width="100%"}
+```{r echo=FALSE, warning=FALSE, out.width="100%"}
 knitr::include_graphics(system.file("extdata/uncorrected-alignment-std.png", package = "analyzeGC"))
 ```
 
@@ -659,7 +657,7 @@ example_with_empty_peaks <- aligned_samples_data_list |>
 ```
 
 To confirm that the empty rows where inserted in the right place of each
-group data set,w e just need to look at their RT data frames.
+group data set, we just need to look at their RT data frames.
 
 ```{r}
 example_with_empty_peaks |> 
@@ -691,8 +689,8 @@ the peak values one after the other, in the order they are listed within a data
 frame. Hence, we should set the moving instructions in a way that the values of
 one peak do not overwrite the values of another, or we will be losing data.
 For example, if the values of two neighboring peaks should be displaced to the
-upper row, then the values of the first peak should be displaced before other,
-or the values of the latter peak will overwrite the values of the first.
+upper row, then the values of the first peak should be displaced before the
+other, or the values of the latter peak will overwrite the values of the first.
 
 ```{r}
 peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
@@ -727,7 +725,7 @@ peaks_movements
 ```
 
 Now we can apply `correct_alignment()` to each of the group data sets in 
-`aligned_samples_data_list`, using `lapply)`. 
+`aligned_samples_data_list`, using `lapply())`. 
 If we would only have a single aligned data set (like in the case of the
 standards), instead of a list of them, `correct_alignment()` could be directly
 use on it without `lapply()`
@@ -753,7 +751,7 @@ for (df in names(samples_area_norm_list)) {
                      , alignment.type = "corrected")
 }
 ```
-```{r echo=FALSE, out.width="100%"}
+```{r echo=FALSE, warning=FALSE, out.width="100%"}
 knitr::include_graphics(system.file("extdata/corrected-alignment-IW.png", package = "analyzeGC"))
 
 knitr::include_graphics(system.file("extdata/corrected-alignment-OW.png", package = "analyzeGC"))
@@ -761,7 +759,7 @@ knitr::include_graphics(system.file("extdata/corrected-alignment-OW.png", packag
 
 ## Recalculate the mean RT
 Along the alignment correction process, the column holding the mean RT is 
-removed from the aligned data sets, which would no longer be correct due tot he 
+removed from the aligned data sets, which would no longer be correct due to the
 displacement of the peak values. 
 We need, in consequence, to recalculate the mean RT and add it to the data sets,
 for which we can use `recalculate_meanRT()`.
@@ -819,31 +817,236 @@ The resulting data frames for the data used in this guide are contained in the
 package as `comps_id_std` and `comps_id_list`.
 
 ```{r}
-lapply(comps_id_list, str)
+lapply(comps_id_list, str, give.attr = F)
 
-str(comps_id_std)
+str(comps_id_std, give.attr = F)
 ```
 
 As you can see, these data frames are very similar to the original RT data 
-frames, except for their second column, which is called "Compound", which holds 
+frames, except for their second column, which is called "Compound" and holds 
 the identification of the compounds contained by each peak. 
 This is because, when creating these tables, I simply added that column to the
 exported RT data frames. 
 However, the only important columns for these data frames are "Peak" and
-"Compound", most functions of the package will work as long as the data set have
-them.
+"Compound", most functions of the package will work as long as they are present.
 
-# 
+# Prepare the group tables
+
+Now that we have identified the compounds contained by the peaks within our 
+samples, for the data of each group, we need to assemble the group tables.
+I am assuming we have already loaded the data frames with the compound
+information of the samples and the standards, as they come within the package, 
+and you might have your own preference on how you want to produce (thus import)
+such data frames for you own data.
+
+## Shape the data frames
+To prepare the group tables, we first need to put together the new data frames 
+that contain the compound identification, and perform some data wrangling
+operations to shape the group tables.
+
+### The standards
 
 
 
+```{r dpi = 65, fig.width=11, fig.height=8}
+std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
+                             , aligned_std = aligned_standards
+                             , short_std_pattern = "L"
+                             , long_std_pattern = "H")
+```
 
 
+### The samples
 
 
+```{r}
+comps_info_list <- comps_id_list |>
+  lapply(get_chc_info)
+
+comps_info_list |> str()
+```
 
 
+system.file("extdata/gcms_integration", package = "analyzeGC")
+```{r eval=F, include=T}
+adjusted_samples_list <- corrected_samples_list2 |>
+  lapply(adjust_abundance, std.info = std_info)
+```
+```{r echo=FALSE, warning=FALSE, out.height=300, out.width=500}
+knitr::include_graphics(system.file("extdata/samples_correction-plots.pdf"
+                                    , package = "analyzeGC"))
+```
 
+
+```{r}
+unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
+                                          ,comps.info.list = comps_info_list)
+unfiltered_samples_list |> lapply(str, give.attr = F)
+```
+
+## Clean the data
+
+### Remove trace compounds
+
+```{r results='hide'}
+filtered_samples_list <- unfiltered_samples_list |>
+  lapply(trace_comps
+         , threshold = 0.01)
+```
+
+### Remove non-target compounds
+
+```{r}
+filtered_samples_list2 <- filtered_samples_list |>
+  lapply(drop_na_compounds)
+```
+
+## Calculate the Kováts (retention) index
+
+```{r results='hide', message=FALSE, warning=FALSE}
+samples_plus_ri_list <- filtered_samples_list2 |>
+  lapply(kovats_retention_index, std.info = std_info)
+```
+
+## Shape the group tables
+
+```{r}
+group_tables_list <- samples_plus_ri_list |>
+  lapply(shape_group_table)
+
+group_tables_list
+```
+
+# The master table
+
+## Build the first master table
+
+```{r}
+master_table <- build_master_table(group_tables_list)
+
+master_table
+```
+
+## Fusing peaks
+
+### Find duplicated compounds
+
+```{r}
+duplicated_compounds_presence <-
+  retrieve_group_tables(group.label = "group_label"
+                        , master.table = master_table
+                        , grouping.info = grouping_info) |>
+  assess_duplicated_compounds(plot = F)
+
+duplicated_compounds_presence
+```
+
+### Fuse peaks
+
+```{r}
+fusion_list <- list(c(paste0("P"
+                             , c(1, 2)))
+                    , c(paste0("P"
+                               , c(7, 8)))
+                    , c(paste0("P"
+                               , c(9, 10)))
+                    , c(paste0("P"
+                               , c(13, 14)))
+                    , c(paste0("P"
+                               , c(15, 16)))
+                    , c(paste0("P"
+                               , c(19, 20)))
+                    , c(paste0("P"
+                               , c(24, 25)))
+                    , c(paste0("P"
+                               , c(27, 28)))
+                    , c(paste0("P"
+                               , c(29, 30)))
+                    , c(paste0("P"
+                               , c(32, 33)))
+                    , c(paste0("P"
+                               , c(38, 39)))
+                    , c(paste0("P"
+                               , c(40, 41)))
+                    , c(paste0("P"
+                               , c(42, 43)))
+                    , c(paste0("P"
+                               , c(44, 45)))
+                    , c(paste0("P"
+                               , c(46, 47)))
+                    , c(paste0("P"
+                               , c(49, 50)))
+                    , c(paste0("P"
+                               , c(52, 53)))
+                    , c(paste0("P"
+                               , c(58, 59)))
+                    , c(paste0("P"
+                               , c(60, 61)))
+                    , c(paste0("P"
+                               , c(62, 63)))
+                    , c(paste0("P"
+                               , c(66, 67)))
+                    , c(paste0("P"
+                               , c(69, 70)))
+                    , c(paste0("P"
+                               , c(72, 73)))
+                    , c(paste0("P"
+                               , c(74, 75)))
+                    , c(paste0("P"
+                               , c(80, 81)))
+                    , c(paste0("P"
+                               , c(82, 83)))
+                    , c(paste0("P"
+                               , c(84, 85)))
+                    , c(paste0("P"
+                               , c(86, 87)))
+                    , c(paste0("P"
+                               , c(88, 89))))
+```
+
+```{r results='hide'}
+master_table2 <- fuse_all_peaks(master.table = master_table
+                                , fusion.list = fusion_list)
+```
+```{r}
+master_table2
+```
+
+## Filter out rare compounds (optional)
+
+```{r}
+grouping_info <- grouping_info |>
+  unite(group_label
+        , where(is.factor)
+        , sep = "_"
+        , remove = FALSE)
+```
+
+
+```{r results='hide'}
+group_tables_list2 <- retrieve_group_tables(group.label = "group_label"
+                                            , master.table = master_table2
+                                            , grouping.info = grouping_info) |>
+  lapply(group_frequency_filter)
+```
+```{r}
+group_tables_list2
+```
+
+##  Re-build the master table
+
+```{r}
+master_table_reassembled <- build_master_table(group_tables_list2)
+
+master_table_reassembled
+```
+
+## Transform the abundance
+
+```{r}
+master_table_transformed <- abundance_transformation(master_table_reassembled)
+master_table_transformed
+```
 
 
 
