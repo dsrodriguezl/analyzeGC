@@ -390,6 +390,8 @@ fusion_list <- list(c(paste0("P"
                     , c(paste0("P"
                                , c(74, 75)))
                     , c(paste0("P"
+                               , c(76, 77, 78)))
+                    , c(paste0("P"
                                , c(80, 81)))
                     , c(paste0("P"
                                , c(82, 83)))
