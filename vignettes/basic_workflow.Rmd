@@ -993,6 +993,8 @@ fusion_list <- list(c(paste0("P"
                     , c(paste0("P"
                                , c(74, 75)))
                     , c(paste0("P"
+                               , c(76, 77, 78)))
+                    , c(paste0("P"
                                , c(80, 81)))
                     , c(paste0("P"
                                , c(82, 83)))
@@ -1048,10 +1050,21 @@ master_table_final <- abundance_transformation(master_table_reassembled)
 master_table_final
 ```
 
+## Get the final data frames for analysis
+
+```{r}
+grouping_info <- grouping_info |> 
+  mutate(Individual = as.factor(Individual)
+         , group_label = NULL)
+
+str(grouping_info)
+```
 
 ```{r}
 master_comps <-  master_table_final |> 
   select(Peak:Mod.position)
+
+str(master_comps)
 ```
 
 ```{r}
@@ -1061,11 +1074,70 @@ str(master_daten)
 ```
 
 
+# Analyze the data
+
+```{r}
+library(ggplot2)
+```
+
+```{r fig.width=8.5, fig.height=9}
+grouping_info |> 
+  bind_cols(master_daten) |> 
+  pivot_longer(cols = !where(is.factor)
+               , names_to = "Peak"
+               , values_to = "Abundance") |> 
+  mutate(Peak = factor(Peak, levels = unique(Peak))) |> 
+  ggplot(aes(x = Individual, y = Peak)) +
+  geom_raster(aes(fill = log1p(Abundance))) +
+  scale_fill_viridis_c(option = "turbo")  +
+  # Y axis is sorted from shorter chain length to longer chain length
+  # labels correspond to the compound name
+  scale_y_discrete(limits = rev
+                   , labels = master_comps |>
+                     arrange(desc(RI)) |>
+                     pull(Compound)) +
+  # Produce facets wrapping the plot regarding the task groups
+  facet_wrap(vars(Task), scales = "free_x") +
+  theme_classic()
+  
+```
+
+```{r}
+library(vegan)
+```
+
+```{r results = "hide"}
+set.seed(12345)
+sol <- metaMDS(master_daten
+               , distance = "bray"
+               , try = 200
+               , k = 2
+               , trymax = 400)
+```
+
+```{r}
+nmds_data <- grouping_info |> 
+  bind_cols(scores(sol, "sites"))
+
+nmds_data
+```
 
 
-
-
-
+```{r fig.width=7, fig.height=4}
+nmdsPlot <- ggplot(data = nmds_data
+                   ,aes(x = NMDS1
+                        , y = NMDS2)) +
+  geom_point(aes(shape = Task
+                 , fill = Task)
+             , alpha = 0.75
+             , size =2) +
+  scale_fill_viridis_d() +
+  scale_shape_manual(values = c("In-hive workers" = 25
+                                , "Out-hive workers" = 23)) +
+  coord_equal() +
+  theme_classic()
+nmdsPlot
+```
 
 
 
