@@ -498,23 +498,16 @@ possible miss-alignments, while it also offers a first overall view of the data
 within each aligned group data set. As a result, this package includes a 
 function `diagnostic_heatmap()` that produces this plot. 
 
+`diagnostic_heatmap()` calls `area_norm()` (which is a wrapper around 
+`GCalignR::norm_peaks()`) under the hood, to normalize the abundance data before
+generating the plot.
+
 We can normalize the abundance data in advance with `area_norm()`, which is a 
 wrapper around `GCalignR::norm_peaks()`, before using `diagnostic_heatmap()`
 to generate the alignment diagnostic plot. Alternatively, it is also possible 
 to directly provide an aligned data set object to `diagnostic_heatmap()`, as
 it calls `area_norm()`, if the provided data set has not yet been normalized.
 
-Given the illustrative purposes of this guide, we will first normalize the 
-data sets with `area_norm()`.
-
-```{r}
-samples_area_norm_list <- aligned_samples_data_list |>
-  lapply(area_norm)
-
-standards_area_norm <- area_norm(aligned_standards)
-```
-
-Now, we can generate the diagnostic plots with `diagnostic_heatmap()`. 
 We just need to indicate the function that the data comes from
 `align_chromatograms2()`, by setting the `alignment.type` parameter to 
 "automatic".
@@ -524,8 +517,8 @@ _Note: The diagnostic plot tends to be very big, so I recommend you to use_
 _to explore. Given the illustrative purposes of this guide, I am not doing that_
 _to be able show the plots here._ 
 ```{r eval=F, include=T}
-for (df in names(samples_area_norm_list)) {
-  diagnostic_heatmap(samples_area_norm_list[[df]]
+for (df in names(aligned_samples_data_list)) {
+  diagnostic_heatmap(aligned_samples_data_list[[df]]
                      , title = paste0("Alignment of "
                                       , df)
                      , alignment.type = "automatic")
@@ -555,7 +548,7 @@ However, if you have several standard runs, it is recommended to pay attention
 to the plot, as some miss-alignments might occur between different runs of the
 same standards.
 ```{r eval=FALSE, include=T}
-diagnostic_heatmap(standards_area_norm
+diagnostic_heatmap(aligned_standards
                    , title = "Alignment of standards"
                    , alignment.type = "automatic")
 ```

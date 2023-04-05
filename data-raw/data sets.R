@@ -104,10 +104,10 @@ use_data(aligned_standards, overwrite = TRUE)
 #           , here::here("data-raw", "std_compounds-id.csv"))
 
 # Trying functions to diagnose alignment ----
-samples_area_norm_list <- aligned_samples_data_list |>
-  lapply(area_norm)
+# samples_area_norm_list <- aligned_samples_data_list |>
+#   lapply(area_norm)
 
-samples_area_norm_list$`Winter_In-hive workers_A. m. mellifera` |>
+aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera` |>
   diagnostic_heatmap(title = "Alignment of IW CHCs"
                      , alignment.type = "automatic")
 
@@ -115,15 +115,14 @@ pdf(here::here("data-raw"
          , "uncorrected-alignment-plots.pdf")
     , width = 30
     , height = 15)
-for (df in names(samples_area_norm_list)) {
-  diagnostic_heatmap(samples_area_norm_list[[df]]
+for (df in names(aligned_samples_data_list)) {
+  diagnostic_heatmap(aligned_samples_data_list[[df]]
                      , title = paste0("Alignment of "
                                       , df)
                      , alignment.type = "automatic")
 }
 
-diagnostic_heatmap(aligned_standards |>
-                     area_norm()
+diagnostic_heatmap(aligned_standards
                    , title = paste0("Alignment of standards")
                    , alignment.type = "automatic")
 dev.off()

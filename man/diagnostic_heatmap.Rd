@@ -51,19 +51,14 @@ between peaks with low abundance values (i.e x >= 5\%) is observable.
 Winter_IW <-
   aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
 
-norm_winter_IW <- area_norm(Winter_IW)
-
-diagnostic_heatmap(data =  norm_winter_IW
+diagnostic_heatmap(data =  Winter_IW
                    , title = "Alignment of IW CHCs"
                    , alignment.type = "automatic")
 
 # Get the diagnostic heat map of several aligned data sets within a list
 
-samples_area_norm_list <- aligned_samples_data_list |>
-  lapply(area_norm)
-
-for (df in names(samples_area_norm_list)) {
-  diagnostic_heatmap(samples_area_norm_list[[df]]
+for (df in names(aligned_samples_data_list)) {
+  diagnostic_heatmap(aligned_samples_data_list[[df]]
                      , title = paste0("Alignment of ", df)
                      , alignment.type = "automatic")
 }
