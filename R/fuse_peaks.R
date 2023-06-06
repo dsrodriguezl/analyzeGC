@@ -89,17 +89,20 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   # the peaks that are being fused
   if (length(unique(peaks_sum$Compound)) != 1) {
     peaks_sum$Compound <- peaks_sum$Compound |>
+      stats::na.omit() |>
       paste(collapse = "|") |>
       rep(length(peaks_sum$Compound))
 
     if (length(unique(peaks_sum$Class)) != 1) {
       peaks_sum$Class <- peaks_sum$Class |>
+        stats::na.omit() |>
         paste(collapse = "|") |>
         rep(length(peaks_sum$Class))
     }
 
     if (length(unique(peaks_sum$Mod.position)) != 1) {
       peaks_sum$Mod.position <- peaks_sum$Mod.position |>
+        stats::na.omit() |>
         paste(collapse = "|") |>
         rep(length(peaks_sum$Mod.position))
     }

@@ -18,9 +18,6 @@
 #' df <- data.frame(col1 = c(1, 2, 3), col2 = c("a", "b", "c"), col3 = c(4, 5, 6))
 #' rownames(df) <- c("row1", "row2", "row3")
 #'
-#' # Use the function to shift the values in col1 and col3 one row up for row3 (using row name)
-#' df <- shift_rows(df, c(col1, col3), "row3")
-#'
 #' # Use the function to shift the values in col1 and col3 one row down for row2 (using row number)
 #' df <- shift_rows(df, c(col1, col3), 2, direction = "down")
 #'

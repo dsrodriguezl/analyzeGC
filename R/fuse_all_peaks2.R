@@ -1,8 +1,8 @@
 
-#' @title Fuse peaks to correct miss-alignemnets in a master table
+#' @title Fuse peaks
 #'
 #' @description The function fuses peaks within a master table as specified by
-#' a list. It uses a [fuse_peaks] to perform each fusion.
+#' a list.
 #'
 #' @param df A master table data frame, as obtained from
 #' [build_master_table], OR an aligned data frame as obtained from
@@ -10,23 +10,29 @@
 #'
 #' @param fusion.list List of data frames specifying the fusions to be performed.
 #'
+#' @param df_type type of data frame given as df; either "master.table" OR
+#' "group.table".
+#'
 #' @import dplyr
 #' @import tidyr
 #'
 #' @export
-fuse_all_peaks <- function(df, fusion.list, df_type){
+fuse_all_peaks2 <- function(df, fusion.list, df_type){
 
   # Handle case where fusion.list is empty
   if (length(fusion.list) == 0) {
     warning("fusion.list is empty; no fusions will be performed")
-    return(master.table)
+    return(df)
   }
 
   # Handle case where fusion.list has only one item
   if (length(fusion.list) == 1 ) {
     warning("fusion list has only one item; only one peak will be fused.")
-    return(master.table)
+    return(df)
   }
+
+  if (df_type == "master.table") {master.table <- df}
+  if (df_type == "group.table") {group.table <- df}
 
   # Initialize fusion count
   f_count <- 1
@@ -123,19 +129,20 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
         # the peaks that are being fused
         if (length(unique(peaks_sum$Compound)) != 1) {
           peaks_sum$Compound <- peaks_sum$Compound |>
-            na.omit() |>
+            stats::na.omit() |>
             paste(collapse = "|") |>
             rep(length(peaks_sum$Compound))
 
           if (length(unique(peaks_sum$Class)) != 1) {
             peaks_sum$Class <- peaks_sum$Class |>
-              na.omit() |>
+              stats::na.omit() |>
               paste(collapse = "|") |>
               rep(length(peaks_sum$Class))
           }
 
           if (length(unique(peaks_sum$Mod.position)) != 1) {
             peaks_sum$Mod.position <- peaks_sum$Mod.position |>
+              stats::na.omit() |>
               paste(collapse = "|") |>
               rep(length(peaks_sum$Mod.position))
           }
@@ -147,8 +154,6 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
                                     , by = 'Peak')
         return(master.table)
       }
-
-      master.table <- df
 
       # Print the peaks status before fusion
       print("Peaks before fusion")
@@ -237,7 +242,7 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
         # in the peaks that are being fused
         if (length(unique(peaks_sum$Compound)) != 1) {
           peaks_sum$Compound <- peaks_sum$Compound |>
-            na.omit() |>
+            stats::na.omit() |>
             paste(collapse = "|") |>
             rep(length(peaks_sum$Compound))
         }
@@ -307,7 +312,7 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
         # in the peaks that are being fused
         if (length(unique(peaks_sum$Compound)) != 1) {
           peaks_sum$Compound <- peaks_sum$Compound |>
-            na.omit() |>
+            stats::na.omit() |>
             paste(collapse = "|") |>
             rep(length(peaks_sum$Compound))
         }
@@ -345,20 +350,29 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
               , paste(missing_columns, collapse = ", ")))
         }
 
-
         peaks_sum <- group_comps |>
           filter(get("Peak") %in% peaks_to_fuse) |>
           select(!all_of(c("Peak", "mean_RT"))) |>
           mutate(across(everything()
-                        , function(x){x |>
-                            na.omit() |>
+                        , function(x){
+                          x <- x |>
+                            stats::na.omit() |>
                             paste(collapse = "|")
+                          x <- ifelse(x == "", NA, x)
                         })) |>
           bind_cols(group_comps |>
                       filter(get("Peak") %in% peaks_to_fuse) |>
                       select(all_of(c("Peak", "mean_RT")))) |>
-          select(Peak, Compound, mean_RT, everything()) |>
-          mutate(Chain.length = Chain.length |> as.integer())
+          select(contains("Peak")
+                 , contains("Compound")
+                 , contains("mean_RT")
+                 , everything())
+
+        if ("Chain.length" %in% colnames(peaks_sum)) {
+          peaks_sum <- peaks_sum |>
+            mutate(Chain.length = get("Chain.length") |>
+                     as.integer())
+        }
 
         # Update rows in group_area where Peak matches values in peaks_sum
         group_comps <- rows_update(group_comps
@@ -384,8 +398,6 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
 
         return(group.table)
       }
-
-      group.table <- df
 
       # Print the peaks status before fusion
       print("Peaks before fusion")
@@ -430,18 +442,16 @@ fuse_all_peaks <- function(df, fusion.list, df_type){
                select(!contains("Peak"):contains("Mod.position")) |>
                rowSums(na.rm = T) > 0)
 
-    df <- master.table
-
     #  Correct peak numbering and transform into a tibble
-    df <- df |>
+    df <- master.table |>
       # Correct the peaks numbering
-      mutate("Peak" = paste0("P", 1:nrow(df))) |>
+      mutate("Peak" = paste0("P", 1:nrow(master.table))) |>
       as_tibble()
   }
 
-  if (df_type = "group.table") {
+  if (df_type == "group.table") {
     group.table <- group.table |>
-      lapply(filter, !is.na(mean_RT))
+      lapply(filter, !is.na(get("mean_RT")))
 
     df <- group.table |>
       lapply(mutate, Peak = paste0("P", 1:nrow(group.table$Area))) |>
