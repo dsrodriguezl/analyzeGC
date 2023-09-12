@@ -1,7 +1,7 @@
 Type: Package
 Package: analyzeGC
 Title: Analysis of GC data
-Version: 0.1.0
+Version: 0.2.0
 Date: 2023-03-19
 Author: Daniel S. Rodríguez-Leon
 Maintainer: Daniel S. Rodríguez-Leon
