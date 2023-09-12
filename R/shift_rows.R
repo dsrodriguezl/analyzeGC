@@ -11,7 +11,8 @@
 #' @return The modified data frame.
 #'
 #' @import dplyr
-#' @import rlang
+#' @importFrom rlang !!
+#' @importFrom rlang enquo
 #'
 #' @examples
 #' # Create a sample data frame with row names
