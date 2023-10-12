@@ -25,11 +25,11 @@ fuse_all_peaks2 <- function(df, fusion.list, df_type){
     return(df)
   }
 
-  # Handle case where fusion.list has only one item
-  if (length(fusion.list) == 1 ) {
-    warning("fusion list has only one item; only one peak will be fused.")
-    return(df)
-  }
+  # # Handle case where fusion.list has only one item
+  # if (length(fusion.list) == 1 ) {
+  #   warning("fusion list has only one item; only one peak will be fused.")
+  #   return(df)
+  # }
 
   if (df_type == "master.table") {master.table <- df}
   if (df_type == "group.table") {group.table <- df}
