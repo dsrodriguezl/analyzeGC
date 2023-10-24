@@ -20,11 +20,11 @@ fuse_all_peaks <- function(master.table, fusion.list){
     return(master.table)
   }
 
-  # Handle case where fusion.list has only one item
-  if (length(fusion.list) == 1 ) {
-    warning("fusion list has only one item; only one peak will be fused.")
-    return(master.table)
-  }
+  # # Handle case where fusion.list has only one item
+  # if (length(fusion.list) == 1 ) {
+  #   warning("fusion list has only one item; only one peak will be fused.")
+  #   return(master.table)
+  # }
 
   # Initialize fusion count
   f_count <- 1
