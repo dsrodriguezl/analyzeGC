@@ -19,7 +19,7 @@ of interest if corresponding entry in the "Compound" column is NA.
 IW_filtered <- filtered_samples_list$`Winter_In-hive workers_A. m. mellifera`
 drop_na_compounds(IW_filtered)
 
-# Removing NA compounds from sevreal data sets within a list
+# Removing NA compounds from several data sets within a list
 filtered_samples_list2 <- filtered_samples_list |>
   lapply(drop_na_compounds)
 
