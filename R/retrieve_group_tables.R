@@ -30,7 +30,7 @@ retrieve_group_tables <- function(group.label
   group.tables.list <- list()
   for (group in group_labels) {
    samples <- grouping.info |>
-     filter(get(group.label) == group)
+     filter(get(group.label) == group) |>
       mutate("Individual" = as.character(get("Individual"))) |>
       pull("Individual")
 
