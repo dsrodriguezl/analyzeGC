@@ -57,9 +57,9 @@ kovats_retention_index <- function(filtered_data, std.info) {
     # In case the table contains compounds without ID (NAs),
     # it gives them the "NA" string as ID, to avoid them from being left out
     # in the coming filter step
-    mutate(Class = ifelse(is.na(Class)
+    mutate(Class = ifelse(is.na(get("Class"))
                           , "NA"
-                          , Class)) |>
+                          , get("Class"))) |>
     filter(get("Class") != "STD") |>
     pull("Peak")
 
@@ -91,7 +91,8 @@ kovats_retention_index <- function(filtered_data, std.info) {
 
     # Report lap_count number and compound
     cat('\n')
-    print(paste("Compound", lap_count, current_compound[, "Compound"], sep = " "))
+    print(paste("Compound", lap_count, current_compound[, "Compound"]
+                , sep = " "))
 
     # Calculate the RI depending on whether the compound is or not an alkane
     if (!current_compound$Compound %in% n_alkanes) {
