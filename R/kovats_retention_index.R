@@ -121,7 +121,7 @@ kovats_retention_index <- function(filtered_data, std.info) {
 
         # Extract next alkane data
         next.alka <- comps_info2 |>
-          filter(get("mean_RT") > rt) |>
+          filter(get("mean_RT") >= rt) |>
           filter(get("Class") == "Alkane")
 
         if(next.alka |> nrow() > 0) {
