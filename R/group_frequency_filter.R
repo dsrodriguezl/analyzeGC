@@ -40,10 +40,10 @@ group_frequency_filter <- function(group_table, threshold = 0.5){
   na_proportions <- rowSums(is.na(data_cols)) / ncol(data_cols)
 
   # Identify rare compounds
-  rare_compounds <- group_table$Peak[na_proportions > threshold]
+  rare_compounds <- group_table$Peak[1 - na_proportions < threshold]
 
   # Calculate frequency for rare compounds only
-  rare_comp_freq <- 1 - na_proportions[na_proportions > threshold]
+  rare_comp_freq <- 1 - na_proportions[1 - na_proportions < threshold]
 
   cat('\n')
   print(paste0("The following "
