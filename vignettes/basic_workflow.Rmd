@@ -29,12 +29,8 @@ very much depend on each individual, regardless of the data, the statistical
 analyses that will be applied to them, or the objective of the study they were
 produced for.
 
-Furthermore, every time that we have to explain to a student how to process the
-data to build up the master table and analyze the resulting data sets, the
-student has to face the confusion delivered by the incompatibilities/differences
-of the different steps of the processes from each of us. Besides, each of us has
-to make an excessive time investment, by trying to connect the different steps
-and methods, in order to explain them to the students (or anybody else).
+Furthermore, every time that we have to explain to a student how to process the data to build up the master table and analyze the resulting data sets, the student has to face the confusion delivered by the incompatibilities/differences of the different steps of the processes from each of us. 
+Besides, each of us has to make an excessive time investment, by trying to connect the different steps and methods, in order to explain them to the students (or anybody else).
 
 Therefore, I decided to build up this package to facilitate the process of
 analyzing this and similar types of GC data in R, thus providing a tool set and
