@@ -191,7 +191,7 @@ shape_hcstd_info <- function(comps_id.STD
     filter(!is.na(get("Compound")))
 
   std.info <- std.info |>
-    mutate("median_area" = stats::median(get("area"))
+    mutate("median_area" = stats::median(get("area"), na.rm = T)
            , "area_correction" = get("area") / get("median_area")
            , "corrected_area" = get("area") / get("area_correction"))
 
