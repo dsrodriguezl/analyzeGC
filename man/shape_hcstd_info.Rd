@@ -7,6 +7,7 @@
 shape_hcstd_info(
   comps_id.STD,
   aligned_std,
+  short_long_splitted = TRUE,
   short_std_pattern,
   long_std_pattern
 )
@@ -33,6 +34,8 @@ so.}
 \item{long_std_pattern}{Character string pattern to identify the long chain-length standards (from
 C21). The function relies on the dplyr::starts_with selection helper to do
 so.}
+
+\item{shor_long_splitted}{Logical. Are the short and long standards separated?}
 }
 \description{
 Function to shape the data frame holding the compound
