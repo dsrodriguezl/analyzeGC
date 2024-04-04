@@ -80,6 +80,11 @@ build_master_table <- function(tables.list) {
         pull(RI) |>
         unique()
 
+      if (ri_dup |> length() == 0) {
+        master.table <- mt
+        return(master.table)
+      }
+
       RT_df <- mt |>
         pluck("RT")
 
