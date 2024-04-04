@@ -46,7 +46,7 @@ get_chc_info <- function(comps.id) {
   if (comps.id$Compound |> str_subset("_") |> length() == 0) {
 
     comps.id <- comps.id |>
-      select(Peak, Compound) |>
+      select(contains("Peak"), contains("Compound")) |>
       mutate(Chain.length = NA |> as.integer()
              , Class = NA |> as.character()
              , Mod.position = NA |> as.character())

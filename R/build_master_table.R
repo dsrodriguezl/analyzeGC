@@ -102,8 +102,8 @@ build_master_table <- function(tables.list) {
       (function(mt){
         ri_dup <- mt |>
           pluck("RT") |>
-          filter(duplicated(RI)) |>
-          pull(RI) |>
+          filter(duplicated(get("RI"))) |>
+          pull("RI") |>
           unique()
 
         if (ri_dup |> length() == 0) {
@@ -116,8 +116,9 @@ build_master_table <- function(tables.list) {
 
         RT_corrections <- lapply(ri_dup, function(ri) {
           df_ri <- RT_df |>
-            filter(RI == ri) |>
-            mutate_at(vars(-(Peak:Mod.position)), function(column) {
+            filter(get("RI") == ri) |>
+            mutate_at(vars(-(contains("Peak"):contains("Mod.position")))
+                      , function(column) {
               ifelse(column |> duplicated()
                      , NA
                      , column)
@@ -135,7 +136,7 @@ build_master_table <- function(tables.list) {
           pluck("Area")
 
         samples <- RT_df |>
-          select(-(Peak:Mod.position)) |>
+          select(-(contains("Peak"):contains("Mod.position"))) |>
           colnames()
 
         Area_df[samples][is.na(RT_df[samples])] <- NA

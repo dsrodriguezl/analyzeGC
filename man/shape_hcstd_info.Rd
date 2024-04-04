@@ -27,6 +27,8 @@ function, or after alignment correction.}
 \link{align_chromatograms2}, or \link{recalculate_meanRT} in case their alignment
 required to be corrected.}
 
+\item{short_long_splitted}{Logical. Are the short and long standards separated?}
+
 \item{short_std_pattern}{Character string pattern to identify the short chain-length standards (until
 C20). The function relies on the dplyr::starts_with selection helper to do
 so.}
@@ -34,8 +36,6 @@ so.}
 \item{long_std_pattern}{Character string pattern to identify the long chain-length standards (from
 C21). The function relies on the dplyr::starts_with selection helper to do
 so.}
-
-\item{shor_long_splitted}{Logical. Are the short and long standards separated?}
 }
 \description{
 Function to shape the data frame holding the compound

@@ -19,7 +19,7 @@
 #' [align_chromatograms2], or [recalculate_meanRT] in case their alignment
 #' required to be corrected.
 #'
-#' @param shor_long_splitted
+#' @param short_long_splitted
 #' Logical. Are the short and long standards separated?
 #'
 #' @param short_std_pattern
@@ -164,7 +164,7 @@ shape_hcstd_info <- function(comps_id.STD
 
   std_df <- std.info |>
     select(all_of(std_RT |>
-                    select(-mean_RT) |>
+                    select(-contains("mean_RT")) |>
                     colnames()))
 
   for (col in colnames(std_df)) {
