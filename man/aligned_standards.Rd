@@ -3,15 +3,11 @@
 \docType{data}
 \name{aligned_standards}
 \alias{aligned_standards}
-\title{GC/MS data of honeybees cuticular hydrocarbons aligned by group}
+\title{GC/MS data of n-alkane analytical standard solutions aligned}
 \format{
 \subsection{}{
 
-A list with two GCalignR objects:
-\describe{
-\item{}{}
-\item{}{}
-}
+A GCalignR object.
 }
 }
 \source{
@@ -21,6 +17,6 @@ Data obtained by the author of the package, for educational purposes.
 aligned_standards
 }
 \description{
-GC/MS data of honeybees cuticular hydrocarbons aligned by group
+GC/MS data of n-alkane analytical standard solutions aligned
 }
 \keyword{datasets}

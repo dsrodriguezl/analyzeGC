@@ -3,11 +3,12 @@
 \docType{data}
 \name{standards_data_list}
 \alias{standards_data_list}
-\title{TITLE}
+\title{GC/MS integration data of n-alkane analytical standard solutions
+(04070-1ML and 04071-5ML, Sigma-Aldrich).}
 \format{
 \subsection{}{
 
-A list with 20 tibble data frames, each with 2 columns:
+A list with 2 tibble data frames, each with 2 columns:
 \describe{
 \item{RT}{Retention time measured for each peak within a sample}
 \item{Area}{Area result of the integration of the peaks within a sample}
@@ -21,6 +22,7 @@ Data obtained by the author of the package, for educational purposes.
 standards_data_list
 }
 \description{
-TITLE
+GC/MS integration data of n-alkane analytical standard solutions
+(04070-1ML and 04071-5ML, Sigma-Aldrich).
 }
 \keyword{datasets}

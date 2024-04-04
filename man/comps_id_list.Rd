@@ -3,14 +3,24 @@
 \docType{data}
 \name{comps_id_list}
 \alias{comps_id_list}
-\title{GC/MS data of honeybees cuticular hydrocarbons aligned by group}
+\title{Identification of compounds in the cuticular hydrocarbons of the honey bees}
 \format{
 \subsection{}{
 
-A list with two GCalignR objects:
+A list with two tibble data frames:
 \describe{
-\item{}{}
-\item{}{}
+\item{Winter_In-hive workers_A. m. mellifera}{
+Compound identification for the cuticular hydrocarbon extracts of the
+in-hive workers
+}
+\item{Winter_Out-hive workers_A. m. mellifera}{
+Compound identification for the cuticular hydrocarbon extracts of the
+out-hive workers
+}
+Both tibble data frames contain the labels of each peak (Peak), the ID of
+the compound(s) contained by a peak (Compound), mean RT of the peak
+(mean_RT), and RT of the peaks for each sample (ID number of each sample).
+
 }
 }
 }
@@ -21,6 +31,6 @@ Data obtained by the author of the package, for educational purposes.
 comps_id_list
 }
 \description{
-GC/MS data of honeybees cuticular hydrocarbons aligned by group
+Identification of compounds in the cuticular hydrocarbons of the honey bees
 }
 \keyword{datasets}

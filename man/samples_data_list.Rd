@@ -3,7 +3,7 @@
 \docType{data}
 \name{samples_data_list}
 \alias{samples_data_list}
-\title{GC/MS integration data of honeybees cuticular hydrocarbon extracts}
+\title{GC/MS integration data of honey bees cuticular hydrocarbon extracts.}
 \format{
 \subsection{}{
 
@@ -21,6 +21,7 @@ Data obtained by the author of the package, for educational purposes.
 samples_data_list
 }
 \description{
-GC/MS integration data of honeybees cuticular hydrocarbon extracts
+Each data frame corresponds tot he integration results for the CHC extract of
+a honey bee worker.
 }
 \keyword{datasets}

@@ -3,14 +3,20 @@
 \docType{data}
 \name{corrected_samples_list}
 \alias{corrected_samples_list}
-\title{GC/MS data of honeybees cuticular hydrocarbons aligned by group}
+\title{Corrected alignment of the honey bees cuticular hydrocarbons GC/MS data.}
 \format{
 \subsection{}{
 
-A list with two GCalignR objects:
+A list with two sublists:
 \describe{
-\item{}{}
-\item{}{}
+\item{Winter_In-hive workers_A. m. mellifera}{
+List with the RT and Area data frames for the corrected alignment of
+the in-hive workers.
+}
+\item{Winter_Out-hive workers_A. m. mellifera}{
+List with the RT and Area data frames for the corrected alignment of
+the out-hive workers.
+}
 }
 }
 }
@@ -21,6 +27,6 @@ Data obtained by the author of the package, for educational purposes.
 corrected_samples_list
 }
 \description{
-GC/MS data of honeybees cuticular hydrocarbons aligned by group
+Corrected alignment of the honey bees cuticular hydrocarbons GC/MS data.
 }
 \keyword{datasets}
