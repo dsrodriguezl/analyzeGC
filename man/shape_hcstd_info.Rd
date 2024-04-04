@@ -7,6 +7,7 @@
 shape_hcstd_info(
   comps_id.STD,
   aligned_std,
+  short_long_splitted = TRUE,
   short_std_pattern,
   long_std_pattern
 )
@@ -25,6 +26,8 @@ function, or after alignment correction.}
 \item{aligned_std}{An object holding the aligned standards, as obtained from
 \link{align_chromatograms2}, or \link{recalculate_meanRT} in case their alignment
 required to be corrected.}
+
+\item{short_long_splitted}{Logical. Are the short and long standards separated?}
 
 \item{short_std_pattern}{Character string pattern to identify the short chain-length standards (until
 C20). The function relies on the dplyr::starts_with selection helper to do

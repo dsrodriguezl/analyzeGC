@@ -63,7 +63,10 @@ recalculate_meanRT <- function(aligned_data) {
            , mean_RT = rowMeans(temp.RT.table
                                 ,na.rm = TRUE) |>
              round(digits = 3)) |>
-    select(contains("Peak"), contains("mean_RT"), everything()) |>
+    select(contains("Peak"), contains("mean_RT")) |>
+    bind_cols(temp.RT.table |>
+                # Order the samples
+                select(all_of(samples_order))) |>
     as_tibble()
 
   aligned_data[["Area"]] <- aligned_data[["RT"]] |>

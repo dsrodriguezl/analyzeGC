@@ -19,6 +19,9 @@
 #' [align_chromatograms2], or [recalculate_meanRT] in case their alignment
 #' required to be corrected.
 #'
+#' @param short_long_splitted
+#' Logical. Are the short and long standards separated?
+#'
 #' @param short_std_pattern
 #' Character string pattern to identify the short chain-length standards (until
 #' C20). The function relies on the dplyr::starts_with selection helper to do
@@ -42,9 +45,10 @@
 #'
 #' @export
 shape_hcstd_info <- function(comps_id.STD
-                              , aligned_std
-                              , short_std_pattern
-                              , long_std_pattern) {
+                             , aligned_std
+                             , short_long_splitted = TRUE
+                             , short_std_pattern
+                             , long_std_pattern) {
 
   if (length(aligned_std) > 2) {
     aligned_std <- aligned_std[["aligned"]]
@@ -60,50 +64,53 @@ shape_hcstd_info <- function(comps_id.STD
 
   std_df[std_df == 0] <- NA
 
-  # Extract low standards
-  short_std <- std_df |>
-    select(contains("mean_RT"), starts_with(short_std_pattern))
+  if (short_long_splitted == TRUE) {
+    # Extract low standards
+    short_std <- std_df |>
+      select(contains("mean_RT"), starts_with(short_std_pattern))
 
-  # Extract high standards
-  long_std <- std_df |>
-    select(contains("mean_RT"), starts_with(long_std_pattern))
+    # Extract high standards
+    long_std <- std_df |>
+      select(contains("mean_RT"), starts_with(long_std_pattern))
 
-  # End of low standards
-  short_end <- std_df |>
-    filter(get("Compound") == "C20_ane_NA") |>
-    pull("mean_RT")
+    # End of low standards
+    short_end <- std_df |>
+      filter(get("Compound") == "C20_ane_NA") |>
+      pull("mean_RT")
 
-  # Beginning of high standards
-  long_start <- std_df |>
-    filter(get("Compound") == "C21_ane_NA") |>
-    pull("mean_RT")
+    # Beginning of high standards
+    long_start <- std_df |>
+      filter(get("Compound") == "C21_ane_NA") |>
+      pull("mean_RT")
 
-  # Erase RT entries of peaks that are out of the range of each standards' set
-  ## Low
-  for (col in colnames(short_std |> select(-contains("mean_RT")))) {
-    short_std[col][short_std["mean_RT"] > short_end] <- NA
+    # Erase RT entries of peaks that are out of the range of each standards' set
+    ## Low
+    for (col in colnames(short_std |> select(-contains("mean_RT")))) {
+      short_std[col][short_std["mean_RT"] > short_end] <- NA
+    }
+
+    ## High
+    for (col in colnames(long_std |> select(-contains("mean_RT")))) {
+      long_std[col][long_std["mean_RT"] < long_start] <- NA
+    }
+
+    # Replace the columns of the standard runs with the corrected versions
+    std_df <- std_df |>
+      select(contains("mean_RT"):contains("Compound")) |>
+      bind_cols(long_std |> select(-contains("mean_RT"))
+                , short_std |> select(-contains("mean_RT")))
+
+    # Calculate the correct mean RT
+    std_df <- std_df |>
+      mutate("mean_RT" =
+               rowMeans(std_df |>
+                          select(-(contains("mean_RT"):contains("Compound")))
+                        , na.rm = T)) |>
+      #  Place Compound as the first column
+      select(contains("Compound"), everything())
+    std_df
+
   }
-
-  ## High
-  for (col in colnames(long_std |> select(-contains("mean_RT")))) {
-    long_std[col][long_std["mean_RT"] < long_start] <- NA
-  }
-
-  # Replace the columns of the standard runs with the corrected versions
-  std_df <- std_df |>
-    select(contains("mean_RT"):contains("Compound")) |>
-    bind_cols(long_std |> select(-contains("mean_RT"))
-              , short_std |> select(-contains("mean_RT")))
-
-  # Calculate the correct mean RT
-  std_df <- std_df |>
-    mutate("mean_RT" =
-             rowMeans(std_df |>
-                        select(-(contains("mean_RT"):contains("Compound")))
-                      , na.rm = T)) |>
-    #  Place Compound as the first column
-    select(contains("Compound"), everything())
-  std_df
 
   # Create std.info data frame
   std.info <- cbind(std_df
@@ -156,8 +163,9 @@ shape_hcstd_info <- function(comps_id.STD
     as.integer()
 
   std_df <- std.info |>
-    select(starts_with(long_std_pattern)
-           , starts_with(short_std_pattern))
+    select(all_of(std_RT |>
+                    select(-contains("mean_RT")) |>
+                    colnames()))
 
   for (col in colnames(std_df)) {
     std_df[col][std_df[col] == 0] <- NA
@@ -168,6 +176,7 @@ shape_hcstd_info <- function(comps_id.STD
   columns_2_omit <- std.info |>
     select(-all_of(colnames(std_df))) |>
     colnames()
+
   std.info <- std.info |>
     mutate("area" = rowMeans(std.info |>
                              select(-all_of(columns_2_omit))
@@ -182,7 +191,7 @@ shape_hcstd_info <- function(comps_id.STD
     filter(!is.na(get("Compound")))
 
   std.info <- std.info |>
-    mutate("median_area" = stats::median(get("area"))
+    mutate("median_area" = stats::median(get("area"), na.rm = T)
            , "area_correction" = get("area") / get("median_area")
            , "corrected_area" = get("area") / get("area_correction"))
 

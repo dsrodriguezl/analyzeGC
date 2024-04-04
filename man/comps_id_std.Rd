@@ -3,14 +3,20 @@
 \docType{data}
 \name{comps_id_std}
 \alias{comps_id_std}
-\title{GC/MS data of honeybees cuticular hydrocarbons aligned by group}
+\title{Compound identification of the n-alkanes in the analytical standard
+solutions (04070-1ML and 04071-5ML, Sigma-Aldrich).}
 \format{
 \subsection{}{
 
-A list with two GCalignR objects:
+A tibble data frame with 59 rows and 5 columns:
 \describe{
-\item{}{}
-\item{}{}
+\item{Peak}{Peak labels}
+\item{Compound}{ID of the compound(s) contained by a peak}
+\item{mean_RT}{Mean RT of the peak among samples}
+\item{H2005}{Sample corresponding to an n-alkane 04071-5ML analytical
+standard solution.}
+\item{L2005}{Sample corresponding to an n-alkane 04070-1ML analytical
+standard solution.}
 }
 }
 }
@@ -21,6 +27,7 @@ Data obtained by the author of the package, for educational purposes.
 comps_id_std
 }
 \description{
-GC/MS data of honeybees cuticular hydrocarbons aligned by group
+Compound identification of the n-alkanes in the analytical standard
+solutions (04070-1ML and 04071-5ML, Sigma-Aldrich).
 }
 \keyword{datasets}

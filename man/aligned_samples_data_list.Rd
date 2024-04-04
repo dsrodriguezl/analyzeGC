@@ -3,14 +3,17 @@
 \docType{data}
 \name{aligned_samples_data_list}
 \alias{aligned_samples_data_list}
-\title{GC/MS data of honeybees cuticular hydrocarbons aligned by group}
+\title{GC/MS data of honey bees cuticular hydrocarbons aligned by group
+(In- and out-hive workers).}
 \format{
 \subsection{}{
 
 A list with two GCalignR objects:
 \describe{
-\item{}{}
-\item{}{}
+\item{Winter_In-hive workers_A. m. mellifera}{Alignment of the GC/MS
+integration dara of the in-hive workers.}
+\item{Winter_Out-hive workers_A. m. mellifera}{Alignment of the GC/MS
+integration dara of the out-hive workers.}
 }
 }
 }
@@ -21,6 +24,7 @@ Data obtained by the author of the package, for educational purposes.
 aligned_samples_data_list
 }
 \description{
-GC/MS data of honeybees cuticular hydrocarbons aligned by group
+GC/MS data of honey bees cuticular hydrocarbons aligned by group
+(In- and out-hive workers).
 }
 \keyword{datasets}

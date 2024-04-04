@@ -3,14 +3,26 @@
 \docType{data}
 \name{std_info}
 \alias{std_info}
-\title{GC/MS data of honeybees cuticular hydrocarbons aligned by group}
+\title{Standards information data.}
 \format{
 \subsection{}{
 
-A list with two GCalignR objects:
+A tibble data frame with 30 rows and 9 columns:
 \describe{
-\item{}{}
-\item{}{}
+\item{Compound}{ID of the compound(s) contained by a peak}
+\item{mean_RT}{Mean RT of the peak among samples}
+\item{area}{Measured area under the curve of a GC/MS peak, as obtained
+from the peak integration.}
+\item{Chain.length}{Integer indicating the chain length of the hydrocarbon
+molecule.}
+\item{Class}{Hydrocarbons class see \code{help("get_chc_info")} for details}
+\item{Mod.position}{Position of unsaturations or methyl-branches in the
+hydrocarbon chain}
+\item{median_area}{Median of the integrated area for all peaks in the data
+frame}
+\item{area_correction }{Proportional correction to apply to the absolute
+abundance (area) of a peak to match the median}
+\item{corrected_area}{Area under the peak after correction}
 }
 }
 }
@@ -21,6 +33,6 @@ Data obtained by the author of the package, for educational purposes.
 std_info
 }
 \description{
-GC/MS data of honeybees cuticular hydrocarbons aligned by group
+Standards information data.
 }
 \keyword{datasets}

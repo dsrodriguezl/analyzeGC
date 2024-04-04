@@ -18,7 +18,7 @@
 #'                                         , std.info = std_info)
 #'
 #' # Adjusting the abundance for several data sets within a list
-#' filtered_samples_list <- corrected_samples_list2 |>
+#' adjusted_samples_list <- corrected_samples_list2 |>
 #'   lapply(adjust_abundance, std.info = std_info)
 #'
 #' @export

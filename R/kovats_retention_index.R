@@ -54,6 +54,12 @@ kovats_retention_index <- function(filtered_data, std.info) {
 
   # list of peaks containing compounds of interest
   target_peaks <- comps_info2 |>
+    # In case the table contains compounds without ID (NAs),
+    # it gives them the "NA" string as ID, to avoid them from being left out
+    # in the coming filter step
+    mutate(Class = ifelse(is.na(get("Class"))
+                          , "NA"
+                          , get("Class"))) |>
     filter(get("Class") != "STD") |>
     pull("Peak")
 
@@ -85,45 +91,65 @@ kovats_retention_index <- function(filtered_data, std.info) {
 
     # Report lap_count number and compound
     cat('\n')
-    print(paste("Compound", lap_count, current_compound[, "Compound"], sep = " "))
+    print(paste("Compound", lap_count, current_compound[, "Compound"]
+                , sep = " "))
 
     # Calculate the RI depending on whether the compound is or not an alkane
     if (!current_compound$Compound %in% n_alkanes) {
 
       # Report current compound name
       # and that it is not considered as an alkane
-      print(paste(current_compound[, "Compound"], "is not an Alkane", sep = " "))
+      print(paste("Compound"
+                  , current_compound[, "Compound"]
+                  , "is not an Alkane"
+                  , sep = " "))
 
       # get rt of current compound
       rt <- current_compound |>
         pull("mean_RT")
 
-      # Extract previous alkane data
+      # Extract previous alkanes data
       prev_alkane <- comps_info2 |>
         filter(get("mean_RT") < rt) |>
         filter(get("Class") == "Alkane")
 
-      prev_alkane <- prev_alkane |>
-        filter(get("Chain.length") == max(prev_alkane[["Chain.length"]]))
+      # If there is an alkane before the target peak, RI is calculated.
+      # if not, then RI is equal to lap_count
+      if(prev_alkane |> nrow() > 0) {
+        prev_alkane <- prev_alkane |>
+          filter(get("Chain.length") == max(prev_alkane[["Chain.length"]]))
 
-      # Extract next alkane data
-      next.alka <- comps_info2 |>
-        filter(get("mean_RT") > rt) |>
-        filter(get("Class") == "Alkane")
-      next.alka <- next.alka |>
-        filter(get("Chain.length") == min(next.alka[["Chain.length"]]))
+        # Extract next alkane data
+        next.alka <- comps_info2 |>
+          filter(get("mean_RT") >= rt) |>
+          filter(get("Class") == "Alkane")
 
-      # Calculate the retention index for the target compound
-      retention_index <- 100 *
-        (((current_compound$mean_RT - prev_alkane$mean_RT) /
-            (next.alka$mean_RT - prev_alkane$mean_RT)) +
-           prev_alkane$Chain.length)
+        if(next.alka |> nrow() > 0) {
+          next.alka <- next.alka |>
+            filter(get("Chain.length") == min(next.alka[["Chain.length"]]))
 
-      # Round up the RI to make it an integer
-      retention_index <- retention_index |> round(digits = 0)
+          # Calculate the retention index for the target compound
+          retention_index <- 100 *
+            (((current_compound$mean_RT - prev_alkane$mean_RT) /
+                (next.alka$mean_RT - prev_alkane$mean_RT)) +
+               prev_alkane$Chain.length)
 
-      # Store the RI in ri_list
-      ri_list <- c(ri_list, retention_index)
+          # Round up the RI to make it an integer
+          retention_index <- retention_index |> round(digits = 0)
+        } else {
+          retention_index <- ri_list[[length(ri_list)]] + rt
+        }
+
+        # Store the RI in ri_list
+        ri_list <- c(ri_list, retention_index)
+
+      } else {
+
+        retention_index <- lap_count
+
+        # Store the RI in ri_list
+        ri_list <- c(ri_list, retention_index)
+      }
 
       # Report RI
       print(paste("RI:", retention_index, sep = " "))
@@ -155,7 +181,7 @@ kovats_retention_index <- function(filtered_data, std.info) {
                                     filter(get("Class") == "STD") |>
                                     pull("Compound")))
 
-  # Add RI columns with all the calculated RI to the comps_info data frame
+  # Add RI column with all the calculated RI to the comps_info data frame
   # replacing the mean_RT column
   comps_info <- comps_info2 |>
     select(-contains("mean_RT")) |>

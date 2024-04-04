@@ -12,7 +12,24 @@
 #' @export
 add_comps_info <- function(samples.list, comps.info.list) {
 
+  # Check if the inputs are lists
+  if (!is.list(samples.list) | !is.list(comps.info.list)) {
+    stop("Both inputs must be lists.")
+  }
+
+  # Check if the lists are named
+  if (is.null(names(samples.list)) | is.null(names(comps.info.list))) {
+    stop("Both lists must be named.")
+  }
+
   for (aligned_group in names(samples.list)) {
+
+    # Check if the aligned_group exists in comps.info.list
+    if (!aligned_group %in% names(comps.info.list)) {
+      stop(paste("Aligned group"
+                 , aligned_group
+                 , "not found in comps.info.list."))
+    }
 
     aligned_group_list <- samples.list[[aligned_group]]
 

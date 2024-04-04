@@ -11,6 +11,7 @@
 #'
 #' @import dplyr
 #' @import tidyr
+#' @import purrr
 #'
 #' @export
 fuse_all_peaks <- function(master.table, fusion.list){
@@ -25,6 +26,12 @@ fuse_all_peaks <- function(master.table, fusion.list){
   #   warning("fusion list has only one item; only one peak will be fused.")
   #   return(master.table)
   # }
+
+  if(is.list(master.table) &
+     (!is_tibble(master.table) | !is.data.frame(master.table))) {
+    master.table <- master.table |>
+      pluck("Area")
+  }
 
   # Initialize fusion count
   f_count <- 1

@@ -3,8 +3,8 @@
 \docType{data}
 \name{grouping_info}
 \alias{grouping_info}
-\title{Group membership information of honeybee samples in the samples_data_list
-data}
+\title{Group membership information of honeybee samples in the \code{samples_data_list}
+data object.}
 \format{
 \subsection{}{
 
@@ -12,9 +12,10 @@ A tibble data frame with 20 rows and 4 columns:
 \describe{
 \item{Season}{Season during which the samples were collected (all in
 Winter).}
-\item{Task}{}
-\item{Subspecies}{}
-\item{Individual}{}
+\item{Task}{The type of worker (in- or out-hive) the bees were when
+collected.}
+\item{Subspecies}{Subspecies of the bees}
+\item{Individual}{Individual ID number}
 }
 }
 }
@@ -25,7 +26,7 @@ Data obtained by the author of the package, for educational purposes.
 grouping_info
 }
 \description{
-Group membership information of honeybee samples in the samples_data_list
-data
+Group membership information of honeybee samples in the \code{samples_data_list}
+data object.
 }
 \keyword{datasets}

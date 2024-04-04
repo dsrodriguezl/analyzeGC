@@ -41,6 +41,19 @@
 #'
 #' @export
 get_chc_info <- function(comps.id) {
+
+  # Handle case where no compound has been identified
+  if (comps.id$Compound |> str_subset("_") |> length() == 0) {
+
+    comps.id <- comps.id |>
+      select(contains("Peak"), contains("Compound")) |>
+      mutate(Chain.length = NA |> as.integer()
+             , Class = NA |> as.character()
+             , Mod.position = NA |> as.character())
+
+    return(comps.id)
+  }
+
   # Extract compounds information from the comps table
   group.comps.info <- comps.id |>
     select(contains("Peak"), contains("Compound")) |>
