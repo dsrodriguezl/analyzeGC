@@ -15,7 +15,7 @@
 #' @import purrr
 #'
 #' @export
-build_master_table2 <- function(tables.list) {
+build_master_table <- function(tables.list) {
 
   # Function to remove the "Peak" column from a data frame, if it exists
   remove_peak <- function(df) {

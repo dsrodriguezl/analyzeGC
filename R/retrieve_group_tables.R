@@ -16,7 +16,7 @@
 #' @import purrr
 #'
 #' @export
-retrieve_group_tables2 <- function(group.label
+retrieve_group_tables <- function(group.label
                                  , master.table
                                  , grouping.info){
   # Vector listing all unique group labels

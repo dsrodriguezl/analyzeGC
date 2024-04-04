@@ -9,7 +9,7 @@
 #' @import purrr
 
 #' @export
-shape_group_table2 <- function(samples_plus_ri) {
+shape_group_table <- function(samples_plus_ri) {
   # Extract data frame with abundance data
   area_table <- samples_plus_ri[["Area"]]
 

@@ -14,7 +14,7 @@
 #' @import ggplot2
 #'
 #' @export
-assess_duplicated_compounds2 <- function(group.tables.list, plot = T) {
+assess_duplicated_compounds <- function(group.tables.list, plot = T) {
   # Find duplicated compound names in the group tables
   duplicated_compounds <- group.tables.list |>
     pluck(1) |>
