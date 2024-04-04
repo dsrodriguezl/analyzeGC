@@ -1,4 +1,5 @@
 ## code to prepare data sets for the package
+load_all()
 
 # Samples_data_list ----
 # Import the CSV files with the samples' integration results
@@ -46,7 +47,6 @@ standards_data_list <- import_mh_data(standards_path_data
 use_data(standards_data_list, overwrite = TRUE)
 
 # aligned_samples_data_list ----
-
 grouping_info <- grouping_info |>
   unite(group_label
         , where(is.factor)
@@ -75,15 +75,14 @@ aligned_samples_data_list <- samples_data_list |>
 use_data(aligned_samples_data_list, overwrite = TRUE)
 
 # Export alignments
-for (df in names(aligned_samples_data_list)) {
-  write.csv(aligned_samples_data_list[[df]][["aligned"]][["RT"]]
-            , here::here("data-raw"
-                   , paste0("aligned-RT_", df, ".csv")))
-  rm(df)
-}
+# for (df in names(aligned_samples_data_list)) {
+#   write.csv(aligned_samples_data_list[[df]][["aligned"]][["RT"]]
+#             , here::here("data-raw"
+#                    , paste0("aligned-RT_", df, ".csv")))
+#   rm(df)
+# }
 
 # aligned_standards ----
-
 aligned_standards <- align_chromatograms2(standards_data_list
                                           , blanks = NULL
                                           , linear_shift_criteria = 0.02
@@ -179,6 +178,7 @@ peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
 corrected_samples_list <- lapply(aligned_samples_data_list
                                       , correct_alignment
                                       , movements_list = peaks_movements)
+
 use_data(corrected_samples_list, overwrite = TRUE)
 
 # Trying code to diagnose alignment correction
@@ -202,6 +202,7 @@ recalculate_meanRT(corrected_IW)
 # Generate the data set
 corrected_samples_list2 <- lapply(corrected_samples_list
                                   , recalculate_meanRT)
+
 use_data(corrected_samples_list2, overwrite = TRUE)
 
 # Export CSV to make the comps_id data sets
@@ -404,6 +405,7 @@ fusion_list
 
 master_table2 <- fuse_all_peaks(master.table = master_table
                                 , fusion.list = fusion_list)
+
 use_data(master_table2, overwrite = T)
 
 # group_tables_list2 ----
@@ -417,10 +419,12 @@ group_tables_list2 <- retrieve_group_tables(group.label = "group_label"
                                             , master.table = master_table2
                                             , grouping.info = grouping_info) |>
   lapply(group_frequency_filter)
+
 use_data(group_tables_list2, overwrite = T)
 
 # master_table_reassembled ----
 master_table_reassembled <- build_master_table(group_tables_list2)
+
 use_data(master_table_reassembled, overwrite = T)
 
 # master_table_transformed ----
@@ -435,6 +439,7 @@ use_data(master_table_reassembled, overwrite = T)
 # dev.off()
 
 master_table_final <- abundance_transformation(master_table_reassembled)
+
 use_data(master_table_final, overwrite = T)
 
 #  ----
