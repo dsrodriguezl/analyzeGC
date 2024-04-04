@@ -13,9 +13,10 @@
 #'
 #' @import dplyr
 #' @import tidyr
+#' @import purrr
 #'
 #' @export
-retrieve_group_tables <- function(group.label
+retrieve_group_tables2 <- function(group.label
                                  , master.table
                                  , grouping.info){
   # Vector listing all unique group labels
@@ -24,8 +25,9 @@ retrieve_group_tables <- function(group.label
 
   # Vector listing the name of columns with information of the compounds
   comps.vars <- master.table |>
-    select(-all_of(grouping.info$Individual)) |>
-    colnames()
+    pluck(1) |>
+        select(-all_of(grouping.info$Individual)) |>
+        colnames()
 
   group.tables.list <- list()
   for (group in group_labels) {
@@ -35,17 +37,23 @@ retrieve_group_tables <- function(group.label
       pull("Individual")
 
    group.table <- master.table |>
-     select(all_of(c(comps.vars, samples)))
-
-   group.table[is.na(group.table)] <- 0
-
-   group.table <- group.table |>
-     mutate("present" = ifelse(group.table |>
-                               select(-all_of(comps.vars)) |>
-                               rowSums() > 0
-                             , T
-                             , F)) |>
-     relocate(contains("present"), .after = all_of(comps.vars))
+     lapply(function(mt) {
+       mt <- mt |>
+         select(all_of(c(comps.vars, samples))) |>
+         mutate_if(is.numeric
+                   , function(col) {
+                     ifelse(is.na(col)
+                            , 0
+                            , col)
+         })
+       mt |>
+         mutate("present" = ifelse(mt |>
+                                     select(-all_of(comps.vars)) |>
+                                     rowSums() > 0
+                                   , T
+                                   , F)) |>
+         relocate(contains("present"), .after = all_of(comps.vars))
+     })
 
    group.tables.list[[group]] <- group.table
   }
