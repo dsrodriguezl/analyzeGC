@@ -43,5 +43,5 @@ devtools::install_github("dsrodriguezl/analyzeGC"
 To get started read the vignettes:
 
 ``` r
-browseVignettes("GCalignR")
+browseVignettes("analyzeGC")
 ```
