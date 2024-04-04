@@ -17,8 +17,8 @@
 #'
 #' @export
 retrieve_group_tables <- function(group.label
-                                 , master.table
-                                 , grouping.info){
+                                  , master.table
+                                  , grouping.info){
   # Vector listing all unique group labels
   group_labels <- grouping.info[[group.label]] |>
     unique()
@@ -46,48 +46,48 @@ retrieve_group_tables <- function(group.label
 
   group.tables.list <- list()
   for (group in group_labels) {
-   samples <- grouping.info |>
-     filter(get(group.label) == group) |>
+    samples <- grouping.info |>
+      filter(get(group.label) == group) |>
       mutate("Individual" = as.character(get("Individual"))) |>
       pull("Individual")
 
-   if(mt_type == "compound") {
-     group.table <- master.table |>
-       lapply(function(mt) {
-         mt <- mt |>
-           select(all_of(c(comps.vars, samples))) |>
-           mutate_if(is.numeric
-                     , function(col) {
-                       ifelse(is.na(col)
-                              , 0
-                              , col)
-                     })
-         mt |>
-           mutate("present" = ifelse(mt |>
-                                       select(-all_of(comps.vars)) |>
-                                       rowSums() > 0
-                                     , T
-                                     , F)) |>
-           relocate(contains("present"), .after = all_of(comps.vars))
-       })
-   }
+    if(mt_type == "compound") {
+      group.table <- master.table |>
+        lapply(function(mt) {
+          mt <- mt |>
+            select(all_of(c(comps.vars, samples))) |>
+            mutate_if(is.numeric
+                      , function(col) {
+                        ifelse(is.na(col)
+                               , 0
+                               , col)
+                      })
+          mt |>
+            mutate("present" = ifelse(mt |>
+                                        select(-all_of(comps.vars)) |>
+                                        rowSums() > 0
+                                      , T
+                                      , F)) |>
+            relocate(contains("present"), .after = all_of(comps.vars))
+        })
+    }
 
-   if(mt_type == "simple") {
-     group.table <- master.table |>
-       select(all_of(c(comps.vars, samples)))
+    if(mt_type == "simple") {
+      group.table <- master.table |>
+        select(all_of(c(comps.vars, samples)))
 
-     group.table[is.na(group.table)] <- 0
+      group.table[is.na(group.table)] <- 0
 
-     group.table <- group.table |>
-       mutate("present" = ifelse(group.table |>
-                                   select(-all_of(comps.vars)) |>
-                                   rowSums() > 0
-                                 , T
-                                 , F)) |>
-       relocate(contains("present"), .after = all_of(comps.vars))
-   }
+      group.table <- group.table |>
+        mutate("present" = ifelse(group.table |>
+                                    select(-all_of(comps.vars)) |>
+                                    rowSums() > 0
+                                  , T
+                                  , F)) |>
+        relocate(contains("present"), .after = all_of(comps.vars))
+    }
 
-   group.tables.list[[group]] <- group.table
+    group.tables.list[[group]] <- group.table
   }
   return(group.tables.list)
 }
