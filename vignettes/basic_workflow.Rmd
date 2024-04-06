@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
 
 My colleagues and I follow a similar, if not the same, methodology for the
 analysis of cuticular hydrocarbons (CHCs), considering the overall description
-of the methods (e.g.extraction and Gas chromatography-Mass spectrometry (GC-MS)
-analysis of these compounds). However, we have noticed that for the data
+of the methods, like the extraction and Gas chromatography-Mass spectrometry
+(GC-MS) analysis of these compounds. However, we have noticed that for the data
 processing and analysis (statistics aside), we all have developed different
 approaches/workflows, which are not always (entirely) reproducible. In fact,
 they sometimes lead to confusion among us, regarding how exactly the data sets
@@ -79,11 +79,23 @@ There are many ways to provide the path to the folder storing the CSV files to
 `list.files()`, like writing it directly. My personal recommendation would
 be to use the function `here::here()`, assuming that we are storing the CSV
 files in a subfolder of an R project that would be used for the entire analysis.
-However, to access the CSV files that are used to build the examples within
-this package we will use `system.file()`, which allows to access files within
-packages.
+Such a code would look similar to the code chunk below.
+```{r eval=FALSE}
+samples_path_data <- list.files(path = here::here("strings"
+                                                  , "indicating"
+                                                  , "path"
+                                                  , "components"
+                                                  , "below"
+                                                  , "R project"
+                                                  , "root")
+                                #  Get all CSV files in the folder
+                                , pattern = ".CSV|.csv"
+                                , full.names = T) |>
+  # Do not include standards
+  str_subset('STD', negate = T)
+```
 
-```{r}
+```{r include=FALSE}
 samples_path_data <- list.files(path = system.file("extdata/gcms_integration"
                                                    , package = "analyzeGC")
                                 #  Get all CSV files in the folder
@@ -99,30 +111,6 @@ standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
                                 , full.names = T) |>
   # Only include standards
   str_subset('STD')
-```
-
-In the code above we generated two lists, `samples_path_data` and `standards_path_data`. As their names indicate, the first contains the paths to
-the files that correspond to the samples, and the later contains the paths to
-the files corresponding to the external standards (we will elaborate on them
-later). Notice that we also used `stringr::str_subset()` to decide which CSV
-file paths to keep within the lists.
-
-A code doing the same, but using `here::here()`, thus finding files within an R
-project and not within a package (most likely your case), would look similar to
-the code chunk below.
-```{r eval=FALSE}
-samples_path_data <- list.files(path = here::here("strings"
-                                                  , "indicating"
-                                                  , "path"
-                                                  , "components"
-                                                  , "below"
-                                                  , "project"
-                                                  , "root")
-                                #  Get all CSV files in the folder
-                                , pattern = ".CSV|.csv"
-                                , full.names = T) |>
-  # Do not include standards
-  str_subset('STD', negate = T)
 ```
 
 Now that we have the paths to the CSV files with the integration results, we
