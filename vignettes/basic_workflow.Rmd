@@ -61,7 +61,7 @@ library(tidyr)
 
 # Import the GC-MS integration data
 
-The very first think we will need to do is to import the CSV files with the
+The very first thing we will need to do is to import the CSV files with the
 integration results of each sample. We need to create a list of data frames,
 where each data frame corresponds to the integration results of one sample.
 The rows of the data frames should correspond to the peaks within the sample,
