@@ -48,36 +48,48 @@ build_master_table <- function(tables.list) {
 
   # Merge all data frames in the list into one master table
   if(list_type == "nested") {
-    master.table <- tables.list |>
-      # Nest data frames into two sublists, regarding their type (i.e. RT or Area)
-      (function(l){
-        RT_list <- l |>
-          lapply(function(sl){
-            sl |>
-              keep(names(sl) |>
-                     str_detect("RT"))
-          })
-        area_list <- l |>
-          lapply(function(sl){
-            sl |>
-              keep(names(sl) |>
-                     str_detect("Area"))
-          })
-        list("RT" = RT_list
-             , "Area" = area_list)
-      })() |>
-      # Assemble the master table
-      lapply(function(l){
-        df <- l |>
-          reduce(merge
-                 , all = T
-                 , sort = F) |>
-          arrange(across(contains("RI")))
-        df |>
-          magrittr::set_colnames(df |>
-                                   colnames() |>
-                                   str_remove_all("RT.|Area."))
-      })
+    if(length(tables.list) > 1) {
+      master.table <- tables.list |>
+        # Nest data frames into two sublists, regarding their type (i.e. RT or Area)
+        (function(l){
+          RT_list <- l |>
+            lapply(function(sl){
+              sl |>
+                keep(names(sl) |>
+                       str_detect("RT"))
+            })
+          area_list <- l |>
+            lapply(function(sl){
+              sl |>
+                keep(names(sl) |>
+                       str_detect("Area"))
+            })
+          list("RT" = RT_list
+               , "Area" = area_list)
+        })() |>
+        # Assemble the master table
+        lapply(function(l){
+          df <- l |>
+            reduce(merge
+                   , all = T
+                   , sort = F) |>
+            arrange(across(contains("RI")))
+          df |>
+            magrittr::set_colnames(df |>
+                                     colnames() |>
+                                     str_remove_all("RT.|Area."))
+        })
+    }
+
+    #Handling the edge case the tables.list contains only one table
+    if(length(tables.list) == 1) {
+      master.table <- list("RT" = tables.list |>
+                             pluck(1) |>
+                             pluck("RT")
+                           , "Area" = tables.list |>
+                             pluck(1) |>
+                             pluck("Area"))
+    }
   }
 
   if(list_type == "simple") {
