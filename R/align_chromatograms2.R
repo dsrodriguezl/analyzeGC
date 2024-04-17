@@ -23,6 +23,9 @@
 #' @param data2align
 #' Data set containing peaks that need to be aligned and matched.
 #'
+#' @param rt_column
+#' Character indicating the name of the column containing the retention times
+#'
 #' @param blanks
 #' Character vector of names of negative controls.
 #'
@@ -39,6 +42,8 @@
 #'
 #' @import tidyr
 #' @import dplyr
+#' @import purrr
+#' @import stringr
 #' @import GCalignR
 #'
 #' @examples
@@ -98,10 +103,21 @@
 #'
 #' @export
 align_chromatograms2 <- function(data2align
+                                 , rt_column = "RT"
                                  , blanks = NULL
                                  , linear_shift_criteria
                                  , partial_alignment_threshold
                                  , row_merging_threshold){
+
+  columns <- data2align |>
+    lapply(colnames) |>
+    list_c() |>
+    unique()
+
+  area_column <- columns |>
+    str_subset(rt_column, negate = T)
+
+
   if (length(data2align) == 1) {
     warning(paste("data2align contains only one sample!"
                   , "The data will be formated in a list with the RT"
@@ -111,36 +127,38 @@ align_chromatograms2 <- function(data2align
     row_names <- paste0("P", 1:nrow(data2align[[1]]))
 
     RT <- data2align[[1]] |>
-      mutate("mean_RT" = get("RT")) |>
-      select(contains("mean_RT"), contains("RT")) |>
+      mutate("mean_RT" = get(rt_column)) |>
+      select(contains("mean_RT"), contains(rt_column)) |>
       as.data.frame()
     colnames(RT) <- c("mean_RT", nombre)
     row.names(RT) <- row_names
 
     Area <- data2align[[1]] |>
-      mutate("mean_RT" = get("RT")) |>
-      select(contains("mean_RT"), contains("Area")) |>
+      mutate("mean_RT" = get(rt_column)) |>
+      select(contains("mean_RT")
+             , contains(area_column)) |>
       as.data.frame()
     colnames(Area) <- c("mean_RT", nombre)
     row.names(Area) <- row_names
 
-    df <- list("RT" = RT, "Area" = Area)
+    df <- list(RT, Area) |>
+      set_names(columns)
   }
 
   if (length(data2align) > 1) {
     withr::local_seed(12345)
     df <- align_chromatograms(data = data2align
-                              , rt_col_name = "RT"
+                              , rt_col_name = rt_column
                               , max_linear_shift = linear_shift_criteria
                               , max_diff_peak2mean = partial_alignment_threshold
                               , min_diff_peak2peak = row_merging_threshold
                               , blanks = blanks
     )
 
-    row.names(df[["aligned"]][["RT"]]) <-
-      paste0("P", 1:nrow(df[["aligned"]][["RT"]]))
-    row.names(df[["aligned"]][["Area"]]) <-
-      paste0("P", 1:nrow(df[["aligned"]][["Area"]]))
+    row.names(df[["aligned"]][[rt_column]]) <-
+      paste0("P", 1:nrow(df[["aligned"]][[rt_column]]))
+    row.names(df[["aligned"]][[area_column]]) <-
+      paste0("P", 1:nrow(df[["aligned"]][[area_column]]))
   }
 
   df
