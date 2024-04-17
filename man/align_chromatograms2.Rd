@@ -6,6 +6,7 @@
 \usage{
 align_chromatograms2(
   data2align,
+  rt_column = "RT",
   blanks = NULL,
   linear_shift_criteria,
   partial_alignment_threshold,
@@ -14,6 +15,8 @@ align_chromatograms2(
 }
 \arguments{
 \item{data2align}{Data set containing peaks that need to be aligned and matched.}
+
+\item{rt_column}{Character indicating the name of the column containing the retention times}
 
 \item{blanks}{Character vector of names of negative controls.}
 
