@@ -637,7 +637,7 @@ std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
 
 ```{r}
 comps_info_list <- comps_id_list |>
-  lapply(get_chc_info)
+  lapply(get_hc_info)
 
 comps_info_list |> str()
 ```
