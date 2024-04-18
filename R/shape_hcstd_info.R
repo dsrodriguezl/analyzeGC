@@ -46,7 +46,6 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import ggtext
-#' @import performance
 #'
 #' @examples
 #'
