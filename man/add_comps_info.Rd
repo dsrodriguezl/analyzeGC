@@ -11,7 +11,7 @@ add_comps_info(samples.list, comps.info.list)
 \link{adjust_abundance}}
 
 \item{comps.info.list}{List of data frames with the compounds' information,
-as obtained with \link{get_chc_info}.}
+as obtained with \link{get_hc_info}.}
 }
 \description{
 Add the compounds' information to the aligned data sets within a list

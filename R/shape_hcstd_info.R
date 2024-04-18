@@ -46,6 +46,9 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import ggtext
+#' @importFrom stats lm
+#' @importFrom stats as.formula
+#' @importFrom stats predict
 #'
 #' @examples
 #'
@@ -225,32 +228,32 @@ shape_hcstd_info <- function(comps_id.STD
       # Is the predicted mean RT bigger than that of standards with longer
       # chain lengths?
       bigger_RT_than_longer_cl <- std.info |>
-        filter(mean_RT < project_std_df |>
-                      filter(Chain.length == cl) |>
-                      pull(mean_RT)) |>
+        filter(get("mean_RT") < project_std_df |>
+                      filter(get("Chain.length") == cl) |>
+                      pull("mean_RT")) |>
         (function(x) {
           if(nrow(x) > 0) {
             !any(x |>
-                   pull(Chain.length) <
+                   pull("Chain.length") <
                    project_std_df |>
-                   filter(Chain.length == cl) |>
-                   pull(Chain.length))
+                   filter(get("Chain.length") == cl) |>
+                   pull("Chain.length"))
           } else { FALSE }
         })()
 
       # Is the predicted mean RT smaller than that of standards with shorter
       # chain lengths?
       smaller_RT_than_shorter_cl <-  std.info |>
-        filter(mean_RT > project_std_df |>
-                 filter(Chain.length == cl) |>
-                 pull(mean_RT)) |>
+        filter(get("mean_RT") > project_std_df |>
+                 filter(get("Chain.length") == cl) |>
+                 pull("mean_RT")) |>
         (function(x) {
           if(nrow(x) > 0) {
             !any(x |>
-                   pull(Chain.length) >
+                   pull("Chain.length") >
                    project_std_df |>
-                   filter(Chain.length == cl) |>
-                   pull(Chain.length))
+                   filter(get("Chain.length") == cl) |>
+                   pull("Chain.length"))
           } else { FALSE}
         })()
 
@@ -270,7 +273,7 @@ shape_hcstd_info <- function(comps_id.STD
                       , "\nThese simulated standard will be removed from the"
                       , "standards information data frame."))
         project_std_df <- project_std_df |>
-          filter(Chain.length != cl)
+          filter(get("Chain.length") != cl)
       }
     }
 
