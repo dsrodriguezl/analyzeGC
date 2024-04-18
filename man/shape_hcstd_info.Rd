@@ -9,7 +9,8 @@ shape_hcstd_info(
   aligned_std,
   short_long_splitted = TRUE,
   short_std_pattern,
-  long_std_pattern
+  long_std_pattern,
+  project_std = NULL
 )
 }
 \arguments{
@@ -36,6 +37,16 @@ so.}
 \item{long_std_pattern}{Character string pattern to identify the long chain-length standards (from
 C21). The function relies on the dplyr::starts_with selection helper to do
 so.}
+
+\item{project_std}{Numeric vector indicating the chain length of n-alkanes that are not present
+in the standards. A linear projection will be performed to predict the mean
+RT of n-alkanes with the specified chain lengths. The simulated n-alkanes
+mean RTs will be added to the final standards' information data frame.
+This is useful in case the standards do not include n-alkanes around some
+peaks of interest within the samples, thus impeding the calculation of the
+retention index of such peaks. Note that a linear projection might not be
+adequate, since the RT separation between n-alkanes is not constant
+along the GC-run. It is always better to have real standards.}
 }
 \description{
 Function to shape the data frame holding the compound

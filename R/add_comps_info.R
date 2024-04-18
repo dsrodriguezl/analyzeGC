@@ -4,7 +4,7 @@
 #' [adjust_abundance]
 #'
 #' @param comps.info.list List of data frames with the compounds' information,
-#' as obtained with [get_chc_info].
+#' as obtained with [get_hc_info].
 #'
 #' @import dplyr
 #' @import tibble
