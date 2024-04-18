@@ -1,4 +1,4 @@
-#' @title get the CHC information data frame
+#' @title get information f hydrocarbons
 #'
 #' @description Function to generate the data frame holding the compound
 #' information for the hydrocarbons present in each sample, within a table
@@ -23,6 +23,9 @@
 #' If a peak contains more than one compound with unsaturations /
 #' methyl-branches, they must be separated by a ";" (e.g. C20_Me_13-;15-
 #' for a peak containing both 13-Me C20 and 15-Me C20).
+#' In the case of n-alkanes, or a hydrocabron for which the position of its
+#' unsaturation(s) is not known, this must be specified with "NA"
+#' (e.g. C20_ane_NA, or C20_ene_NA)
 #'
 #'
 #' ## Class abbreviations accepted by the function:
@@ -40,7 +43,7 @@
 #' @import tidyr
 #'
 #' @export
-get_chc_info <- function(comps.id) {
+get_hc_info <- function(comps.id) {
 
   # Handle case where no compound has been identified
   if (comps.id$Compound |> str_subset("_") |> length() == 0) {
