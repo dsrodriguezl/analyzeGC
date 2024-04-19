@@ -33,22 +33,27 @@
 #' so.
 #'
 #' @param project_std
-#' Numeric vector indicating the chain length of n-alkanes that are not present
-#' in the standards. A linear projection will be performed to predict the mean
-#' RT of n-alkanes with the specified chain lengths. The simulated n-alkanes
-#' mean RTs will be added to the final standards' information data frame.
-#' This is useful in case the standards do not include n-alkanes around some
-#' peaks of interest within the samples, thus impeding the calculation of the
-#' retention index of such peaks. Note that a linear projection might not be
-#' adequate, since the RT separation between n-alkanes is not constant
-#' along the GC-run. It is always better to have real standards.
+#' Numeric vector indicating the chain length of n-alkanes for which to
+#' simulate the mean RTs. This is useful in case the standards do not include
+#' n-alkanes around some peaks of interest within the samples, thus impeding
+#' the calculation of the retention index of such peaks.
+#' The simulation of the mean RTs is done by projecting the median distance
+#' between neighboring standard peaks. The median distance between standards is
+#' multiplied by the difference in chain length between the n-alkane to
+#' simulate and the closest standard peak, to calculate the mean RT distance
+#' between the corresponding peaks.
+#' If the simulated n-alkane has a shorter chain length than all the standards,
+#' the mean RT distance is subtracted from the mean RT of the closest standard
+#' to calculate the mean RT value of the simulated n-alkane.
+#' Note that this is not the most adequate procedure as the RT distance between
+#' neighboring n-alkane peaks is not constant along a GC-run. It is always
+#' better to have real standards.
 #'
 #' @import dplyr
+#' @import purrr
 #' @import ggplot2
 #' @import ggtext
-#' @importFrom stats lm
-#' @importFrom stats as.formula
-#' @importFrom stats predict
+#' @importFrom stats median
 #'
 #' @examples
 #'
@@ -208,74 +213,62 @@ shape_hcstd_info <- function(comps_id.STD
     filter(!is.na(get("Compound")))
 
   if(!is.null(project_std)) {
-    linear_model <- lm(as.formula("mean_RT ~ Chain.length")
-                       , data = std.info)
 
     project_std_df <- data.frame("Compound" = paste0("STD-C"
-                                                   , project_std)
+                                                     , project_std)
+                                 , "mean_RT" = as.numeric(NA)
                                  , "Chain.length" = project_std |>
                                    as.integer()
                                  , "Class" = "STD"
-                                 , "Mod.position" = "NA") |>
-      (function(x) {
-        x |>
-          mutate("mean_RT" = predict(linear_model
-                                   , newdata = x)) |>
-          relocate(contains("mean_RT"), .after = "Compound")
-      })()
+                                 , "Mod.position" = "NA")
 
-    for (cl in project_std) {
-      # Is the predicted mean RT bigger than that of standards with longer
-      # chain lengths?
-      bigger_RT_than_longer_cl <- std.info |>
-        filter(get("mean_RT") < project_std_df |>
-                      filter(get("Chain.length") == cl) |>
-                      pull("mean_RT")) |>
-        (function(x) {
-          if(nrow(x) > 0) {
-            !any(x |>
-                   pull("Chain.length") <
-                   project_std_df |>
-                   filter(get("Chain.length") == cl) |>
-                   pull("Chain.length"))
-          } else { FALSE }
-        })()
+    m_dif  <- std.info |>
+      pull("mean_RT") |>
+      diff() |>
+      median()
 
-      # Is the predicted mean RT smaller than that of standards with shorter
-      # chain lengths?
-      smaller_RT_than_shorter_cl <-  std.info |>
-        filter(get("mean_RT") > project_std_df |>
-                 filter(get("Chain.length") == cl) |>
-                 pull("mean_RT")) |>
-        (function(x) {
-          if(nrow(x) > 0) {
-            !any(x |>
-                   pull("Chain.length") >
-                   project_std_df |>
-                   filter(get("Chain.length") == cl) |>
-                   pull("Chain.length"))
-          } else { FALSE}
-        })()
+    project_std_df <- project_std |>
+      lapply(function(x) {
+        bigger <- std.info |>
+          filter(get("Chain.length") > x)
 
-      # If any of these is true, remove the predicted value and give a warning
-      if (any(bigger_RT_than_longer_cl, smaller_RT_than_shorter_cl)) {
-        warning(paste("Mean RT predicted for"
-                      , paste0("C", cl)
-                      , "is wrong!"
-                      , case_when(isTRUE(bigger_RT_than_longer_cl) ~
-                                    paste("\nIt is bigger than the mean RT of"
-                                          , "standards with longer"
-                                          , "chain lengths")
-                                  , isTRUE(smaller_RT_than_shorter_cl) ~
-                                    paste("\nIt is smalles than the mean RT of"
-                                          , "standards with shorter"
-                                          , "chain lengths"))
-                      , "\nThese simulated standard will be removed from the"
-                      , "standards information data frame."))
-        project_std_df <- project_std_df |>
-          filter(get("Chain.length") != cl)
-      }
-    }
+        smaller <- std.info |>
+          filter(get("Chain.length") < x)
+
+        if (nrow(smaller) > 0) {
+          bigger_exist <- nrow(bigger) > 0
+
+          df <- smaller |>
+            slice(nrow(smaller)) |>
+            (function(y) {
+              project_std_df |>
+                filter(get("Chain.length") == x) |>
+                mutate("mean_RT" =
+                         (y |>
+                            pull("mean_RT") +
+                            (abs(y |>
+                                   pull("Chain.length") - x) * m_dif)))
+            })()
+        }
+
+        if (nrow(bigger) > 0) {
+          df <- bigger |>
+            slice(1) |>
+            (function(y) {
+              project_std_df |>
+                filter(get("Chain.length") == x) |>
+                mutate("mean_RT" =
+                         (y |>
+                            pull("mean_RT") -
+                            ((y |>
+                                pull("Chain.length") - x) * m_dif)))
+
+            })()
+        }
+        df
+      }) |>
+      reduce(rbind)
+
 
     std.info <- std.info |>
       rows_insert(project_std_df) |>
