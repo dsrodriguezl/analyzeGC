@@ -38,15 +38,21 @@ so.}
 C21). The function relies on the dplyr::starts_with selection helper to do
 so.}
 
-\item{project_std}{Numeric vector indicating the chain length of n-alkanes that are not present
-in the standards. A linear projection will be performed to predict the mean
-RT of n-alkanes with the specified chain lengths. The simulated n-alkanes
-mean RTs will be added to the final standards' information data frame.
-This is useful in case the standards do not include n-alkanes around some
-peaks of interest within the samples, thus impeding the calculation of the
-retention index of such peaks. Note that a linear projection might not be
-adequate, since the RT separation between n-alkanes is not constant
-along the GC-run. It is always better to have real standards.}
+\item{project_std}{Numeric vector indicating the chain length of n-alkanes for which to
+simulate the mean RTs. This is useful in case the standards do not include
+n-alkanes around some peaks of interest within the samples, thus impeding
+the calculation of the retention index of such peaks.
+The simulation of the mean RTs is done by projecting the median distance
+between neighboring standard peaks. The median distance between standards is
+multiplied by the difference in chain length between the n-alkane to
+simulate and the closest standard peak, to calculate the mean RT distance
+between the corresponding peaks.
+If the simulated n-alkane has a shorter chain length than all the standards,
+the mean RT distance is subtracted from the mean RT of the closest standard
+to calculate the mean RT value of the simulated n-alkane.
+Note that this is not the most adequate procedure as the RT distance between
+neighboring n-alkane peaks is not constant along a GC-run. It is always
+better to have real standards.}
 }
 \description{
 Function to shape the data frame holding the compound

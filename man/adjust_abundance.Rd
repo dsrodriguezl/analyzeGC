@@ -14,7 +14,10 @@ from \link{shape_hcstd_info}.
 It must contains columns "mean_RT" and "area_correction".}
 }
 \description{
-Adjust abundance values within samples and display diagnostic plots
+This function can be used to correct for the difference in performance of
+the total count of ions for the different peaks, in the case of the analysis
+of hydrocarbon mixtures. The adjustment is based on the total ion counts for
+the peaks detected in n-alkane analytical standard solutions.
 }
 \examples{
 
