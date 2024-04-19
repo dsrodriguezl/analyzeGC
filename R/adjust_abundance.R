@@ -1,5 +1,12 @@
 #' @title Adjust abundance values within samples and display diagnostic plots
 #'
+#' @description
+#' This function can be used to correct for the difference in performance of
+#' the total count of ions for the different peaks, in the case of the analysis
+#' of hydrocarbon mixtures. The adjustment is based on the total ion counts for
+#' the peaks detected in n-alkane analytical standard solutions.
+#'
+#'
 #' @param aligned_data Aligned data set, as obtained with [recalculate_meanRT].
 #'
 #' @param std.info Data frame with the standards information, as obtained
