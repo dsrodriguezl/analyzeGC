@@ -16,13 +16,26 @@
 #' @export
 assess_duplicated_compounds <- function(group.tables.list, plot = T) {
   # Find duplicated compound names in the group tables
-  duplicated_compounds <- group.tables.list |>
-    pluck(1) |>
-    lapply(filter, duplicated(get("Compound"))) |>
-    lapply(select, "Compound") |>
-    lapply(unique) |>
-    purrr::reduce(merge, sort = F, all = T) |>
-    pull("Compound")
+
+  ## If group.tables.list is a list of data frames
+  if(group.tables.list |> pluck(1) |> is.data.frame()) {
+    duplicated_compounds <- group.tables.list |>
+      pluck(1) |>
+      filter(duplicated(get("Compound"))) |>
+      pull("Compound") |>
+      unique()
+  }
+
+  ## If group.tables.list is a list of lists of data frames
+  if(group.tables.list |> pluck(1) |> pluck(1) |> is.data.frame()) {
+    duplicated_compounds <- group.tables.list |>
+      pluck(1) |>
+      lapply(filter, duplicated(get("Compound"))) |>
+      lapply(select, "Compound") |>
+      lapply(unique) |>
+      purrr::reduce(merge, sort = F, all = T) |>
+      pull("Compound")
+  }
 
   # Empty list to register the presence data of each duplicated compound
   group_presence <- list()
@@ -30,19 +43,40 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
   # Loop over each compound name in duplicated_compounds
   for (compound_name in duplicated_compounds) {
 
+
     compound_table <- group.tables.list |>
       lapply(function(group.table) {
-        group.table |>
-          pluck("Area") |>
-          # Filter rows where the "Compound" column is equal to the current
-          # `compound_name`
-          filter(get("Compound") == compound_name) |>
-          # select columns from "Peak" to "present"
-          select(contains("Peak"):contains("present")) |>
-          # Add a new column called "count" that is equal to 1 if "present"
-          # is TRUE, otherwise it is equal to 0
-          mutate("count" = ifelse(get("present") == T, 1, 0)
-                 , .keep = "unused")
+        ## If group.table is a data frame
+        if(group.table |> is.data.frame()) {
+          group.table <- group.table |>
+            # Filter rows where the "Compound" column is equal to the current
+            # `compound_name`
+            filter(get("Compound") == compound_name) |>
+            # select columns from "Peak" to "present"
+            select(contains("Peak"):contains("present")) |>
+            # Add a new column called "count" that is equal to 1 if "present"
+            # is TRUE, otherwise it is equal to 0
+            mutate("count" = ifelse(get("present") == T, 1, 0)
+                   , .keep = "unused")
+        }
+
+        ## If group.table is a list of data frames
+        if(group.table |> pluck(1) |> is.data.frame()) {
+          group.table <- group.table |>
+            pluck("Area") |>
+            # Filter rows where the "Compound" column is equal to the current
+            # `compound_name`
+            filter(get("Compound") == compound_name) |>
+            # select columns from "Peak" to "present"
+            select(contains("Peak"):contains("present")) |>
+            # Add a new column called "count" that is equal to 1 if "present"
+            # is TRUE, otherwise it is equal to 0
+            mutate("count" = ifelse(get("present") == T, 1, 0)
+                   , .keep = "unused")
+        }
+
+        group.table
+
       }) |>
       reduce(rbind) |>
       arrange("RI")
@@ -95,26 +129,56 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
     # Filter rows  where the "Compound"column is equal to compound_name and
     # select the "present" column
     compound_table <- group.tables.list |>
-      lapply(pluck, "Area") |>
-      lapply(filter, get("Compound") == compound_name) |>
-      lapply(select, contains("present")) |>
-      # Combine all tables into one
-      reduce(cbind) |>
-      # Set column names to the names of group.tables.list
-      magrittr::set_colnames(names(group.tables.list)) |>
-      # Add new columns called "Peak" and "RI"
-      mutate("Peak" = group.tables.list |>
-               lapply(pluck, "Area") |>
-               lapply(filter, get("Compound") == compound_name) |>
-               pluck(1) |>
-               pull("Peak")
-             , "RI" = group.tables.list  |>
-               lapply(pluck, "Area") |>
-               lapply(filter, get("Compound") == compound_name) |>
-               pluck(1) |>
-               pull("RI")) |>
-      # Set columns order
-      select(contains("Peak"), contains("RI"), everything())
+      (function(l) {
+        ## If l is a list of data frames
+        if(l |> pluck(1) |> is.data.frame()) {
+          l <- l |>
+            lapply(filter, get("Compound") == compound_name) |>
+            lapply(select, contains("present")) |>
+            # Combine all tables into one
+            reduce(cbind) |>
+            # Set column names to the names of group.tables.list
+            magrittr::set_colnames(names(l)) |>
+            # Add new columns called "Peak" and "RI"
+            mutate("Peak" = l |>
+                     lapply(filter, get("Compound") == compound_name) |>
+                     pluck(1) |>
+                     pull("Peak")
+                   , "RI" = l  |>
+                     lapply(filter, get("Compound") == compound_name) |>
+                     pluck(1) |>
+                     pull("RI")) |>
+            # Set columns order
+            select(contains("Peak"), contains("RI"), everything())
+        }
+
+        ## If l is a list of lists of data frames
+        if(l |> pluck(1) |> pluck(1) |> is.data.frame()) {
+          l <- l |>
+            lapply(pluck, "Area") |>
+            lapply(filter, get("Compound") == compound_name) |>
+            lapply(select, contains("present")) |>
+            # Combine all tables into one
+            reduce(cbind) |>
+            # Set column names to the names of group.tables.list
+            magrittr::set_colnames(names(l)) |>
+            # Add new columns called "Peak" and "RI"
+            mutate("Peak" = l |>
+                     lapply(pluck, "Area") |>
+                     lapply(filter, get("Compound") == compound_name) |>
+                     pluck(1) |>
+                     pull("Peak")
+                   , "RI" = l  |>
+                     lapply(pluck, "Area") |>
+                     lapply(filter, get("Compound") == compound_name) |>
+                     pluck(1) |>
+                     pull("RI")) |>
+            # Set columns order
+            select(contains("Peak"), contains("RI"), everything())
+        }
+
+        l
+      })()
 
     # Set row names to the vlaues in the "Peak" column
     row.names(compound_table) <- compound_table$Peak
