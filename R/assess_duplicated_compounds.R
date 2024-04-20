@@ -9,9 +9,24 @@
 #' @param plot Logical value indicating whether to generate density distribution
 #' plots for each compound (default: TRUE)
 #'
-#' @import dplyr
-#' @import purrr
-#' @import ggplot2
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom dplyr slice
+#' @importFrom dplyr contains
+#' @importFrom dplyr mutate
+#' @importFrom dplyr everything
+#' @importFrom dplyr arrange
+#' @importFrom purrr pluck
+#' @importFrom purrr reduce
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_label
+#' @importFrom ggplot2 scale_y_reverse
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 labs
+#' @importFrom ggdist stat_slab
+#' @importFrom magrittr set_colnames
 #'
 #' @export
 assess_duplicated_compounds <- function(group.tables.list, plot = T) {
@@ -33,7 +48,7 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
       lapply(filter, duplicated(get("Compound"))) |>
       lapply(select, "Compound") |>
       lapply(unique) |>
-      purrr::reduce(merge, sort = F, all = T) |>
+      reduce(merge, sort = F, all = T) |>
       pull("Compound")
   }
 
@@ -102,7 +117,7 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
     if (plot == T) {
       p <- compound_table |>
         ggplot(aes(y = get("RI"))) +
-        ggdist::stat_slab() +
+        stat_slab() +
         geom_label(aes(x = 0.5
                        , label = paste(paste(get("Peak")
                                              , get("RI")
@@ -138,7 +153,7 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
             # Combine all tables into one
             reduce(cbind) |>
             # Set column names to the names of group.tables.list
-            magrittr::set_colnames(names(l)) |>
+            set_colnames(names(l)) |>
             # Add new columns called "Peak" and "RI"
             mutate("Peak" = l |>
                      lapply(filter, get("Compound") == compound_name) |>
@@ -161,7 +176,7 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
             # Combine all tables into one
             reduce(cbind) |>
             # Set column names to the names of group.tables.list
-            magrittr::set_colnames(names(l)) |>
+            set_colnames(names(l)) |>
             # Add new columns called "Peak" and "RI"
             mutate("Peak" = l |>
                      lapply(pluck, "Area") |>

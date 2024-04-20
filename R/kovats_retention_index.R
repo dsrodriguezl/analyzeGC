@@ -14,7 +14,15 @@
 #' that will be used in the calculation of retention indices, as obtained with
 #' [shape_hcstd_info].
 #'
-#' @import dplyr
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom dplyr mutate
+#' @importFrom dplyr pull
+#' @importFrom dplyr contains
+#' @importFrom dplyr everything
+#' @importFrom dplyr arrange
+#' @importFrom dplyr bind_cols
+#' @importFrom tibble as_tibble
 #'
 #' @examples
 #' # Calculate the retention index for a single data set

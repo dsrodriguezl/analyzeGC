@@ -40,11 +40,16 @@
 #' @param row_merging_threshold
 #' Numeric value indicating the threshold for the merging rows step.
 #'
-#' @import tidyr
-#' @import dplyr
-#' @import purrr
-#' @import stringr
-#' @import GCalignR
+#' @importFrom GCalignR align_chromatograms
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom dplyr contains
+#' @importFrom dplyr mutate
+#' @importFrom purrr list_c
+#' @importFrom purrr set_names
+#' @importFrom stringr str_subset
+#' @importFrom withr local_seed
 #'
 #' @examples
 #'

@@ -39,8 +39,17 @@
 #' The rest of the data frame should be just as it was extracted from the RT
 #' entry of the aligned standards.
 #'
-#' @import dplyr
-#' @import tidyr
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom tibble as_tibble
+#' @importFrom stringr str_subset
+#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_remove
+#' @importFrom stringr str_remove_all
 #'
 #' @export
 get_hc_info <- function(comps.id) {

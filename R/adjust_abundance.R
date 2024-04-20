@@ -13,9 +13,24 @@
 #' from [shape_hcstd_info].
 #' It must contains columns "mean_RT" and "area_correction".
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import tibble
+#'
+#' @importFrom tibble tibble
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom dplyr contains
+#' @importFrom dplyr mutate
+#' @importFrom dplyr mutate_at
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_cols
+#' @importFrom dplyr vars
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_col
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 labs
 #'
 #' @examples
 #'

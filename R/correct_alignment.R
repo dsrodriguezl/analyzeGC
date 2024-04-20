@@ -28,7 +28,10 @@
 #' direction ("down" or "up") in which the peak value should be displaced along
 #' the column of the indicated sample.
 #'
-#' @import dplyr
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr pull
+#' @importFrom dplyr filter
 #'
 #' @examples
 #'

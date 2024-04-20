@@ -11,9 +11,16 @@
 #' @param grouping.info Data frame with information of the samples, within which
 #' the group labels can be found.
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import purrr
+#' @importFrom dplyr select
+#' @importFrom dplyr all_of
+#' @importFrom dplyr filter
+#' @importFrom dplyr mutate
+#' @importFrom dplyr pull
+#' @importFrom dplyr mutate_if
+#' @importFrom dplyr relocate
+#' @importFrom dplyr contains
+#' @importFrom tibble is_tibble
+#' @importFrom purrr pluck
 #'
 #' @export
 retrieve_group_tables <- function(group.label

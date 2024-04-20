@@ -14,8 +14,11 @@
 #' List of data frames with integration results per sample, as produced by
 #' [import_mh_data]
 #'
-#' @import dplyr
-#' @import purrr
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom dplyr filter
+#' @importFrom purrr keep
+#' @importFrom purrr compact
 #'
 #' @examples
 #'

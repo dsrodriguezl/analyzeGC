@@ -9,9 +9,13 @@
 #'
 #' @param fusion.list List of data frames specifying the fusions to be performed.
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import purrr
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr mutate
+#' @importFrom tibble is_tibble
+#' @importFrom tibble as_tibble
+#' @importFrom purrr pluck
 #'
 #' @export
 fuse_all_peaks <- function(master.table, fusion.list){

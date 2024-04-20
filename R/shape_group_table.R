@@ -4,9 +4,11 @@
 #' information about compounds and their peak areas and retention times, as
 #' obtained with [kovats_retention_index].
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import purrr
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr arrange
+#' @importFrom tibble as_tibble
+#' @importFrom purrr discard_at
 
 #' @export
 shape_group_table <- function(samples_plus_ri) {

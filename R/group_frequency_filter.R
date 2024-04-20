@@ -12,8 +12,9 @@
 #' the minimum frequency threshold, a compound should have within the group
 #' table, to not be erased.
 #'
-#' @import dplyr
-#' @import tidyr
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr filter
 #'
 #' @export
 group_frequency_filter <- function(group_table, threshold = 0.5){

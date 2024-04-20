@@ -17,8 +17,9 @@
 #' value of should be displaced within the column of the indicated sample
 #' ("up" or "down").
 #'
-#' @import dplyr
-#' @import tidyr
+#' @importFrom dplyr select
+#' @importFrom dplyr all_of
+#' @importFrom dplyr filter
 #'
 #' @export
 move_one_peak <- function(df, Sample, Peak, Dir){
@@ -27,7 +28,7 @@ move_one_peak <- function(df, Sample, Peak, Dir){
 
   print(paste("Target peak:", Peak, sep = " "))
   # Move the selected peak for the selected sample
-  ## If the movemvent should be toward one row before
+  ## If the movement should be toward one row before
   if (Dir == "up") {
     # Define the column where the compound will be moved, based on Dir value
     new_col <- ncol(df |> select(1:all_of(Peak))) - 1 |> as.integer()

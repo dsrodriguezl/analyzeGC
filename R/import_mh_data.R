@@ -16,9 +16,11 @@
 #' Each tibble on the list corresponds to the CSV file of an individual
 #' sample.
 #'
-#' @import stringr
-#' @import readr
-#' @import dplyr
+#' @importFrom stringr str_split
+#' @importFrom stringr str_subset
+#' @importFrom stringr str_remove_all
+#' @importFrom readr read_csv
+#' @importFrom dplyr rename
 #'
 #' @examples
 #'

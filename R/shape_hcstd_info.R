@@ -49,11 +49,33 @@
 #' neighboring n-alkane peaks is not constant along a GC-run. It is always
 #' better to have real standards.
 #'
-#' @import dplyr
-#' @import purrr
-#' @import ggplot2
-#' @import ggtext
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom dplyr slice
+#' @importFrom dplyr contains
+#' @importFrom dplyr starts_with
+#' @importFrom dplyr everything
+#' @importFrom dplyr all_of
+#' @importFrom dplyr bind_cols
+#' @importFrom dplyr arrange
+#' @importFrom dplyr rows_insert
+#' @importFrom tibble as_tibble
+#' @importFrom stringr str_remove
 #' @importFrom stats median
+#' @importFrom purrr reduce
+#' @importFrom tidyr drop_na
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_vline
+#' @importFrom ggplot2 geom_step
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 theme
+#' @importFrom ggtext geom_richtext
+#' @importFrom ggtext element_markdown
+#' @importFrom ggside geom_ysideboxplot
 #'
 #' @examples
 #'
@@ -276,7 +298,7 @@ shape_hcstd_info <- function(comps_id.STD
   }
 
   std.info <- std.info |>
-    mutate("median_area" = stats::median(get("area"), na.rm = T)
+    mutate("median_area" = median(get("area"), na.rm = T)
            , "area_correction" = get("area") / get("median_area")
            , "corrected_area" = get("area") / get("area_correction"))
 
@@ -308,7 +330,7 @@ shape_hcstd_info <- function(comps_id.STD
                   , size = 3.5
                   , angle = 270
                   , fontface = "bold") +
-    ggside::geom_ysideboxplot(aes(x = NULL)
+    geom_ysideboxplot(aes(x = NULL)
                               , orientation = "x") +
     theme_classic() +
     labs(title = paste0("Abundance of standards (observed an corrected) vs"

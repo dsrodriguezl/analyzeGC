@@ -9,7 +9,15 @@
 #'
 #' @param peaks_to_fuse A character vector specifying the peaks to be fused.
 #'
-#' @import dplyr
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr rows_update
+#' @importFrom dplyr relocate
+#' @importFrom tibble as_tibble
+#' @importFrom stats median
+#' @importFrom stats na.omit
+#' @importFrom stats median
 #'
 #' @export
 fuse_peaks <- function(master.table, peaks_to_fuse){
@@ -63,7 +71,7 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   new_RI <- master.table |>
     filter(get("Peak") %in% peaks_to_fuse) |>
     pull("RI") |>
-    stats::median() |>
+    median() |>
     # Round RI and ensure that is an integer
     round(digits = 0) |>
     as.integer()
@@ -89,20 +97,20 @@ fuse_peaks <- function(master.table, peaks_to_fuse){
   # the peaks that are being fused
   if (length(unique(peaks_sum$Compound)) != 1) {
     peaks_sum$Compound <- peaks_sum$Compound |>
-      stats::na.omit() |>
+      na.omit() |>
       paste(collapse = "|") |>
       rep(length(peaks_sum$Compound))
 
     if (length(unique(peaks_sum$Class)) != 1) {
       peaks_sum$Class <- peaks_sum$Class |>
-        stats::na.omit() |>
+        na.omit() |>
         paste(collapse = "|") |>
         rep(length(peaks_sum$Class))
     }
 
     if (length(unique(peaks_sum$Mod.position)) != 1) {
       peaks_sum$Mod.position <- peaks_sum$Mod.position |>
-        stats::na.omit() |>
+        na.omit() |>
         paste(collapse = "|") |>
         rep(length(peaks_sum$Mod.position))
     }

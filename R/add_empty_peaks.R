@@ -25,8 +25,10 @@
 #' whether the empty peak should be created as the row before or after the
 #' reference peak.
 #'
-#' @import tibble
+#' @importFrom tibble add_column
 #' @importFrom rlang :=
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
 #'
 #' @examples
 #'

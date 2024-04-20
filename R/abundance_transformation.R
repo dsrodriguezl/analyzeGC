@@ -22,9 +22,20 @@
 #' calibration plots for each sample column when `transformation` is set to
 #' "scale".
 #'
-#' @import dplyr
-#' @import purrr
-#' @import ggplot2
+#' @importFrom dplyr select_if
+#' @importFrom dplyr select
+#' @importFrom dplyr all_of
+#' @importFrom dplyr bind_cols
+#' @importFrom stats lm
+#' @importFrom stats predict
+#' @importFrom purrr map
+#' @importFrom purrr map2
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 geom_abline
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 theme_classic
 #'
 #' @export
 abundance_transformation <- function(master.table

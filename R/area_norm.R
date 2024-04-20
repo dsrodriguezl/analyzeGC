@@ -15,6 +15,8 @@
 #'
 #' @param aligned_data An aligned data set as produced by [align_chromatograms2]
 #'
+#' @importFrom GCalignR norm_peaks
+#'
 #' @examples
 #'
 #' # Normalize a single aligned data set
@@ -30,7 +32,7 @@
 #' @export
 area_norm <- function(aligned_data){
   if (length(aligned_data) > 2) {
-    df_area_norm <- GCalignR::norm_peaks(data = aligned_data
+    df_area_norm <- norm_peaks(data = aligned_data
                                , rt_col_name = "RT"
                                , conc_col_name = "Area") |>
       t() |> as.data.frame()

@@ -8,7 +8,7 @@
 #' @param filtered_data
 #' An aligned data set list, as obtained with [trace_comps].
 #'
-#' @import dplyr
+#' @importFrom dplyr filter
 #'
 #' @examples
 #' # Removing the NA compounds from a single data set

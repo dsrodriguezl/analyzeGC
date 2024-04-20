@@ -2,9 +2,12 @@
 #'
 #' @param aligned_data Aligned data set as obtained with [correct_alignment]
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import tibble
+#' @importFrom dplyr select
+#' @importFrom dplyr all_of
+#' @importFrom dplyr mutate
+#' @importFrom dplyr bind_cols
+#' @importFrom dplyr contains
+#' @importFrom tibble as_tibble
 #'
 #' @examples
 #'

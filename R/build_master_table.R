@@ -9,10 +9,24 @@
 #' The group tables must contain an integer RI column, indicating the retention
 #' index of the peaks (rows).
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import stringr
-#' @import purrr
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr arrange
+#' @importFrom dplyr across
+#' @importFrom dplyr relocate
+#' @importFrom dplyr mutate
+#' @importFrom dplyr mutate_at
+#' @importFrom dplyr vars
+#' @importFrom dplyr filter
+#' @importFrom dplyr rows_update
+#' @importFrom magrittr set_colnames
+#' @importFrom tibble is_tibble
+#' @importFrom tibble as_tibble
+#' @importFrom stringr str_detect
+#' @importFrom stringr str_remove_all
+#' @importFrom purrr pluck
+#' @importFrom purrr keep
+#' @importFrom purrr reduce
 #'
 #' @export
 build_master_table <- function(tables.list) {
@@ -75,9 +89,9 @@ build_master_table <- function(tables.list) {
                    , sort = F) |>
             arrange(across(contains("RI")))
           df |>
-            magrittr::set_colnames(df |>
-                                     colnames() |>
-                                     str_remove_all("RT.|Area."))
+            set_colnames(df |>
+                           colnames() |>
+                           str_remove_all("RT.|Area."))
         })
     }
 

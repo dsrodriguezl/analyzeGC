@@ -6,8 +6,11 @@
 #' @param comps.info.list List of data frames with the compounds' information,
 #' as obtained with [get_hc_info].
 #'
-#' @import dplyr
-#' @import tibble
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr everything
+#' @importFrom dplyr bind_cols
+#' @importFrom tibble as_tibble
 
 #' @export
 add_comps_info <- function(samples.list, comps.info.list) {

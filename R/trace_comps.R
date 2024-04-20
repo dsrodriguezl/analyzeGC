@@ -13,7 +13,12 @@
 #' @param threshold A numeric threshold, indicating the minimum % of a sample a
 #' peak must represent to remain in the data set.
 #'
-#' @import dplyr
+#' @importFrom dplyr select
+#' @importFrom dplyr contains
+#' @importFrom dplyr bind_cols
+#' @importFrom dplyr filter
+#' @importFrom dplyr mutate
+#' @importFrom dplyr all_of
 #'
 #' @export
 trace_comps <- function(unfiltered_group, threshold) {

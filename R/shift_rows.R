@@ -10,7 +10,7 @@
 #'
 #' @return The modified data frame.
 #'
-#' @import dplyr
+#' @importFrom dplyr select
 #' @importFrom rlang !!
 #' @importFrom rlang enquo
 #'

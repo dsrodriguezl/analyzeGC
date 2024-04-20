@@ -255,7 +255,7 @@ use_data(comps_id_list, overwrite = T)
 
 # comps_info_list ----
 comps_info_list <- comps_id_list |>
-  lapply(get_chc_info)
+  lapply(get_hc_info)
 
 use_data(comps_info_list, overwrite = T)
 

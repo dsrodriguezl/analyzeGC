@@ -40,9 +40,18 @@
 #'
 #' corrected: A corrected area data.frame, as obtained from [correct_alignment].
 #'
-#' @import dplyr
-#' @import tidyr
-#' @import ggplot2
+#' @importFrom dplyr mutate
+#' @importFrom dplyr starts_with
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_raster
+#' @importFrom ggplot2 scale_fill_viridis_c
+#' @importFrom ggplot2 guide_legend
+#' @importFrom ggplot2 ggtitle
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 theme_classic
+#' @importFrom viridis turbo
 #' @importFrom gplots heatmap.2
 #'
 #' @examples
@@ -89,10 +98,10 @@ diagnostic_heatmap <- function(data, title, alignment.type) {
     df_area_norm <- area_2_percent(data)
   }
 
-  heatmap_colors <- viridis::turbo(200)
+  heatmap_colors <- turbo(200)
 
   if (nrow(df_area_norm) > 1) {
-    p <- gplots::heatmap.2(as.matrix(df_area_norm |> log1p())
+    p <- heatmap.2(as.matrix(df_area_norm |> log1p())
                        , main = title
                        , srtCol = 90
                        , srtRow = 90
