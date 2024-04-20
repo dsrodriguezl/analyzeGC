@@ -16,16 +16,6 @@ specific type of data. However, the workflow it suggests and most of the
 functions can be used for analyzing other types of chemical ecology GC
 data.
 
-The package relies on the
-[GCalignR](https://github.com/mottensmann/GCalignR) package for the
-alignment of GC peaks data across samples, based on the retention time
-of the peaks. A wrapper around the `GCalignR::align_chromatograms` is
-defined within the package for this purpose.
-
-The rest of the functions of the package are oriented to aid the further
-correction of the peaks alignment, and preparation of the data for its
-statistical analysis within R.
-
 ## Installation
 
 You can install the development version of analyzeGC from
