@@ -32,8 +32,8 @@ shift_rows <- function(df, cols_to_shift, rows_to_shift, direction) {
   # Check if cols_to_shift is valid
   tryCatch({
     # Convert tidy selection to column names
-    cols_to_shift <- df %>%
-      select({{cols_to_shift}}) %>%
+    cols_to_shift <- df |>
+      select({{cols_to_shift}}) |>
       colnames()
   }, error = function(e) {
     stop("cols_to_shift is not a valid tidy selection")
