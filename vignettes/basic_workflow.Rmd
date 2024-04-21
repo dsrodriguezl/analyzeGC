@@ -214,7 +214,7 @@ This guarantees that using a given set of parameters for a given data set, you w
 ## The alignment parameters
 
 `align_chromatograms2()` requires the same parameters as `GCalignR::align_chromatograms()` to perform the alignment of your samples, which are very well explained in the original `GCalignR` [paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0198311), so please go and check it. 
-One here, is that I changed the name of the function parameters to more closely reflect the description of the corresponding alignment step in their paper (e.g. `max_diff_peak2mean` is now called `partial_alignment_threshold`).
+One difference here, is that the name of the function parameters were changed to more closely reflect the description of the corresponding alignment step in the paper (e.g. `max_diff_peak2mean` is now called `partial_alignment_threshold`).
 Moreover, these parameters have no default values, so you have to explicitly declare them for any specific alignment.
 
 But how do we determine the values we give to this parameters?
@@ -246,7 +246,7 @@ So, if we set this value as the `partial_alignment_threshold`, any pair of peaks
 This approach could be a very easy and precise way to set the parameter, with particular benefits for a data set with lots of samples that include lots of compounds, and my preferred approach to any realistic research data set.
 However, here I will take advantage on the fact that our data set is not so big (20 samples), and that I actually already know it very well.
 
-In consequence, I will set the `partial_alignment_threshold` to 0.05, as I  could not find, during my initial analysis of the data set, any separated hydrocarbon peaks within the samples with a separation lower than this value.
+In consequence, I will set the `partial_alignment_threshold` to 0.05, as I  could not find, during my initial analysis of the data set, any pair hydrocarbon peaks within the samples with a separation lower than this value.
 Nevertheless, we do not normally know such details of a data set before we have analyze it.
 Furthermore, the process to find out such details could be very time consuming and prone to errors, or not feasible with data sets of bigger size, and certainly not reproducible.
 So, I would recommend to not use such approach, and stick to the initially described approach in any realistic research scenario. 
@@ -259,7 +259,7 @@ But, as previously said, these approaches might not always be possible.
 Therefore, taking advantage of my previous knowledge on the data set we are using here, I decided to set the `row_merging_threshold` to 0.15, which was the maximum separation I could find between peaks of any given hydrocarbon among the samples.
 Again, this approach might only make sense (at least time-wise) with small data sets, and or data set about which we have a good prior knowledge, it might not be really reproducible, and may not apply to other  types of GC data (i.e. non-CHC  extracts).
 A less time-demanding version of this approach, and the one I would normally recommend, would be to find the maximum separation between homologous peaks across samples, considering only the peaks with the highest abundance.
-As bigger peaks tend to vary more in their RT, they are a good proxy for the upper limit of variation in RT across samples for a specific substance. 
+As bigger peaks tend to vary more in their RT, they are a good proxy for the upper limit of variation in RT across samples. 
 
 ## Perform the automatic alignment
 Now that we have decided the values we will use for our alignment parameters, we can use `align_chromatograms2()` to perform the automatic alignment of our data.
@@ -310,9 +310,9 @@ The goal of the automatic alignment is to minimize the number of miss-alignments
 At the same time, it is crucial to reliably find possible miss-alignments within the data frames, as the process of manually compare every peak across every sample in a data frame can be very time consuming, not reproducible, and prone to errors.
 
 The `GCalignR` package provides the `gc_heatmap()` function, which can generate two different types of heat maps, designed to help finding peaks that might not be properly aligned, and are properly explained among the package documentation.
-However, we have not found such plots particularly helpful to spot miss-alignments within the aligned data frames. In the lab we came with an alternative heat map plot, which displays the transformed normalized abundance of the peaks for every sample.
+However, my colleagues and I came with an alternative heat map plot, which displays the transformed normalized abundance of the peaks for every sample.
 Additionally, the samples are ordered regarding their similarity within the plot, via a hierarchical cluster that is displayed as a dendrogram. 
-For us, such plot has resulted considerably more useful for finding possible miss-alignments, while it also offers a first overall view of the data within each aligned group data set. 
+For us, such plot has resulted considerably more useful for finding possible miss-alignments, while it also offers a first overall view of the data within each aligned data set. 
 As a result, this package includes the function `diagnostic_heatmap()`, which produces this plot. 
 
 We just need to indicate the function that the data corresponds to an automatic alignment obtained from `align_chromatograms2()`, by setting the `alignment.type` parameter to "automatic".
@@ -400,7 +400,7 @@ the in-hive workers, and before P100 in that of the out-hive workers.
 `add_empty_peaks()` adds peaks with only 0s to the Area and RT data frames
 within an aligned data set, provided to the function as the `aligned_data`
 parameter. 
-The `empty.peaks` parameter, should be a list of data frames with two columns 
+The `empty.peaks` parameter should be a list of data frames with two columns 
 (`position.reference` and `direction`). 
 `position.reference` indicates a peak (e.g. P100) as a location reference
 within the aligned data set. 
@@ -502,11 +502,8 @@ peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
 peaks_movements
 ```
 
-Now we can apply `correct_alignment()` to each of the group data sets in 
-`aligned_samples_data_list`, using `lapply())`. 
-If we would only have a single aligned data set (like in the case of the
-standards), instead of a list of them, `correct_alignment()` could be directly
-use on it without `lapply()`
+Now we can apply `correct_alignment()` to each of the group data sets in `aligned_samples_data_list`, using `lapply())`. 
+If we would only have a single aligned data set (like in the case of the standards), instead of a list of them, `correct_alignment()` could be directly use on it without `lapply()`.
 
 ```{r results='hide'}
 corrected_samples_list <- lapply(aligned_samples_data_list
@@ -536,63 +533,37 @@ knitr::include_graphics(system.file("extdata/corrected-alignment-OW.png", packag
 ```
 
 ## Recalculate the mean RT
-Along the alignment correction process, the column holding the mean RT is 
-removed from the aligned data sets, which would no longer be correct due to the
-displacement of the peak values. 
-We need, in consequence, to recalculate the mean RT and add it to the data sets,
-for which we can use `recalculate_meanRT()`.
+Along the alignment correction process, the column holding the mean RT is removed from the aligned data sets, which would no longer be correct due to the displacement of the peak values. 
+We need, in consequence, to recalculate the mean RT and add it to the data sets, for which we can use `recalculate_meanRT()`.
 
-`recalculate_meanRT()` can be directly used on a corrected alignment obtained
-with `correct_alignment()`, but in the case of a list of them , like
-`corrected_samples_list`, we need to use `lapply()` to apply the function to 
-every data set contained in the list.
+`recalculate_meanRT()` can be directly used on a corrected alignment obtained with `correct_alignment()`.
+But in the case of a list of them , like `corrected_samples_list`, we need to use `lapply()` to apply the function to every data set contained in the list.
 
 ```{r}
 corrected_samples_list2 <- lapply(corrected_samples_list
                                   , recalculate_meanRT)
 ```
 
-`recalculate_meanRT()` does not only recalculate and add the mean RT to the 
-RT and Area data frames. 
-It also erases any empty row that was created during the alignment correction
-process, transform 0s into NAs within the RT data frames, and reorder the
-samples within the data frames. 
-In the new data frames, the samples are in descending order, regarding the sum
-of the abundances of the peaks they contain. 
+`recalculate_meanRT()` does not only recalculate and add the mean RT to the RT and Area data frames. 
+It also erases any empty row that was created during the alignment correction process, transform 0s into NAs within the RT data frames, and reorder the samples within the data frames. 
+In the new data frames, the samples are in descending order, regarding the sum of the abundances of the peaks they contain. 
 
 ```{r}
 corrected_samples_list2 |> 
   lapply(extract_RT)
 ```
 
+We have now the corrected alignment of each group, but we do not know what compounds are contained within each peak. 
+At this point, I would extract the RT data frames of each group, and the standards, using `extract_RT()` and export them as CSV or XLSX files, where they will be easy to explore.
+The point is to find the peaks of the different samples, within the data frames, in their chromatograms, and identify the hydrocarbon(s) they contain, by looking at their mass-spectra.
+Here, is where it might result helpful the new order of the samples within the data frames. 
+If a sample has a higher total abundance, chances are that it has more peaks than the others.
+Therefore, if we begin exploring the chromatogram of the first sample of a given data frame, we will be able to identify most of the compounds present in the other samples of the data frame.
+Then, when exploring the last samples of the data frame, we will have a good idea of which peaks do not contain hydrocarbons (or other compound(s) of our interest), thus we will mainly need to confirm the identification of the compounds among the samples in the data frame, and identifying those that were absent in most of the samples.
 
-We have now the corrected alignment of each group, but we do not know what 
-compounds are contained within each peak. 
-At this point, I would extract the RT data frames of each group, and the
-standards, using `extract_RT()` and export them as CSV or XLSX files, where they
-will be easy to explore.
-The point is to find the peaks of the different samples, within the data frames,
-in their chromatograms, and identify the hydrocarbon(s) they contain, by looking
-at their mass-spectra.
-Here, is where it might result helpful the new order of the samples within the
-data frames. 
-If a sample has a higher total abundance, it means it has more peaks than the others.
-Therefore, if we begin exploring the chromatogram of the first sample of a 
-given data frame, we will be able to identify most of the compounds present in
-the other samples of the data frame.
-Then, when exploring the last samples of the data frame, we will have a good 
-idea of which peaks do not contain hydrocarbons (or other compound(s) of our
-interest), thus we will mainly need to confirm the identification of the
-compounds among the samples in the data frame, and identifying those that were
-absent in most of the samples.
-
-At the end of the compounds' identification process, we will have a new table 
-per data frame (a modified version of the exported RT data frame), that
-will contain the identification of the compounds within the different peaks.
-The data frames contained in these new tables could then be loaded in R for the
-next step of the workflow (the preparation of the group tables).
-The resulting data frames for the data used in this guide are contained in the 
-package as `comps_id_std` and `comps_id_list`.
+At the end of the compounds' identification process, we will have a new table per data frame (a modified version of the exported RT data frame), that will contain the identification of the compounds within the different peaks.
+The data frames contained in these new tables could then be loaded in R for the next step of the workflow (the preparation of the group tables).
+The resulting data frames for the data used in this guide are contained in the package as `comps_id_std` and `comps_id_list`.
 
 ```{r}
 lapply(comps_id_list, str, give.attr = F)
@@ -600,27 +571,17 @@ lapply(comps_id_list, str, give.attr = F)
 str(comps_id_std, give.attr = F)
 ```
 
-As you can see, these data frames are very similar to the original RT data 
-frames, except for their second column, which is called "Compound" and holds 
-the identification of the compounds contained by each peak. 
-This is because, when creating these tables, I simply added that column to the
-exported RT data frames. 
-However, the only important columns for these data frames are "Peak" and
-"Compound", most functions of the package will work as long as they are present.
+As you can see, these data frames are very similar to the original RT data frames, except for their second column, which is called "Compound" and holds the identification of the compounds contained by each peak. 
+This is because, when creating these tables, I simply added that column to the exported RT data frames. 
+However, the only important columns for these data frames are "Peak" and "Compound", most functions of the package will work as long as they are present.
 
 # Prepare the group tables
 
-Now that we have identified the compounds contained by the peaks within our 
-samples, for the data of each group, we need to assemble the group tables.
-I am assuming we have already loaded the data frames with the compound
-information of the samples and the standards, as they come within the package, 
-and you might have your own preference on how you want to produce (thus import)
-such data frames for your own data.
+Now that we have identified the compounds contained by the peaks within our samples, for the data of each group, we need to assemble the group tables.
+I am assuming we have already loaded the data frames with the compound information of the samples and the standards, as they come within the package, and you might have your own preference on how you want to produce (thus import) such data frames for your own data.
 
 ## Shape the data frames
-To prepare the group tables, we first need to put together the new data frames 
-that contain the compound identification, and perform some data wrangling
-operations to shape the group tables.
+To prepare the group tables, we first need to put together the new data frames that contain the compound identification, and perform some data wrangling operations to shape the group tables.
 
 ### The standards
 
@@ -634,7 +595,6 @@ std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
 
 ### The samples
 
-
 ```{r}
 comps_info_list <- comps_id_list |>
   lapply(get_hc_info)
@@ -642,17 +602,10 @@ comps_info_list <- comps_id_list |>
 comps_info_list |> str()
 ```
 
-
-system.file("extdata/gcms_integration", package = "analyzeGC")
 ```{r eval=F, include=T}
 adjusted_samples_list <- corrected_samples_list2 |>
   lapply(adjust_abundance, std.info = std_info)
 ```
-```{r echo=FALSE, warning=FALSE, out.height=300, out.width=500}
-knitr::include_graphics(system.file("extdata/samples_correction-plots.pdf"
-                                    , package = "analyzeGC"))
-```
-
 
 ```{r}
 unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
