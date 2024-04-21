@@ -101,7 +101,7 @@ standards_data_list <- import_mh_data(standards_path_data
                                       , patterns_2_delete = "STD")
 ```
 
-With the previous code we just imported the data frames contained in the CSV files, and stored them as tibbles within a list (`samples_data_list` or `standards_data_list`).
+With the previous code we just imported the data frames contained in the CSV files, and stored them as tibbles within a list (like `samples_data_list` or `standards_data_list`).
 `import_mh_data()` automatically recognizes the columns within the CSV files that correspond to the retention time (RT) and abundance (Area) of each peak within a sample and removes any other column from them, thus shaping the data frames in the format that is required within the `GCalignR` package for the automatic alignment of peaks across samples.
 Additionally, each  entry in the lists got named after the sample/run they belong.
 
@@ -125,20 +125,21 @@ check_input(standards_data_list)
 # Align the data 
 
 The `GCalignR` algorithm relies, as it is a common practice, on the RT values, for the alignment of the peaks. This means that peaks with similar RT values will be placed in the same row, for the data frame containing the aligned data set, where each column will correspond to a sample.
-This method relies on the fact that the RT of a compound depends on its physicochemical properties, thus a given compound should theoretically have the same RT across samples.
+This method relies on the fact that the RT of a compound depends on its physicochemical properties, thus a given compound should theoretically have the same RT across samples, as long as the latter were processed in the GC using the same parameters.
 However, RT values are prone to variation due to random and usually uncontrollable factors.
 In consequence, the alignment of peaks across samples, based on their RT values, should be performed by taking some considerations, even when using algorithms like that provided by `GCalignR`. 
 
-Data from samples with very different composition, or that have been run on different machines (even if having the same specifications, and following the same protocol), or even using the same machine but at different times (e.g. months of the year), might be very difficult to properly align with an automatic procedure based on the RT values of the peaks detected within them.
+Data from samples with very different composition, or that have been run on different machines (even if having the same specifications, and following the same protocol), or even using the same machine but at different times (e.g. months or years apart), might be very difficult to properly align with an automatic procedure based on the RT values of the peaks detected within them.
 All these cases are not precisely uncommon in chemical ecology.
-Your intention might be to compare the composition of very different samples (e.g. CHC extracts of different insect species, castes, or populations), or you could have a very large sample size (thus needing to either use more than one machine, or run  your samples along a big time span).
+Your intention might be to compare the composition of very different samples (e.g. CHC extracts of different insect species, castes, or populations), or you could have a very large sample size (thus needing to either use more than one machine, or run your samples along a big time span).
 So, you might end up having to manually correct some of the alignments produced by the algorithm.
 
 Therefore, here I propose some modifications to the workflow suggested by the  `GCalignR` package, aiming to extend the reproducibility provided by coding to further steps of the preparation of GC data in the context of chemical ecology. 
 
 ## Group your samples
 
-The first thing we can consider is to perform an automatic RT driven alignment among samples that are more similar. They could be samples that were run in the same machine, at very close times, and that belong to the same group within our analysis.
+The first thing we can consider is to perform an automatic RT driven alignment among samples that are more similar.
+They could be samples that were run in the same machine, at very close times, and that belong to the same group within our analysis.
 To further clarify this point, let us consider the data set included in this package.
 We just imported 20 data frames (contained in `samples_data_list`), each of which corresponds to the integration results of the GC-MS data from the CHC extract of a honeybee (_Apis mellifera mellifera_) worker.
 All these  were run in the same machine, one after the other, within two consecutive days.
@@ -205,9 +206,7 @@ The point of regularly running the standards is that they give very important in
 This is the reason why we include them in our analysis workflow.
 But we will discuss their usage in detail later, first we need to perform our alignments.
 
-This package includes the `align_chromatograms2()` function, which is a wrapper 
-around `GCalignR::align_chromatograms()`, so you should credit them as well if 
-you use `align_chromatograms2()`. 
+This package includes the `align_chromatograms2()` function, which is a wrapper around `GCalignR::align_chromatograms()`, so you should credit them as well if you use `align_chromatograms2()`. 
 Unlike `GCalignR::align_chromatograms()`, `align_chromatograms2()` uses an internal seed for the selection of the reference sample for the alignment (This is done via `withr::local_seed()`, so do not worry, the execution of the function does not change the status of the random number generator outside of the function's environment). 
 This guarantees that using a given set of parameters for a given data set, you will always get the same alignment result.
 
@@ -369,47 +368,26 @@ RT_df_list$`Winter_In-hive workers_A. m. mellifera` |>
 
 ```
 
-As you can see, the rows of the peaks break at samples 351 and 352, for the
-peaks P106 and P107 respectively. These breaks look like stairs, which is why I
-call them this way. So, now that we know the RT values of the peaks where a miss-alignment could be occurring, we can check them within the chromatograms, and in the case of GC-MS data, we could even check their mass spectra. 
-By such process we can properly verify if the rows forming a stair do actually
-correspond to the same peak, thus being a miss-alignment.
+As you can see, the rows of the peaks break at samples 351 and 352, for the peaks P106 and P107 respectively. These breaks look like stairs, which is why I call them this way. So, now that we know the RT values of the peaks where a miss-alignment could be occurring, we can check them within the chromatograms, and in the case of GC-MS data, we could even check their mass spectra. 
+By such process we can properly verify if the rows forming a stair do actually correspond to the same peak, thus being a miss-alignment.
 
 # Correct the alignment
-Once all the miss-alignments have been identified, it is necessary to correct
-them. 
-The correction of miss-alignments consist on the displacement of the peaks'
-Area and RT values within samples, to obtain a data frame where each row
-corresponds to the same peak, thus same compound(s), across samples. 
-This can be done using the `add_empty_peaks()` and `correct_alignment()`
-functions. 
-These functions take an aligned data set to modify, and a list of
-data frames, which indicate the modifications to be performed on the aligned
-data set.
+Once all the miss-alignments have been identified, it is necessary to correct them. 
+The correction of miss-alignments consist on the displacement of the peaks' Area and RT values within samples, to obtain a data frame where each row corresponds to the same peak, thus same compound(s), across samples. 
+This can be done using the `add_empty_peaks()` and `correct_alignment()` functions. 
+These functions take an aligned data set to modify, and a list of data frames, which indicate the modifications to be performed on the aligned data set.
 
 ## Add empty peaks
-If the values within a row, do not correspond to the same peak, the miss-aligned
-values should be displaced to a different peak (row).
-However, if the values to displace represent different peaks to those 
-of the rows around it, then we need to insert an empty peak (row)
-where we can place the values we need to displace.
-This is not the case of our data set, but for the purpose of this guide, let's 
-assume that we need to create an empty peak after P100 in the aligned data of
-the in-hive workers, and before P100 in that of the out-hive workers.
+If the values within a row, do not correspond to the same peak, the miss-aligned values should be displaced to a different peak (row).
+However, if the values to displace represent different peaks to those  of the rows around it, then we need to insert an empty peak (row) where we can place the values we need to displace.
+This is not the case of our data set, but for the purpose of this guide, let's assume that we need to create an empty peak after P100 in the aligned data of the in-hive workers, and before P100 in that of the out-hive workers.
 
-`add_empty_peaks()` adds peaks with only 0s to the Area and RT data frames
-within an aligned data set, provided to the function as the `aligned_data`
-parameter. 
-The `empty.peaks` parameter should be a list of data frames with two columns 
-(`position.reference` and `direction`). 
-`position.reference` indicates a peak (e.g. P100) as a location reference
-within the aligned data set. 
-`direction` ("before" or "after") indicates whether the empty peak should be
-created as the row before or after the reference peak.
+`add_empty_peaks()` adds peaks with only 0s to the Area and RT data frames within an aligned data set, provided to the function as the `aligned_data` parameter. 
+The `empty.peaks` parameter should be a list of data frames with two columns  (`position.reference` and `direction`). 
+`position.reference` indicates a peak (e.g. P100) as a location reference within the aligned data set. 
+`direction` ("before" or "after") indicates whether the empty peak should be created as the row before or after the reference peak.
 
-First, we need to create the list of data frames with the instructions to create
-the empty peaks. In the list, each entry name corresponds to the label of any
-sample within the aligned group data to modify.
+First, we need to create the list of data frames with the instructions to create the empty peaks. In the list, each entry name corresponds to the label of any sample within the aligned group data to modify.
 `add_empty_peaks()` will only create the empty row if the reference sample is in the data frame it is modifying.
 
 ```{r}
@@ -422,8 +400,7 @@ empty_peaks <- list("335" = tribble(~position.reference, ~direction,
 empty_peaks
 ```
 
-We can apply `add_empty_peaks()` to each of the aligned data sets (in-/out-hive
-workers) within `aligned_samples_data_list` with `lapply()`.
+We can apply `add_empty_peaks()` to each of the aligned data sets (in-/out-hive workers) within `aligned_samples_data_list` with `lapply()`.
 
 ```{r results='hide'}
 example_with_empty_peaks <- aligned_samples_data_list |>
@@ -431,8 +408,7 @@ example_with_empty_peaks <- aligned_samples_data_list |>
          , empty.peaks = empty_peaks)
 ```
 
-To confirm that the empty rows where inserted in the right place of each
-group data set, we just need to look at their RT data frames.
+To confirm that the empty rows where inserted in the right place of each group data set, we just need to look at their RT data frames.
 
 ```{r}
 example_with_empty_peaks |> 
@@ -440,32 +416,18 @@ example_with_empty_peaks |>
   lapply(slice, 99:102)
 ```
 
-As you can see, we have the new empty peaks "after_P100" and "before_P100" in 
-the position we indicated, within the data frame of the right group
-(In-/out-hive workers).
+As you can see, we have the new empty peaks "after_P100" and "before_P100" in the position we indicated, within the data frame of the right group (In-/out-hive workers).
 
 ## Displace the peak values to correct the alignment
-`correct_alignment()` allows the displacement of the Area and RT values of
-peaks, within samples, to correct their alignment.
-It iterates through the samples in an aligned data set (given as the
-`aligned_data` parameter), displacing the RT and Area values within the data
-frames, as indicated by a list of data frames (given as the `movements_list`
-parameter). The entry names in the list provided as `movements_list` should 
-correspond to the sample label within the data, for which the modifications
-encoded in the corresponding data frame within the list should be applied.
-These data frames must have two columns (`peaks_list` and `movement_dirs`), 
-indicating the peaks whose RT and Area values should be displaced (e.g. P100),
-and in what direction ('up' or 'down'), for a given sample.
+`correct_alignment()` allows the displacement of the Area and RT values of peaks, within samples, to correct their alignment.
+It iterates through the samples in an aligned data set (given as the `aligned_data` parameter), displacing the RT and Area values within the data frames, as indicated by a list of data frames (given as the `movements_list` parameter).
+The entry names in the list provided as `movements_list` should correspond to the sample label within the data, for which the modifications encoded in the corresponding data frame within the list should be applied. 
+These data frames must have two columns (`peaks_list` and `movement_dirs`), indicating the peaks whose RT and Area values should be displaced (e.g. P100), and in what direction ('up' or 'down'), for a given sample.
 
-To be able to use `correct_alignment()`, we first need to create a list of 
-data frames, indicating how to displace the peak RT and Area values of each 
-sample in the data set. We should consider that `correct_alignment()` displaces
-the peak values one after the other, in the order they are listed within a data 
-frame. Hence, we should set the moving instructions in a way that the values of
-one peak do not overwrite the values of another, or we will be losing data.
-For example, if the values of two neighboring peaks should be displaced to the
-upper row, then the values of the first peak should be displaced before the
-other, or the values of the latter peak will overwrite the values of the first.
+To be able to use `correct_alignment()`, we first need to create a list of data frames, indicating how to displace the peak RT and Area values of each sample in the data set.
+We should consider that `correct_alignment()` displaces the peak values one after the other, in the order they are listed within a data frame.
+Hence, we should set the moving instructions in a way that the values of one peak do not overwrite the values of another, or we will be losing data.
+For example, if the values of two neighboring peaks should be displaced to the upper row, then the values of the first peak should be displaced before the other, or the values of the latter peak will overwrite the values of the first.
 
 ```{r}
 peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
