@@ -15,7 +15,7 @@ A tibble data frame with 30 rows and 9 columns:
 from the peak integration.}
 \item{Chain.length}{Integer indicating the chain length of the hydrocarbon
 molecule.}
-\item{Class}{Hydrocarbons class see \code{help("get_chc_info")} for details}
+\item{Class}{Hydrocarbons class see \code{help("get_hc_info")} for details}
 \item{Mod.position}{Position of unsaturations or methyl-branches in the
 hydrocarbon chain}
 \item{median_area}{Median of the integrated area for all peaks in the data
