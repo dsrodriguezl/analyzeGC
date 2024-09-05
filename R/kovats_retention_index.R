@@ -124,6 +124,14 @@ kovats_retention_index <- function(filtered_data, std.info) {
           filter(get("mean_RT") >= rt) |>
           filter(get("Class") == "Alkane")
 
+          # print("previous alkane:")
+          # print(prev_alkane)
+          # 
+          # print("next alkane:")
+          # print(next.alka)
+
+        # If there is an alkane after the target peak, RI is calculated.
+        # If not, then RI is equal to RI of previous alkane + RT of target peak
         if(next.alka |> nrow() > 0) {
           next.alka <- next.alka |>
             filter(get("Chain.length") == min(next.alka[["Chain.length"]]))
@@ -137,7 +145,9 @@ kovats_retention_index <- function(filtered_data, std.info) {
           # Round up the RI to make it an integer
           retention_index <- retention_index |> round(digits = 0)
         } else {
-          retention_index <- ri_list[[length(ri_list)]] + rt
+          retention_index <- (prev_alkane |> 
+                                  filter(get("Chain.length") == max(prev_alkane[["Chain.length"]])) |> 
+                                  pull("Chain.length") * 100) + rt
         }
 
         # Store the RI in ri_list
