@@ -90,8 +90,7 @@ aligned_standards <- align_chromatograms2(standards_data_list
                                           , row_merging_threshold = 0.15)
 
 aligned_standards |>
-  diagnostic_heatmap(title = "Alignment of standards"
-                     , alignment.type = "automatic")
+  diagnostic_heatmap(title = "Alignment of standards")
 
 # Create the aligned_standards data file for the package
 use_data(aligned_standards, overwrite = TRUE)
@@ -107,8 +106,7 @@ use_data(aligned_standards, overwrite = TRUE)
 #   lapply(area_norm)
 
 aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera` |>
-  diagnostic_heatmap(title = "Alignment of IW CHCs"
-                     , alignment.type = "automatic")
+  diagnostic_heatmap(title = "Alignment of IW CHCs")
 
 pdf(here::here("data-raw"
          , "uncorrected-alignment-plots.pdf")
@@ -117,13 +115,11 @@ pdf(here::here("data-raw"
 for (df in names(aligned_samples_data_list)) {
   diagnostic_heatmap(aligned_samples_data_list[[df]]
                      , title = paste0("Alignment of "
-                                      , df)
-                     , alignment.type = "automatic")
+                                      , df))
 }
 
 diagnostic_heatmap(aligned_standards
-                   , title = paste0("Alignment of standards")
-                   , alignment.type = "automatic")
+                   , title = paste0("Alignment of standards"))
 dev.off()
 
 # corrected_samples_list ----

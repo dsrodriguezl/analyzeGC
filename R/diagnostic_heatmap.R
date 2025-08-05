@@ -32,17 +32,11 @@
 #'
 #' @param title Character string with the text for the title of the plot
 #'
-#' @param alignment.type A character string indicating the type of alignment
-#' ("automatic" or "corrected") the data comes from.
-#'
-#' automatic: Aligned data as obtained via align_chromatograms2, with or without
-#' normalizing it via [area_norm].
-#'
-#' corrected: A corrected area data.frame, as obtained from [correct_alignment].
 #'
 #' @import dplyr
 #' @import tidyr
 #' @import ggplot2
+#' @import viridis
 #' @importFrom gplots heatmap.2
 #'
 #' @examples
@@ -65,8 +59,8 @@
 #'
 #'
 #' @export
-diagnostic_heatmap <- function(data, title, alignment.type) {
-  if (alignment.type == "automatic") {
+diagnostic_heatmap <- function(data, title) {
+  if (class(data) == "GCalign") {
     if (is.data.frame(data)) {
       test <- (100 * nrow(data))
       if (sum(rowSums(data)) == test) {
@@ -79,7 +73,7 @@ diagnostic_heatmap <- function(data, title, alignment.type) {
     }
   }
 
-  if (alignment.type == "corrected") {
+  if (class(data) == "corrected-align") {
     area_2_percent <- function(x) {
       x <- x / rowSums(x) * 100
       x

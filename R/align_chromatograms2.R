@@ -122,7 +122,8 @@ align_chromatograms2 <- function(data2align
     warning(paste("data2align contains only one sample!"
                   , "The data will be formated in a list with the RT"
                   , "and Area values separated, but no alignment procedure"
-                  , "will be performed"))
+                  , "will be performed."
+                  , "\nThe returned object will be of class pseudo-align."))
     nombre <- names(data2align)
     row_names <- paste0("P", 1:nrow(data2align[[1]]))
 
@@ -143,6 +144,7 @@ align_chromatograms2 <- function(data2align
 
     df <- list(RT, Area) |>
       set_names(columns)
+    class(df) <- "pseudo-align"
   }
 
   if (length(data2align) > 1) {

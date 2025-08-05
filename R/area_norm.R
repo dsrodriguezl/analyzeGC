@@ -29,12 +29,14 @@
 #'
 #' @export
 area_norm <- function(aligned_data){
-  if (length(aligned_data) > 2) {
+  if (class(aligned_data) == "GCalign") {
     df_area_norm <- GCalignR::norm_peaks(data = aligned_data
                                , rt_col_name = "RT"
                                , conc_col_name = "Area") |>
       t() |> as.data.frame()
-  } else {
+  }
+
+  if (class(aligned_data) == "pseudo-align") {
     df <- aligned_data$Area
 
     df_area_norm <- df[2] /
