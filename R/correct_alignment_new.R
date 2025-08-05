@@ -41,11 +41,11 @@
 #' to the correct data set within the list.
 #'
 #' The entries of the list should correspond to data.frames/tibbles with two
-#' columns ("peaks_list" and "movement_dirs").
-#' peaks_list indicates the peaks (e.g. P10, P12) that holds the values to be
-#' displaced within the aligned data frame. movement_dirs indicates the
-#' direction ("down" or "up") in which the peak value should be displaced along
-#' the column of the indicated sample.
+#' columns ("peaks_origin" and "peaks_target").
+#' peaks_origin indicates the peaks (e.g. P10, P12) that holds the values to be
+#' displaced within the aligned data frame. peaks_target indicates the peak to
+#' which which the value should be displaced along the column of the indicated
+#' sample.
 #'
 #' @import dplyr
 #' @import tibble
@@ -67,22 +67,26 @@
 #' ## Sample 350 is an In-hive worker
 #' ## Sample 328 is an Out-hive worker
 #'
-#' peaks_movements <- list("350" = data.frame(peaks_list =
+#' peaks_movements_list <- list("350" = data.frame(peaks_origin =
 #'                                                       c(paste0("P"
 #'                                                                , c(106, 107
 #'                                                                , 124)))
-#'                                              , movement_dirs = c('up', 'up'
-#'                                                                  , 'up'))
-#'                         , "328" = data.frame(peaks_list =
+#'                                              , peaks_target =
+#'                                              c(paste0("P"
+#'                                                       , c(105, 106
+#'                                                           , 123))))
+#'                         , "328" = data.frame(peaks_origin =
 #'                                                         c(paste0("P"
 #'                                                                  , c(26, 35
 #'                                                                      , 85
 #'                                                                      , 124
 #'                                                                      , 128)))
-#'                                              , movement_dirs = c('up', 'up'
-#'                                                                  , 'up'
-#'                                                                  , 'up'
-#'                                                                  , 'up')))
+#'                                              , peaks_target =
+#'                                                c(paste0("P"
+#'                                                         , c(25, 34
+#'                                                             , 84
+#'                                                             , 123
+#'                                                             , 127)))))
 #' # Correct the alignment of a single aligned area/RT data set
 #' IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
 #' IW <- correct_alignment(aligned_data = IW
@@ -91,7 +95,7 @@
 #' # Correct the alignment of several aligned area/RT data frames within a list
 #' corrected_samples_list_area <- lapply(aligned_samples_data_list
 #'                                       , correct_alignment
-#'                                       , peak_movements = peaks_movements)
+#'                                       , peak_movements = peaks_movements_list)
 #'
 #'
 #' @export
@@ -119,8 +123,7 @@ correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements
 
     # Verify that the provided alignment has more than one sample
     if (nrow(aligned_df) > 1) {
-
-      # Add new peaks in case new_peaks has been provided
+      # Add new peaks in case new_peaks has been provided (it is not NULL)
       if (!is.null(new_peaks)) {
         cat('\n')
         print("Adding new empty peaks")
@@ -163,45 +166,54 @@ correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements
       print("Moving peak values")
       # Loop iterating through peak_movements to displace the peak values
       # as instructed in the data frames of the list
-      for (sample in peak_movements |> names()) {
+      for (sample in names(peak_movements)) {
         if (sample %in% rownames(aligned_df)) {
           cat('\n')
           # Report which is the sample assigned to the current iteration
           paste("Sample:", sample, sep = " ") |>
             print()
 
-          # Extract the vector listing the peaks to be displaced,
-          # within the corresponding sample, from the movements
-          peaks_list <- peak_movements[[sample]] |>
-            pull("peaks_list")
+          # Extract the df with the peaks' displacement instructions for the
+          # corresponding sample, from the peak_movements list
+          peaks_list <- peak_movements[[sample]] #|>
+            # pull("peaks_list")
 
-          # Extract the vector listing the displacements to be performed on the
-          # peaks of the corresponding sample from the movements
-          movement_dirs <- peak_movements[[sample]] |>
-            pull(movement_dirs)
-
-          # Assemble data frame to guide alignment corrections
-          peaks_movement <- data.frame(Dir = movement_dirs
-                                       , Peaks = peaks_list)
+          # # Extract the vector listing the displacements to be performed on the
+          # # peaks of the corresponding sample from the movements
+          # movement_dirs <- peak_movements[[sample]] |>
+          #   pull(movement_dirs)
+          #
+          # # Assemble data frame to guide alignment corrections
+          # peaks_movement <- data.frame(Dir = movement_dirs
+          #                              , Peaks = peaks_list)
 
           # Set iterations counting on 1
           p_count <- 1
 
           # Loop iterating through each peak to be displaced within the sample
           # to perform the displacement of its value
-          for (p in peaks_movement$Peaks) {
+          for (p_origin in peaks_list$peaks_origin) {
             cat('\n')
 
+            p_target <- peaks_list |>
+              filter(peaks_origin == p_origin) |>
+              pull(peaks_target)
+
             # Report which is the peak assigned to the current iteration
-            paste("Peak No.", p_count, sep = " ") |>
+            paste("Movement No.", paste0(p_count, ":")
+                  , "Value in", p_origin, "will be moved to", p_target
+                  , sep = " ") |>
               print()
 
-            aligned_df <- move_one_peak(aligned_df
-                                        , Peak = p
-                                        , Dir = peaks_movement |>
-                                          filter(get("Peaks") == p) |>
-                                          pull("Dir")
-                                        , Sample = sample)
+            aligned_df[sample, p_target] <- aligned_df[sample, p_origin]
+            aligned_df[sample, p_origin] <- 0
+
+            # aligned_df <- move_one_peak(aligned_df
+            #                             , Peak = p
+            #                             , Dir = peaks_movement |>
+            #                               filter(get("Peaks") == p) |>
+            #                               pull("Dir")
+            #                             , Sample = sample)
             p_count <- p_count + 1
             cat('\n')
           }
@@ -218,6 +230,6 @@ correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements
     }
     aligned_data[[df_name]] <- aligned_df
   }
-
+  class(aligned_data) <- "corrected-alignment"
   aligned_data
 }
