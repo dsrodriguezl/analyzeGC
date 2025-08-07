@@ -202,26 +202,6 @@ for (df in names(corrected_samples_list)) {
 }
 dev.off()
 
-# corrected_samples_list2 ----
-# corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
-#
-# recalculate_meanRT(corrected_IW)
-
-# # Generate the data set
-# corrected_samples_list2 <- lapply(corrected_samples_list
-#                                   , recalculate_meanRT)
-#
-# use_data(corrected_samples_list2, overwrite = TRUE)
-
-# Export CSV to make the comps_id data sets
-## It is commented to avoid overwriting the file after adding to it the
-## compounds' ids
-# for (dataset in names(corrected_samples_list2)) {
-#   write.csv(corrected_samples_list2[[dataset]][["RT"]]
-#             , here::here("data-raw", paste0(dataset, "_compounds-id.csv"))
-#             , row.names = F)
-# }
-
 # comps_id_std ----
 comps_id_std <- here::here("data-raw", "std_compounds-id.csv") |>
   readr::read_csv() |>
@@ -230,7 +210,6 @@ comps_id_std <- here::here("data-raw", "std_compounds-id.csv") |>
 use_data(comps_id_std, overwrite = T)
 
 # std_info ----
-
 std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
                              , aligned_std = aligned_standards
                              , short_std_pattern = "L"
@@ -271,7 +250,7 @@ pdf(here::here("data-raw"
          , "samples_correction-plots.pdf")
     , width = 12
     , height = 6)
-adjusted_samples_list <- corrected_samples_list2 |>
+adjusted_samples_list <- corrected_samples_list |>
   lapply(adjust_abundance, std.info = std_info)
 
 dev.off()
