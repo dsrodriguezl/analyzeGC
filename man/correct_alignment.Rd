@@ -4,13 +4,32 @@
 \alias{correct_alignment}
 \title{Correct the peaks alignment}
 \usage{
-correct_alignment(aligned_data, movements_list)
+correct_alignment(aligned_data, new_peaks = NULL, peak_movements)
 }
 \arguments{
-\item{aligned_data}{Aligned data set as obtained with \link{align_chromatograms2} or
-\link{add_empty_peaks} functions.}
+\item{aligned_data}{Aligned data set as obtained with \link{align_chromatograms2} function.
 
-\item{movements_list}{List with instructions to displace the peak area/RT values within the sample
+#' @param new_peaks
+List with instructions for adding empty peaks to the aligned data frames,
+if needed.
+The default value is NULL, assuming no new peaks should be added.
+
+The names of the list entries correspond to the name of a sample present
+in the aligned data frame, to use as reference. The function only add a peak
+to the data frame, if finds the reference sample within it.
+This facilitates the usage of the function on a list of aligned data frames
+with lapply, as the function will add the empty peaks to the correct aligned
+data frame within the list.
+
+The entries of the list should correspond to data.frames/tibbles with two
+columns ("position.reference" and "direction"). Position.reference
+indicates where the empty peak should be added to the aligned data frame.
+The position reference indicate a peak (e.g. P10) as a location reference
+within the aligned data frame. Direction ("before" or "after") indicates
+whether the empty peak should be created as the row before or after the
+reference peak.}
+
+\item{peak_movements}{List with instructions to displace the peak area/RT values within the sample
 columns of the aligned data frame.
 
 The names of the list entries correspond to the name of the samples for which
@@ -22,49 +41,63 @@ with \link{lapply}, as the function will perform the correct peaks displacements
 to the correct data set within the list.
 
 The entries of the list should correspond to data.frames/tibbles with two
-columns ("peaks_list" and "movement_dirs").
-peaks_list indicates the peaks (e.g. P10, P12) that holds the values to be
-displaced within the aligned data frame. movement_dirs indicates the
-direction ("down" or "up") in which the peak value should be displaced along
-the column of the indicated sample.}
+columns ("peaks_origin" and "peaks_target").
+peaks_origin indicates the peaks (e.g. P10, P12) that holds the values to be
+displaced within the aligned data frame. peaks_target indicates the peak to
+which which the value should be displaced along the column of the indicated
+sample.}
 }
 \description{
 Function to correct alignment of peaks across an aligned data
-set as indicated by a set of instructions encoded within list of data frames.
+set as indicated by instructions encoded within data frames' list(s).
 It iterates through the data frame samples, following the given instructions,
-and calls \link{move_one_peak} to perform each peak displacement.
+to add new peaks and displace values from one peak to another
 }
 \examples{
+
+# Create a list to guide the addition of empty peaks
+## Sample 335 is an In-hive worker
+## Sample 339 is an Out-hive worker
+
+library(tibble)
+empty_peaks <- list("335" = tribble(~position.reference, ~direction,
+                                     "P100", "after")
+                    , "339" = tribble(~position.reference, ~direction,
+                                     "P100", "before"))
 
 # Create a list to guide the displacement of peak values
 ## Sample 350 is an In-hive worker
 ## Sample 328 is an Out-hive worker
 
-peaks_movements <- list("350" = data.frame(peaks_list =
+peaks_movements_list <- list("350" = data.frame(peaks_origin =
                                                       c(paste0("P"
                                                                , c(106, 107
                                                                , 124)))
-                                             , movement_dirs = c('up', 'up'
-                                                                 , 'up'))
-                        , "328" = data.frame(peaks_list =
+                                             , peaks_target =
+                                             c(paste0("P"
+                                                      , c(105, 106
+                                                          , 123))))
+                        , "328" = data.frame(peaks_origin =
                                                         c(paste0("P"
                                                                  , c(26, 35
                                                                      , 85
                                                                      , 124
                                                                      , 128)))
-                                             , movement_dirs = c('up', 'up'
-                                                                 , 'up'
-                                                                 , 'up'
-                                                                 , 'up')))
+                                             , peaks_target =
+                                               c(paste0("P"
+                                                        , c(25, 34
+                                                            , 84
+                                                            , 123
+                                                            , 127)))))
 # Correct the alignment of a single aligned area/RT data set
 IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
 IW <- correct_alignment(aligned_data = IW
-                             , movements_list = peaks_movements)
+                             , peak_movements = peaks_movements)
 
 # Correct the alignment of several aligned area/RT data frames within a list
 corrected_samples_list_area <- lapply(aligned_samples_data_list
                                       , correct_alignment
-                                      , movements_list = peaks_movements)
+                                      , peak_movements = peaks_movements_list)
 
 
 }
