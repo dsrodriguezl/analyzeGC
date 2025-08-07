@@ -73,7 +73,7 @@ diagnostic_heatmap <- function(data, title) {
     }
   }
 
-  if (class(data) == "corrected-alignment") {
+  if (class(data) == "corrected_alignment") {
     area_2_percent <- function(x) {
       x <- x / rowSums(x, na.rm = T) * 100
       x

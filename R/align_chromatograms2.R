@@ -144,7 +144,7 @@ align_chromatograms2 <- function(data2align
 
     df <- list(RT, Area) |>
       set_names(columns)
-    class(df) <- "pseudo-align"
+    class(df) <- "pseudo_align"
   }
 
   if (length(data2align) > 1) {

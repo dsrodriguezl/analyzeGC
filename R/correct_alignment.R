@@ -230,7 +230,7 @@ correct_alignment <- function(aligned_data, new_peaks = NULL, peak_movements) {
     }
     aligned_data[[df_name]] <- aligned_df
   }
-  class(aligned_data) <- "corrected-alignment"
+  class(aligned_data) <- "corrected_alignment"
 
   aligned_data <- recalculate_meanRT(aligned_data)
   print("The mean RT values have been corrected")

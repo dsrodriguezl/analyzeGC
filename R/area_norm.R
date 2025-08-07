@@ -36,7 +36,7 @@ area_norm <- function(aligned_data){
       t() |> as.data.frame()
   }
 
-  if (class(aligned_data) == "pseudo-align") {
+  if (class(aligned_data) == "pseudo_align") {
     df <- aligned_data$Area
 
     df_area_norm <- df[2] /
