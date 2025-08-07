@@ -259,7 +259,7 @@ use_data(adjusted_samples_list, overwrite = T)
 
 # unfiltered_samples_list ----
 unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
-                                          ,comps.info.list = comps_info_list)
+                                          , comps.info.list = comps_info_list)
 
 use_data(unfiltered_samples_list, overwrite = T)
 
