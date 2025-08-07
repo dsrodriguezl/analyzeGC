@@ -99,7 +99,7 @@
 #'
 #'
 #' @export
-correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements) {
+correct_alignment <- function(aligned_data, new_peaks = NULL, peak_movements) {
   if (class(aligned_data) == "GCalign") {
     aligned_data <- aligned_data[["aligned"]]
   }
@@ -133,7 +133,7 @@ correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements
 
           if (sample %in% row.names(aligned_df)) {
             cat('\n')
-            paste0("Adding empty peaks to sample ", sample) |>
+            paste0("Adding empty peaks to table with reference sample ", sample) |>
               print()
 
             df <- new_peaks[[sample]]
@@ -197,7 +197,7 @@ correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements
 
             p_target <- peaks_list |>
               filter(peaks_origin == p_origin) |>
-              pull(peaks_target)
+              pull("peaks_target")
 
             # Report which is the peak assigned to the current iteration
             paste("Movement No.", paste0(p_count, ":")
@@ -231,5 +231,9 @@ correct_alignment_new <- function(aligned_data, new_peaks = NULL, peak_movements
     aligned_data[[df_name]] <- aligned_df
   }
   class(aligned_data) <- "corrected-alignment"
+
+  aligned_data <- recalculate_meanRT(aligned_data)
+  print("The mean RT values have been corrected")
+
   aligned_data
 }

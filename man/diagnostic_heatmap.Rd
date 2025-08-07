@@ -4,7 +4,7 @@
 \alias{diagnostic_heatmap}
 \title{Plot to evaluate peak alignment}
 \usage{
-diagnostic_heatmap(data, title, alignment.type)
+diagnostic_heatmap(data, title)
 }
 \arguments{
 \item{data}{The function can receive different data types from which to produce the
@@ -20,14 +20,6 @@ area_norm.
 A corrected aligned data.frame as obtained from correct_alignment.}
 
 \item{title}{Character string with the text for the title of the plot}
-
-\item{alignment.type}{A character string indicating the type of alignment
-("automatic" or "corrected") the data comes from.
-
-automatic: Aligned data as obtained via align_chromatograms2, with or without
-normalizing it via \link{area_norm}.
-
-corrected: A corrected area data.frame, as obtained from \link{correct_alignment}.}
 }
 \description{
 Heat map + dendrogram of the chemical composition of samples within an

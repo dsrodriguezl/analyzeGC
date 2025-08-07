@@ -129,51 +129,62 @@ empty_peaks <- list("335" = tribble(~position.reference, ~direction,
                     , "339" = tribble(~position.reference, ~direction,
                                           "P100", "before"))
 
-IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
-OW <- aligned_samples_data_list$`Winter_Out-hive workers_A. m. mellifera`
+# IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
+# OW <- aligned_samples_data_list$`Winter_Out-hive workers_A. m. mellifera`
 
-IW <- IW |>
-  add_empty_peaks(empty.peaks = empty_peaks)
-
-OW <- OW |>
-  add_empty_peaks(empty.peaks = empty_peaks)
-
-aligned_samples_data_list |>
-  lapply(add_empty_peaks
-         , empty.peaks = empty_peaks)
+# IW <- IW |>
+#   add_empty_peaks(empty.peaks = empty_peaks)
+#
+# OW <- OW |>
+#   add_empty_peaks(empty.peaks = empty_peaks)
+#
+# aligned_samples_data_list |>
+#   lapply(add_empty_peaks
+#          , empty.peaks = empty_peaks)
 
 # Generate the data set
-peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
+peaks_movements <- list("350" = data.frame(peaks_origin = c(paste0("P"
                                                                  , c(108
                                                                      , 126)))
-                                           , movement_dirs = c('up', 'up'))
-                        , "351" = data.frame(peaks_list = c(paste0("P"
+                                           , peaks_target = c(paste0("P"
+                                                                     , c(107
+                                                                         , 125))))
+                        , "351" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(107
                                                                        , 108
                                                                        , 119
                                                                        , 120
                                                                        , 126)))
-                                             , movement_dirs = c('up','up'
-                                                                 , 'up', 'up'
-                                                                 , 'up'))
-                        , "352" = data.frame(peaks_list = c(paste0("P"
+                                             , peaks_target = c(paste0("P"
+                                                                       , c(106
+                                                                           , 107
+                                                                           , 118
+                                                                           , 119
+                                                                           , 125))))
+                        , "352" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(107
                                                                        , 108
                                                                        , 126)))
-                                             , movement_dirs = c('up','up'
-                                                                 , 'up'))
-                        , "333" = data.frame(peaks_list = c(paste0("P"
+                                             , peaks_target = c(paste0("P"
+                                                                       , c(106
+                                                                           , 107
+                                                                           , 125))))
+                        , "333" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(26)))
-                                             , movement_dirs = c('down'))
-                        , "345" = data.frame(peaks_list = c(paste0("P"
+                                             , peaks_target = c(paste0("P"
+                                                                       , c(27))))
+                        , "345" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(106
                                                                        , 107)))
-                                             , movement_dirs = c('up', 'up'))
+                                             , peaks_target = c(paste0("P"
+                                                                       , c(105
+                                                                           , 106))))
                         )
 
 corrected_samples_list <- lapply(aligned_samples_data_list
-                                      , correct_alignment
-                                      , movements_list = peaks_movements)
+                                 , correct_alignment
+                                 , new_peaks = empty_peaks
+                                 , peak_movements = peaks_movements)
 
 use_data(corrected_samples_list, overwrite = TRUE)
 
@@ -186,20 +197,21 @@ for (df in names(corrected_samples_list)) {
   diagnostic_heatmap(corrected_samples_list[[df]]
                      , title = paste0("corrected alignment of "
                                       , df)
-                     , alignment.type = "corrected")
+                     # , alignment.type = "corrected"
+                     )
 }
 dev.off()
 
 # corrected_samples_list2 ----
-corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
+# corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
+#
+# recalculate_meanRT(corrected_IW)
 
-recalculate_meanRT(corrected_IW)
-
-# Generate the data set
-corrected_samples_list2 <- lapply(corrected_samples_list
-                                  , recalculate_meanRT)
-
-use_data(corrected_samples_list2, overwrite = TRUE)
+# # Generate the data set
+# corrected_samples_list2 <- lapply(corrected_samples_list
+#                                   , recalculate_meanRT)
+#
+# use_data(corrected_samples_list2, overwrite = TRUE)
 
 # Export CSV to make the comps_id data sets
 ## It is commented to avoid overwriting the file after adding to it the
@@ -209,7 +221,6 @@ use_data(corrected_samples_list2, overwrite = TRUE)
 #             , here::here("data-raw", paste0(dataset, "_compounds-id.csv"))
 #             , row.names = F)
 # }
-
 
 # comps_id_std ----
 comps_id_std <- here::here("data-raw", "std_compounds-id.csv") |>

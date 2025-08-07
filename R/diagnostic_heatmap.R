@@ -75,11 +75,15 @@ diagnostic_heatmap <- function(data, title) {
 
   if (class(data) == "corrected-alignment") {
     area_2_percent <- function(x) {
-      x <- x / rowSums(x) * 100
+      x <- x / rowSums(x, na.rm = T) * 100
       x
     }
 
-    data <- data[["Area"]]
+    data <- data[["Area"]] |>
+      select(-"mean_RT") |>
+      column_to_rownames("Peak") |>
+      t() |>
+      as.data.frame()
     df_area_norm <- area_2_percent(data)
   }
 
