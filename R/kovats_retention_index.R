@@ -43,7 +43,7 @@ kovats_retention_index <- function(filtered_data, std.info) {
     arrange("mean_RT") |>
     select(contains("Peak")
            , everything()) |>
-    select((contains("Peak"):contains("Mod.position"))) |>
+    select(all_of(colnames(comps_info))) |>
     as_tibble()
   # print("Standards were added to the group table")
 
