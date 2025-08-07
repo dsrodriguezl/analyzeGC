@@ -225,8 +225,9 @@ correct_alignment <- function(aligned_data, new_peaks = NULL, peak_movements) {
         }
       }
     } else {
-      # Guardrail behavior for edge cases in which a data frame with only one
-      # sample was provided
+      warning(paste("aligned_data contains only one sample!"
+                    , "No alignment correction will be performed"))
+      return(aligned_data)
     }
     aligned_data[[df_name]] <- aligned_df
   }
