@@ -86,26 +86,6 @@
 #' @source Data obtained by the author of the package, for educational purposes.
 "corrected_samples_list"
 
-# corrected_samples_list2 ----
-#' Corrected alignment of the honey bees cuticular hydrocarbons GC/MS data, with
-#' corrected mean RT.
-#'
-#'
-#' @format ##
-#' A list with two sublists:
-#' \describe{
-#'   \item{Winter_In-hive workers_A. m. mellifera}{
-#'   List with the RT and Area tibble data frames for the corrected alignment
-#'   with recalculated mean RT of the in-hive workers.
-#'   }
-#'   \item{Winter_Out-hive workers_A. m. mellifera}{
-#'   List with the RT and Area tibble data frames for the corrected alignment
-#'   with recalculated mean RT of the out-hive workers.
-#'   }
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"corrected_samples_list2"
-
 # comps_id_std ----
 #' Compound identification of the n-alkanes in the analytical standard
 #' solutions (04070-1ML and 04071-5ML, Sigma-Aldrich).
@@ -209,45 +189,6 @@
 #' }
 #' @source Data obtained by the author of the package, for educational purposes.
 "unfiltered_samples_list"
-
-# filtered_samples_list ----
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"filtered_samples_list"
-
-# filtered_samples_list2 ----
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"filtered_samples_list2"
-
-# samples_plus_ri_list ----
-#' GC/MS data of honeybees cuticular hydrocarbons aligned by group
-#'
-#'
-#' @format ##
-#' A list with two GCalignR objects:
-#' \describe{
-#'   \item{}{}
-#'   \item{}{}
-#' }
-#' @source Data obtained by the author of the package, for educational purposes.
-"samples_plus_ri_list"
 
 # group_tables_list ----
 #' GC/MS data of honeybees cuticular hydrocarbons aligned by group

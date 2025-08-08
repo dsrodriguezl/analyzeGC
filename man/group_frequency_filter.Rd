@@ -11,8 +11,8 @@ group_frequency_filter(group_table, threshold = 0.5)
 \link{retrieve_group_tables}.}
 
 \item{threshold}{A numeric value, between 0 and 1 (default = 0.5), indicating
-the minimum frequency threshold, a compound should have within the group
-table, to not be erased.}
+the minimum proportion of samples in which a compound should be within the
+group table to not be erased from it.}
 }
 \description{
 The function removes from a group table, the compounds that are

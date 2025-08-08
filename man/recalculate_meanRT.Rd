@@ -10,16 +10,8 @@ recalculate_meanRT(aligned_data)
 \item{aligned_data}{Aligned data set as obtained with \link{correct_alignment}}
 }
 \description{
-recalculate the mean RT of data set after alignment correction
-}
-\examples{
-
-# Recalculate the mean RT for a single data set
-corrected_IW <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
-
-corrected_IW <-recalculate_meanRT(corrected_IW)
-
-# Recalculate the mean RT for several data sets within a list
-corrected_samples_list2 <- lapply(corrected_samples_list, recalculate_meanRT)
-
+Function to correct the mean RT values of an aligned data frame. It is
+called within the correct_alignment fucntion to correct the mean RT values
+of the peaks after moving the peak values within the samples, as part of the
+alignment correction process.
 }
