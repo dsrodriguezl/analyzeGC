@@ -1,13 +1,39 @@
 #' @title Shape the final aligned table
 #'
-#' @description
+#' @description This function shapes the final aligned (group) table, before
+#' assembling the master table. It applies removes trace compounds, removes or
+#' label unidentified compounds (See drop_unidentified_comps below), and
+#' calculates the Kováts retention index of the peaks.
 #'
-#' @param aligned_data
-#' @param trace_comps_threshold
-#' @param drop_unidentified_comps
-#' @param std.info
-#' @param
-#' @param
+#' Trace compounds filter: Removes compounds that have low abundance within
+#' samples, regarding an user specified threshold (See trace_comps_threshold
+#' below).
+#'
+#' Kováts retention index: The retention indices for the peaks in a data set
+#' are calculated using the Kováts method. This is performed implementing the
+#' [kovats_retention_index] function under the hood, check its documentation for
+#' more details.
+#'
+#' @param aligned_data An aligned data set list ()that includes comps.info.
+#' comps.info must be a named item in the list corresponding to a data frame
+#' (or tibble) with the information of the compounds. It must at least have the
+#' columns Peak, Compound, mean_RT, and Class.
+#' Check ?add_comps_info for more information.
+#' If you are analyzing CHC's, it is recommended to generate the comps.info
+#' data frame with [get_hc_info].
+#'
+#' @param trace_comps_threshold A numeric threshold, indicating the minimum %
+#' of a sample a peak must represent to remain in the data set (default = 0).
+#'
+#' @param drop_unidentified_comps Logical value (default to TRUE) indicating
+#' whether to remove the peaks with unidentified compounds, those with no entry
+#' (NA) in the column Compound.
+#' If it is set as FALSE, NAs in column Compound will be replaced by the string
+#' "unidentified".
+#'
+#' @param std.info A data frame containing information about the standards
+#' that will be used in the calculation of retention indices, as obtained with
+#' [shape_hcstd_info].
 #'
 #' @import dplyr
 #' @import tidyr
