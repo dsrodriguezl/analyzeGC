@@ -17,11 +17,26 @@
 #' @export
 build_master_table <- function(tables.list) {
 
-  # Function to remove the "Peak" column from a data frame, if it exists
+  # Function to remove the "Peak" column from a data frame, if it exists.
+  # This function is needed if tables.list is an object obtained with the
+  # retrieve_group_tables function
   remove_peak <- function(df) {
     if ("Peak" %in% colnames(df)) {
       df <- df |>
         select(-contains("Peak"))
+    }
+    df
+  }
+
+  # Function to remove the "present" column from a data frame, if it exists.
+  # This function is needed if tables.list is an object obtained with the
+  # retrieve_group_tables function
+  remove_present <- function(df) {
+    if ("present" %in% colnames(df)) {
+      df <- df |>
+        # Remove compounds that are in no sample of the df
+        filter(present == T) |>
+        select(-contains("present"))
     }
     df
   }
@@ -38,19 +53,22 @@ build_master_table <- function(tables.list) {
   # Apply the function to each data frame in the list
   if(list_type == "nested") {
     tables.list <- tables.list |>
-      lapply(lapply, remove_peak)
+      lapply(lapply, remove_peak) |>
+      lapply(lapply, remove_present)
   }
 
   if(list_type == "simple") {
     tables.list <- tables.list |>
-      lapply(remove_peak)
+      lapply(remove_peak) |>
+      lapply(remove_present)
   }
 
   # Merge all data frames in the list into one master table
   if(list_type == "nested") {
     if(length(tables.list) > 1) {
       master.table <- tables.list |>
-        # Nest data frames into two sublists, regarding their type (i.e. RT or Area)
+        # Nest data frames into two sublists, regarding their type
+        # (i.e. RT or Area)
         (function(l){
           RT_list <- l |>
             lapply(function(sl){
@@ -126,10 +144,15 @@ build_master_table <- function(tables.list) {
         RT_df <- mt |>
           pluck("RT")
 
+        comps_vars <- tables.list |>
+          pluck(1) |>
+          pluck("comps.info")
+
         RT_corrections <- lapply(ri_dup, function(ri) {
           df_ri <- RT_df |>
             filter(get("RI") == ri) |>
-            mutate_at(vars(-(contains("Peak"):contains("Mod.position")))
+            mutate_at(vars(-(contains("Peak"):
+                               contains(comps_vars[length(comps_vars)])))
                       , function(column) {
               ifelse(column |> duplicated()
                      , NA
@@ -148,7 +171,8 @@ build_master_table <- function(tables.list) {
           pluck("Area")
 
         samples <- RT_df |>
-          select(-(contains("Peak"):contains("Mod.position"))) |>
+          select(-(contains("Peak"):
+                     contains(comps_vars[length(comps_vars)]))) |>
           colnames()
 
         Area_df[samples][is.na(RT_df[samples])] <- NA
@@ -165,7 +189,15 @@ build_master_table <- function(tables.list) {
       mutate("Peak" =  paste0("P", seq_len(nrow(master.table)))) |>
       relocate(contains("Peak"), .before = contains("RI")) |>
       as_tibble()
+    return(master.table)
   }
+
+  master.table[["comps.info"]] <- tables.list |>
+    lapply(pluck, "comps.info") |>
+    reduce(c) |>
+    unique()
+
+  # class(master.table) <- "mt"
 
   return(master.table)
 }

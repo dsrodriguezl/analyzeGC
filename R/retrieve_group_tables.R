@@ -27,6 +27,7 @@ retrieve_group_tables <- function(group.label
      (!is_tibble(master.table) | !is.data.frame(master.table))) {
     mt_type <- "compound"
   } else {
+    # Master tables after fusion of peaks are simple DFs
     mt_type <- "simple"
   }
 
@@ -53,6 +54,7 @@ retrieve_group_tables <- function(group.label
 
     if(mt_type == "compound") {
       group.table <- master.table |>
+        discard_at("comps.info") |>
         lapply(function(mt) {
           mt <- mt |>
             select(all_of(c(comps.vars, samples))) |>
@@ -69,7 +71,12 @@ retrieve_group_tables <- function(group.label
                                       , T
                                       , F)) |>
             relocate(contains("present"), .after = all_of(comps.vars))
-        })
+        }) |>
+        (function(l) {
+          l[["comps.info"]] <- comps.vars
+          # class(l) <- "group_table"
+          l
+        })()
     }
 
     if(mt_type == "simple") {

@@ -30,6 +30,7 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
   if(group.tables.list |> pluck(1) |> pluck(1) |> is.data.frame()) {
     duplicated_compounds <- group.tables.list |>
       pluck(1) |>
+      discard_at("comps.info") |>
       lapply(filter, duplicated(get("Compound"))) |>
       lapply(select, "Compound") |>
       lapply(unique) |>
@@ -42,8 +43,6 @@ assess_duplicated_compounds <- function(group.tables.list, plot = T) {
 
   # Loop over each compound name in duplicated_compounds
   for (compound_name in duplicated_compounds) {
-
-
     compound_table <- group.tables.list |>
       lapply(function(group.table) {
         ## If group.table is a data frame

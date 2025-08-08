@@ -29,6 +29,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
 
   if(is.list(master.table) &
      (!is_tibble(master.table) | !is.data.frame(master.table))) {
+    comps_vars <- master.table[["comps.info"]]
     master.table <- master.table |>
       pluck("Area")
   }
@@ -67,7 +68,7 @@ fuse_all_peaks <- function(master.table, fusion.list){
     cat('\n')
   }
 
-  # Report the numbe rof fusions performed
+  # Report the number of fusions performed
   print(paste("Finished!"
               , f_count - 1
               , "fusions were performed"
