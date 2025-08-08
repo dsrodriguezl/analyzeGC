@@ -129,19 +129,6 @@ empty_peaks <- list("335" = tribble(~position.reference, ~direction,
                     , "339" = tribble(~position.reference, ~direction,
                                           "P100", "before"))
 
-# IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
-# OW <- aligned_samples_data_list$`Winter_Out-hive workers_A. m. mellifera`
-
-# IW <- IW |>
-#   add_empty_peaks(empty.peaks = empty_peaks)
-#
-# OW <- OW |>
-#   add_empty_peaks(empty.peaks = empty_peaks)
-#
-# aligned_samples_data_list |>
-#   lapply(add_empty_peaks
-#          , empty.peaks = empty_peaks)
-
 # Generate the data set
 peaks_movements <- list("350" = data.frame(peaks_origin = c(paste0("P"
                                                                  , c(108
@@ -263,31 +250,7 @@ unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
 
 use_data(unfiltered_samples_list, overwrite = T)
 
-# # filtered_samples_list ----
-# filtered_samples_list <- unfiltered_samples_list |>
-#   lapply(trace_comps
-#          , threshold = 0.01)
-#
-# use_data(filtered_samples_list, overwrite = T)
-#
-# # filtered_samples_list2 ----
-# IW_filtered <- filtered_samples_list$`Winter_In-hive workers_A. m. mellifera`
-# drop_na_compounds(IW_filtered)
-#
-# filtered_samples_list2 <- filtered_samples_list |>
-#   lapply(drop_na_compounds)
-#
-# use_data(filtered_samples_list2, overwrite = T)
-#
-# # samples_data_list ----
-# samples_plus_ri_list <- filtered_samples_list2 |>
-#   lapply(kovats_retention_index, std.info = std_info)
-#
-# use_data(samples_plus_ri_list, overwrite = T)
-
 # group_tables_list ----
-# group_tables_list <- samples_plus_ri_list |>
-#   lapply(shape_group_table)
 group_tables_list <- unfiltered_samples_list |>
   lapply(shape_aligned_table
          , trace_comps_threshold = 0.01
@@ -315,8 +278,6 @@ grouping_info <- grouping_info |>
 retrieve_group_tables(group.label = "group_label"
                       , master.table = master_table
                       , grouping.info = grouping_info)
-
-# use_data(group_tables_list2, overwrite = T)
 
 # duplicated_compounds_presence ----
 pdf(here::here("data-raw"
