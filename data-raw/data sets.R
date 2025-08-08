@@ -263,38 +263,43 @@ unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
 
 use_data(unfiltered_samples_list, overwrite = T)
 
-# filtered_samples_list ----
-filtered_samples_list <- unfiltered_samples_list |>
-  lapply(trace_comps
-         , threshold = 0.01)
-
-use_data(filtered_samples_list, overwrite = T)
-
-# filtered_samples_list2 ----
-IW_filtered <- filtered_samples_list$`Winter_In-hive workers_A. m. mellifera`
-drop_na_compounds(IW_filtered)
-
-filtered_samples_list2 <- filtered_samples_list |>
-  lapply(drop_na_compounds)
-
-use_data(filtered_samples_list2, overwrite = T)
-
-# samples_data_list ----
-samples_plus_ri_list <- filtered_samples_list2 |>
-  lapply(kovats_retention_index, std.info = std_info)
-
-use_data(samples_plus_ri_list, overwrite = T)
+# # filtered_samples_list ----
+# filtered_samples_list <- unfiltered_samples_list |>
+#   lapply(trace_comps
+#          , threshold = 0.01)
+#
+# use_data(filtered_samples_list, overwrite = T)
+#
+# # filtered_samples_list2 ----
+# IW_filtered <- filtered_samples_list$`Winter_In-hive workers_A. m. mellifera`
+# drop_na_compounds(IW_filtered)
+#
+# filtered_samples_list2 <- filtered_samples_list |>
+#   lapply(drop_na_compounds)
+#
+# use_data(filtered_samples_list2, overwrite = T)
+#
+# # samples_data_list ----
+# samples_plus_ri_list <- filtered_samples_list2 |>
+#   lapply(kovats_retention_index, std.info = std_info)
+#
+# use_data(samples_plus_ri_list, overwrite = T)
 
 # group_tables_list ----
-group_tables_list <- samples_plus_ri_list |>
-  lapply(shape_group_table)
+# group_tables_list <- samples_plus_ri_list |>
+#   lapply(shape_group_table)
+group_tables_list <- unfiltered_samples_list |>
+  lapply(shape_aligned_table
+         , trace_comps_threshold = 0.01
+         , drop_unidentified_comps = T
+         , std.info = std_info)
 
 use_data(group_tables_list, overwrite = T)
 
 # master_table ----
 master_table <- build_master_table(group_tables_list)
 
-write.csv(master_table
+write.csv(master_table[["Area"]]
           , here::here("data-raw", "master_table.csv")
           , row.names = F)
 
