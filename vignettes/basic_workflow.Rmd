@@ -570,7 +570,9 @@ comps_info_list |> str()
 
 ```{r eval=F, include=T}
 adjusted_samples_list <- corrected_samples_list |>
-  lapply(adjust_abundance, std.info = std_info)
+  lapply(adjust_abundance
+         , std.info = std_info
+         , plot = F)
 ```
 ```{r echo=FALSE, warning=FALSE, out.height=300, out.width=500}
 knitr::include_graphics(system.file("extdata/samples_correction-plots.pdf"
