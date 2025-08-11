@@ -4,7 +4,7 @@
 \alias{adjust_abundance}
 \title{Adjust abundance values within samples and display diagnostic plots}
 \usage{
-adjust_abundance(aligned_data, std.info)
+adjust_abundance(aligned_data, std.info, plot = T)
 }
 \arguments{
 \item{aligned_data}{Aligned data set, as obtained with \link{recalculate_meanRT}.}
@@ -12,6 +12,13 @@ adjust_abundance(aligned_data, std.info)
 \item{std.info}{Data frame with the standards information, as obtained
 from \link{shape_hcstd_info}.
 It must contains columns "mean_RT" and "area_correction".}
+
+\item{plot}{Logical value indicating whether to generate plots illustrating
+the change in the abundance data of the samples (default: TRUE).
+This generates a bar plot per sample showing the abundance on y-axis and
+mean_RT on x-axis.
+The plots are divided in two facets, to show the un-adjusted and adjusted
+versions of the peaks' abundance within a sample.}
 }
 \description{
 This function can be used to correct for the difference in performance of
@@ -22,12 +29,12 @@ the peaks detected in n-alkane analytical standard solutions.
 \examples{
 
 # Adjusting the abundance for a single data set
-IW_data <- corrected_samples_list2$`Winter_In-hive workers_A. m. mellifera`
+IW_data <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
   adjusted_IW <- adjust_abundance(aligned_data = IW_data
                                         , std.info = std_info)
 
 # Adjusting the abundance for several data sets within a list
-adjusted_samples_list <- corrected_samples_list2 |>
+adjusted_samples_list <- corrected_samples_list |>
   lapply(adjust_abundance, std.info = std_info)
 
 }

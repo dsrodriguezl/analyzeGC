@@ -8,7 +8,7 @@
 #' @param aligned_data
 #' Aligned data set as obtained with [align_chromatograms2] function.
 #'
-#'#' @param new_peaks
+#' @param new_peaks
 #' List with instructions for adding empty peaks to the aligned data frames,
 #'  if needed.
 #' The default value is NULL, assuming no new peaks should be added.
@@ -90,7 +90,7 @@
 #' # Correct the alignment of a single aligned area/RT data set
 #' IW <- aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
 #' IW <- correct_alignment(aligned_data = IW
-#'                              , peak_movements = peaks_movements)
+#'                              , peak_movements = peaks_movements_list)
 #'
 #' # Correct the alignment of several aligned area/RT data frames within a list
 #' corrected_samples_list_area <- lapply(aligned_samples_data_list
@@ -196,7 +196,7 @@ correct_alignment <- function(aligned_data, new_peaks = NULL, peak_movements) {
             cat('\n')
 
             p_target <- peaks_list |>
-              filter(peaks_origin == p_origin) |>
+              filter(get("peaks_origin") == p_origin) |>
               pull("peaks_target")
 
             # Report which is the peak assigned to the current iteration

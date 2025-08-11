@@ -10,7 +10,8 @@ shape_hcstd_info(
   short_long_splitted = TRUE,
   short_std_pattern,
   long_std_pattern,
-  project_std = NULL
+  project_std = NULL,
+  plot = T
 )
 }
 \arguments{
@@ -53,6 +54,9 @@ to calculate the mean RT value of the simulated n-alkane.
 Note that this is not the most adequate procedure as the RT distance between
 neighboring n-alkane peaks is not constant along a GC-run. It is always
 better to have real standards.}
+
+\item{plot}{Logical value indicating whether to generate a plot illustrating
+the variation and correction among the standard n-alkane peaks (default: TRUE)}
 }
 \description{
 Function to shape the data frame holding the compound

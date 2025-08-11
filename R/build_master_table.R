@@ -5,7 +5,7 @@
 #' into the master table.
 #'
 #' @param tables.list List of group tables, as obtained from
-#' [shape_group_table].
+#' [shape_aligned_table].
 #' The group tables must contain an integer RI column, indicating the retention
 #' index of the peaks (rows).
 #'
@@ -35,7 +35,7 @@ build_master_table <- function(tables.list) {
     if ("present" %in% colnames(df)) {
       df <- df |>
         # Remove compounds that are in no sample of the df
-        filter(present == T) |>
+        filter(get("present") == T) |>
         select(-contains("present"))
     }
     df

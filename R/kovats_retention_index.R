@@ -5,25 +5,16 @@
 #' using the Kováts method. The retention indices are calculated based on the
 #' mean retention times of n-alkanes within the samples or in a standard mixture
 #' in case of an n-alkane that is not present in the samples.
+#' This function is used within `shape_aligned_table`.
 #'
 #' @param filtered_data An aligned data set list containing data frames with
-#' information about compounds and their peak areas and retention times, as
-#' obtained with [drop_na_compounds] or [trace_comps].
+#' information about compounds and their peak areas and retention times.
 #'
 #' @param std.info A data frame containing information about the standards
 #' that will be used in the calculation of retention indices, as obtained with
 #' [shape_hcstd_info].
 #'
 #' @import dplyr
-#'
-#' @examples
-#' # Calculate the retention index for a single data set
-#' IW_filtered <- filtered_samples_list2$`Winter_In-hive workers_A. m. mellifera`
-#' ri_IW <- kovats_retention_index(IW_filtered, std.info = std_info)
-#'
-#' # Calculate the retention index for several data sets within a list
-#' ri_samples_list <- filtered_samples_list2 |>
-#'   lapply(kovats_retention_index, std.info = std_info)
 #'
 #' @export
 kovats_retention_index <- function(filtered_data, std.info) {

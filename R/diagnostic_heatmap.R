@@ -46,15 +46,13 @@
 #'   aligned_samples_data_list$`Winter_In-hive workers_A. m. mellifera`
 #'
 #' diagnostic_heatmap(data =  Winter_IW
-#'                    , title = "Alignment of IW CHCs"
-#'                    , alignment.type = "automatic")
+#'                    , title = "Alignment of IW CHCs")
 #'
 #' # Get the diagnostic heat map of several aligned data sets within a list
 #'
 #' for (df in names(aligned_samples_data_list)) {
 #'   diagnostic_heatmap(aligned_samples_data_list[[df]]
-#'                      , title = paste0("Alignment of ", df)
-#'                      , alignment.type = "automatic")
+#'                      , title = paste0("Alignment of ", df))
 #' }
 #'
 #'
