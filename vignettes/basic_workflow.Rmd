@@ -224,7 +224,7 @@ Moreover, these parameters have no default values, so you have to explicitly dec
 The idea is not only to increase reproducibility but also auditability of the code used along the analysis pipeline.
 
 But how do we determine the values we give to this parameters?
-THere is no guidelines for this on the GCalingR paper or the guides included int he package.
+There is no guidelines for this on the `GCalingR` paper or the guides included int he package.
 So, I have exchanged some thoughts about this with some colleagues.
 This resulted in thinking few possible approaches, based on different arguments.
 Here I am trying to provide a synthesis of them.
@@ -424,82 +424,63 @@ empty_peaks <- list("335" = tribble(~position.reference, ~direction,
                                           "P100", "before"))
 empty_peaks
 ```
-
-<!-- We can apply `add_empty_peaks()` to each of the aligned data sets (in-/out-hive -->
-<!-- workers) within `aligned_samples_data_list` with `lapply()`. -->
-
-<!-- ```{r results='hide'} -->
-<!-- example_with_empty_peaks <- aligned_samples_data_list |> -->
-<!--   lapply(add_empty_peaks -->
-<!--          , empty.peaks = empty_peaks) -->
-<!-- ``` -->
-
-<!-- To confirm that the empty rows where inserted in the right place of each -->
-<!-- group data set, we just need to look at their RT data frames. -->
-
-<!-- ```{r} -->
-<!-- example_with_empty_peaks |>  -->
-<!--   lapply(extract_RT) |>  -->
-<!--   lapply(slice, 99:102) -->
-<!-- ``` -->
-
-<!-- As you can see, we have the new empty peaks "after_P100" and "before_P100" in  -->
-<!-- the position we indicated, within the data frame of the right group -->
-<!-- (In-/out-hive workers). -->
+ If we provide this list to the `new_peaks` parameter of `correct_alignment()` when correcting the automatic `GCalignR` alignment, the function will create an empty peak on both aligned tables, before the values in each aligned peak are displaced.
+ So, we can consider those peaks in our `peak_movements` instructions to correct the alignment.
 
 ## Displace the peak values to correct the alignment
 `correct_alignment()` allows the displacement of the Area and RT values of
 peaks, within samples, to correct their alignment.
-It iterates through the samples in an aligned data set (given as the
-`aligned_data` parameter), displacing the RT and Area values within the data
-frames, as indicated by a list of data frames (given as the `movements_list`
-parameter). The entry names in the list provided as `movements_list` should 
-correspond to the sample label within the data, for which the modifications
-encoded in the corresponding data frame within the list should be applied.
-These data frames must have two columns (`peaks_list` and `movement_dirs`), 
-indicating the peaks whose RT and Area values should be displaced (e.g. P100),
-and in what direction ('up' or 'down'), for a given sample.
+It iterates through the samples in an aligned data set, displacing the RT and Area values within the data frames, as indicated by a list of data frames (given as the `peak_movements` parameter). The entry names in the list provided as `peak_movements` should correspond to the sample label within the data, for which the modifications encoded in the corresponding data frame within the list should be applied.
+These data frames must have two columns (`peaks_origin` and `peaks_target`), indicating the peaks whose RT and Area values should be displaced (e.g. P100), and the peak where they should be moved to, for a given sample.
 
-To be able to use `correct_alignment()`, we first need to create a list of 
-data frames, indicating how to displace the peak RT and Area values of each 
-sample in the data set. We should consider that `correct_alignment()` displaces
-the peak values one after the other, in the order they are listed within a data 
-frame. Hence, we should set the moving instructions in a way that the values of
-one peak do not overwrite the values of another, or we will be losing data.
-For example, if the values of two neighboring peaks should be displaced to the
-upper row, then the values of the first peak should be displaced before the
-other, or the values of the latter peak will overwrite the values of the first.
+We need to create a list of data frames, indicating how to displace the peak RT and Area values of each sample in the data set.
+We should consider that `correct_alignment()` displaces the peak values one after the other, in the order they are listed within a data frame.
+Hence, we should set the moving instructions in a way that the values of one peak do not overwrite the values of another, or we will be losing data.
+For example, if the values of two neighboring peaks should be displaced to the upper row, then the values of the first peak should be displaced before them other, or the values of the latter peak will overwrite the values of the first.
 
 ```{r}
-peaks_movements <- list("350" = data.frame(peaks_list = c(paste0("P"
-                                                                 , c(108
-                                                                     , 126)))
-                                           , movement_dirs = c('up', 'up'))
-                        , "351" = data.frame(peaks_list = c(paste0("P"
+peaks_movements <- list("350" = data.frame(peaks_origin = 
+                                             c(paste0("P"
+                                                      , c(108
+                                                          , 126)))
+                                           , peaks_target = 
+                                             c(paste0("P"
+                                                      , c(107
+                                                          , 125))))
+                        , "351" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(107
                                                                        , 108
                                                                        , 119
                                                                        , 120
                                                                        , 126)))
-                                             , movement_dirs = c('up'
-                                                                 ,'up'
-                                                                 , 'up'
-                                                                 , 'up'
-                                                                 , 'up'))
-                        , "352" = data.frame(peaks_list = c(paste0("P"
+                                             , peaks_target = 
+                                               c(paste0("P"
+                                                        , c(106
+                                                            , 107
+                                                            , 118
+                                                            , 119
+                                                            , 125))))
+                        , "352" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(107
                                                                        , 108
                                                                        , 126)))
-                                             , movement_dirs = c('up'
-                                                                 ,'up'
-                                                                 , 'up'))
-                        , "333" = data.frame(peaks_list = c(paste0("P"
+                                             , peaks_target = 
+                                               c(paste0("P"
+                                                        , c(106
+                                                            , 107
+                                                            , 125))))
+                        , "333" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(26)))
-                                             , movement_dirs = c('down'))
-                        , "345" = data.frame(peaks_list = c(paste0("P"
+                                             , peaks_target = 
+                                               c(paste0("P"
+                                                        , c(27))))
+                        , "345" = data.frame(peaks_origin = c(paste0("P"
                                                                    , c(106
                                                                        , 107)))
-                                             , movement_dirs = c('up', 'up'))
+                                             , peaks_target = 
+                                               c(paste0("P"
+                                                        , c(105
+                                                            , 106))))
                         )
 
 peaks_movements
@@ -511,25 +492,26 @@ If we would only have a single aligned data set (like in the case of the
 standards), instead of a list of them, `correct_alignment()` could be directly
 use on it without `lapply()`
 
+The function will perform the modifications encoded in the `new_peaks` and `peak_movements`, remove any empty peak that has been left in the aligned data tables after these modifications, and recalculate the mean RT of the peaks.
+As the function removes peaks that are left empty, here the corrected aligned tables will not contained the empty peaks we indicated in `new_empty` peaks.
+Remember the creation of those was just for illustrative purpose, they are not needed for this specific data set.
+If you move values into new peaks within your own alignment corrections, the new peaks will be preserved in the corrected tables.
+
 ```{r results='hide'}
 corrected_samples_list <- lapply(aligned_samples_data_list
                                  , correct_alignment
-                                 , movements_list = peaks_movements)
+                                 , new_peaks = empty_peaks
+                                 , peak_movements = peaks_movements)
 ```
 
 We can check that all the miss-alignments were corrected by using  
 `diagnostic_heatmap()`. 
-However, as the objects returned by `align_chromatograms2()` and
-`correct_alignment()` have different structures, we need to specify that the
-data corresponds to a corrected alignment by setting the parameter
-`alignment.type` to "corrected".
 
 ```{r eval=F, include=T}
-for (df in names(samples_area_norm_list)) {
-  diagnostic_heatmap(samples_area_norm_list[[df]]
+for (df in names(corrected_samples_list)) {
+  diagnostic_heatmap(corrected_samples_list[[df]]
                      , title = paste0("corrected alignment of "
-                                      , df)
-                     , alignment.type = "corrected")
+                                      , df))
 }
 ```
 ```{r echo=FALSE, warning=FALSE, out.width="100%"}
@@ -538,64 +520,17 @@ knitr::include_graphics(system.file("extdata/corrected-alignment-IW.png", packag
 knitr::include_graphics(system.file("extdata/corrected-alignment-OW.png", package = "analyzeGC"))
 ```
 
-## Recalculate the mean RT
-Along the alignment correction process, the column holding the mean RT is 
-removed from the aligned data sets, which would no longer be correct due to the
-displacement of the peak values. 
-We need, in consequence, to recalculate the mean RT and add it to the data sets,
-for which we can use `recalculate_meanRT()`.
+We have now the corrected alignment of each group, but we do not know what compounds are contained within each peak. 
+At this point, I would extract the RT data frames of each group, and the standards, using `extract_RT()` and export them as CSV or XLSX files, where they will be easy to explore.
+The point is to find the peaks of the different samples, within the data frames, in their chromatograms, and identify the hydrocarbon(s) they contain, by looking at their mass-spectra.
+Here, is where it might result helpful the new order of the samples within the data frames. 
+If a sample has a higher total abundance, it means it has more (or bigger) peaks than the others.
+Therefore, if we begin exploring the chromatogram of the first sample of a given data frame, we will be able to identify most of the compounds present in the other samples of the data frame.
+Then, when exploring the last samples of the data frame, we will have a good idea of which peaks do not contain hydrocarbons (or other compound(s) of our interest), thus we will mainly need to confirm the identification of the compounds among the samples in the data frame, and identifying those that were absent in most of the samples.
 
-`recalculate_meanRT()` can be directly used on a corrected alignment obtained
-with `correct_alignment()`, but in the case of a list of them , like
-`corrected_samples_list`, we need to use `lapply()` to apply the function to 
-every data set contained in the list.
-
-```{r}
-corrected_samples_list2 <- lapply(corrected_samples_list
-                                  , recalculate_meanRT)
-```
-
-`recalculate_meanRT()` does not only recalculate and add the mean RT to the 
-RT and Area data frames. 
-It also erases any empty row that was created during the alignment correction
-process, transform 0s into NAs within the RT data frames, and reorder the
-samples within the data frames. 
-In the new data frames, the samples are in descending order, regarding the sum
-of the abundances of the peaks they contain. 
-
-```{r}
-corrected_samples_list2 |> 
-  lapply(extract_RT)
-```
-
-
-We have now the corrected alignment of each group, but we do not know what 
-compounds are contained within each peak. 
-At this point, I would extract the RT data frames of each group, and the
-standards, using `extract_RT()` and export them as CSV or XLSX files, where they
-will be easy to explore.
-The point is to find the peaks of the different samples, within the data frames,
-in their chromatograms, and identify the hydrocarbon(s) they contain, by looking
-at their mass-spectra.
-Here, is where it might result helpful the new order of the samples within the
-data frames. 
-If a sample has a higher total abundance, it means it has more peaks than the others.
-Therefore, if we begin exploring the chromatogram of the first sample of a 
-given data frame, we will be able to identify most of the compounds present in
-the other samples of the data frame.
-Then, when exploring the last samples of the data frame, we will have a good 
-idea of which peaks do not contain hydrocarbons (or other compound(s) of our
-interest), thus we will mainly need to confirm the identification of the
-compounds among the samples in the data frame, and identifying those that were
-absent in most of the samples.
-
-At the end of the compounds' identification process, we will have a new table 
-per data frame (a modified version of the exported RT data frame), that
-will contain the identification of the compounds within the different peaks.
-The data frames contained in these new tables could then be loaded in R for the
-next step of the workflow (the preparation of the group tables).
-The resulting data frames for the data used in this guide are contained in the 
-package as `comps_id_std` and `comps_id_list`.
+At the end of the compounds' identification process, we will have a new table per data frame (a modified version of the exported RT data frame), that will contain the identification of the compounds within the different peaks.
+The data frames contained in these new tables could then be loaded in R for the next step of the workflow (the preparation of the group tables).
+The resulting data frames for the data used in this guide are contained in the package as `comps_id_std` and `comps_id_list`.
 
 ```{r}
 lapply(comps_id_list, str, give.attr = F)
@@ -603,27 +538,17 @@ lapply(comps_id_list, str, give.attr = F)
 str(comps_id_std, give.attr = F)
 ```
 
-As you can see, these data frames are very similar to the original RT data 
-frames, except for their second column, which is called "Compound" and holds 
-the identification of the compounds contained by each peak. 
-This is because, when creating these tables, I simply added that column to the
-exported RT data frames. 
-However, the only important columns for these data frames are "Peak" and
-"Compound", most functions of the package will work as long as they are present.
+As you can see, these data frames are very similar to the original RT data frames, except for their second column, which is called "Compound" and holds the identification of the compounds contained by each peak. 
+This is because, when creating these tables, I simply added that column to the exported RT data frames. 
+However, the only important columns for these data frames are "Peak" and "Compound", most functions of the package will work as long as they are present.
 
 # Prepare the group tables
 
-Now that we have identified the compounds contained by the peaks within our 
-samples, for the data of each group, we need to assemble the group tables.
-I am assuming we have already loaded the data frames with the compound
-information of the samples and the standards, as they come within the package, 
-and you might have your own preference on how you want to produce (thus import)
-such data frames for your own data.
+Now that we have identified the compounds contained by the peaks within our samples, for the data of each group, we need to assemble the group tables.
+I am assuming we have already loaded the data frames with the compound information of the samples and the standards, as they come within the package, and you might have your own preference on how you want to produce (thus import) such data frames for your own data.
 
 ## Shape the data frames
-To prepare the group tables, we first need to put together the new data frames 
-that contain the compound identification, and perform some data wrangling
-operations to shape the group tables.
+To prepare the group tables, we first need to put together the new data frames that contain the compound identification, and perform some data wrangling operations to shape the group tables.
 
 ### The standards
 
@@ -634,9 +559,7 @@ std_info <- shape_hcstd_info(comps_id.STD = comps_id_std
                              , long_std_pattern = "H")
 ```
 
-
 ### The samples
-
 
 ```{r}
 comps_info_list <- comps_id_list |>
@@ -645,10 +568,8 @@ comps_info_list <- comps_id_list |>
 comps_info_list |> str()
 ```
 
-
-system.file("extdata/gcms_integration", package = "analyzeGC")
 ```{r eval=F, include=T}
-adjusted_samples_list <- corrected_samples_list2 |>
+adjusted_samples_list <- corrected_samples_list |>
   lapply(adjust_abundance, std.info = std_info)
 ```
 ```{r echo=FALSE, warning=FALSE, out.height=300, out.width=500}
@@ -663,35 +584,14 @@ unfiltered_samples_list <- add_comps_info(samples.list = adjusted_samples_list
 unfiltered_samples_list |> lapply(str, give.attr = F)
 ```
 
-## Clean the data
-
-### Remove trace compounds
-
-```{r results='hide'}
-filtered_samples_list <- unfiltered_samples_list |>
-  lapply(trace_comps
-         , threshold = 0.01)
-```
-
-### Remove non-target compounds
-
-```{r}
-filtered_samples_list2 <- filtered_samples_list |>
-  lapply(drop_na_compounds)
-```
-
-## Calculate the Kováts (retention) index
-
-```{r results='hide', message=FALSE, warning=FALSE}
-samples_plus_ri_list <- filtered_samples_list2 |>
-  lapply(kovats_retention_index, std.info = std_info)
-```
-
 ## Shape the group tables
 
 ```{r}
-group_tables_list <- samples_plus_ri_list |>
-  lapply(shape_group_table)
+group_tables_list <- unfiltered_samples_list |>
+  lapply(shape_aligned_table
+         , trace_comps_threshold = 0.01
+         , drop_unidentified_comps = T
+         , std.info = std_info)
 
 group_tables_list
 ```
