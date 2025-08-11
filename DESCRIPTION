@@ -37,11 +37,11 @@ Imports:
 Suggests: 
     doParallel (>= 1.0.17),
     here (>= 1.0.1),
-    knitr (>= 1.46),
+    knitr,
     openxlsx (>= 4.2.5.2),
-    rmarkdown (>= 2.26),
+    rmarkdown,
     testthat (>= 3.2.1.1),
-    vegan (>= 2.6.4),
+    vegan (>= 2.6.4)
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
