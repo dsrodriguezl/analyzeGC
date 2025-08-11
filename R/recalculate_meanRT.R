@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Function to correct the mean RT values of an aligned data frame. It is
-#' called within the correct_alignment fucntion to correct the mean RT values
+#' called within the correct_alignment function to correct the mean RT values
 #' of the peaks after moving the peak values within the samples, as part of the
 #' alignment correction process.
 #'
