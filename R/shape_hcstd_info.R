@@ -49,11 +49,15 @@
 #' neighboring n-alkane peaks is not constant along a GC-run. It is always
 #' better to have real standards.
 #'
+#' @param plot Logical value indicating whether to generate a plot illustrating
+#' the variation and correction among the standard n-alkane peaks (default: TRUE)
+#'
 #' @import dplyr
 #' @import purrr
 #' @import ggplot2
 #' @import ggtext
 #' @importFrom stats median
+#' @importFrom ggside geom_ysideboxplot
 #'
 #' @examples
 #'
@@ -68,7 +72,8 @@ shape_hcstd_info <- function(comps_id.STD
                              , short_long_splitted = TRUE
                              , short_std_pattern
                              , long_std_pattern
-                             , project_std = NULL) {
+                             , project_std = NULL
+                             , plot = T) {
 
   # If the aligned_std object is a GCalignR object, extract the alignment
   if (length(aligned_std) > 2) {
@@ -280,49 +285,51 @@ shape_hcstd_info <- function(comps_id.STD
            , "area_correction" = get("area") / get("median_area")
            , "corrected_area" = get("area") / get("area_correction"))
 
-  p <- std.info |>
-    drop_na() |>
-    ggplot(aes(y = get("area")
-               , x = get("mean_RT"))) +
-    geom_vline(aes(xintercept = get("mean_RT"))
-               , linetype = "dotted") +
-    geom_step(direction = "vh"
-              , linewidth = 1
-              , color = "orange") +
-    geom_point(color = "black"
-              , fill = "red"
-              , shape = 21
-              , size = 4) +
-    geom_step(aes(y = get("corrected_area"))
-              , direction = "vh"
-              , linewidth = 1
-              , color = "green") +
-    geom_point(aes(y = get("corrected_area"))
-               , color = "black"
+  if(plot == T) {
+    p <- std.info |>
+      drop_na() |>
+      ggplot(aes(y = get("area")
+                 , x = get("mean_RT"))) +
+      geom_vline(aes(xintercept = get("mean_RT"))
+                 , linetype = "dotted") +
+      geom_step(direction = "vh"
+                , linewidth = 1
+                , color = "orange") +
+      geom_point(color = "black"
+                 , fill = "red"
+                 , shape = 21
+                 , size = 4) +
+      geom_step(aes(y = get("corrected_area"))
+                , direction = "vh"
+                , linewidth = 1
+                , color = "green") +
+      geom_point(aes(y = get("corrected_area"))
+                 , color = "black"
                  , fill = "black"
                  , shape = 21
-               , size = 4) +
-    geom_richtext(aes(x = get("mean_RT")
-                      , y = max(get("area")) + 1500000
-                      , label = paste0("C", get("Chain.length")))
-                  , size = 3.5
-                  , angle = 270
-                  , fontface = "bold") +
-    ggside::geom_ysideboxplot(aes(x = NULL)
-                              , orientation = "x") +
-    theme_classic() +
-    labs(title = paste0("Abundance of standards (observed an corrected) vs"
-                        , " mean retention time")
-         , x = "mean RT (minutes)"
-         , y = "Abundance (area)"
-         , subtitle = "**Observed abundance:**
+                 , size = 4) +
+      geom_richtext(aes(x = get("mean_RT")
+                        , y = max(get("area")) + 1500000
+                        , label = paste0("C", get("Chain.length")))
+                    , size = 3.5
+                    , angle = 270
+                    , fontface = "bold") +
+      ggside::geom_ysideboxplot(aes(x = NULL)
+                                , orientation = "x") +
+      theme_classic() +
+      labs(title = paste0("Abundance of standards (observed an corrected) vs"
+                          , " mean retention time")
+           , x = "mean RT (minutes)"
+           , y = "Abundance (area)"
+           , subtitle = "**Observed abundance:**
          <span style = 'color:red'>**red dots**</span> connected by an
          <span style = 'color:orange'>**orange line**</span>. <br>
          **Corrected abundance:**
          <span style = 'color:black'>**black dots**</span> connected by a
          <span style = 'color:green'>**green line**</span>") +
-    theme(plot.subtitle = element_markdown())
-  print(p)
+      theme(plot.subtitle = element_markdown())
+    print(p)
+  }
 
   return(std.info)
 }

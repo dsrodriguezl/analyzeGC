@@ -13,6 +13,13 @@
 #' from [shape_hcstd_info].
 #' It must contains columns "mean_RT" and "area_correction".
 #'
+#' @param plot Logical value indicating whether to generate plots illustrating
+#' the change in the abundance data of the samples (default: TRUE).
+#' This generates a bar plot per sample showing the abundance on y-axis and
+#' mean_RT on x-axis.
+#' The plots are divided in two facets, to show the un-adjusted and adjusted
+#' versions of the peaks' abundance within a sample.
+#'
 #' @import dplyr
 #' @import tidyr
 #' @import tibble
@@ -20,16 +27,16 @@
 #' @examples
 #'
 #' # Adjusting the abundance for a single data set
-#' IW_data <- corrected_samples_list2$`Winter_In-hive workers_A. m. mellifera`
+#' IW_data <- corrected_samples_list$`Winter_In-hive workers_A. m. mellifera`
 #'   adjusted_IW <- adjust_abundance(aligned_data = IW_data
 #'                                         , std.info = std_info)
 #'
 #' # Adjusting the abundance for several data sets within a list
-#' adjusted_samples_list <- corrected_samples_list2 |>
+#' adjusted_samples_list <- corrected_samples_list |>
 #'   lapply(adjust_abundance, std.info = std_info)
 #'
 #' @export
-adjust_abundance <- function(aligned_data, std.info) {
+adjust_abundance <- function(aligned_data, std.info, plot = T) {
 
   area_table <- aligned_data$Area
 
@@ -107,44 +114,46 @@ adjust_abundance <- function(aligned_data, std.info) {
   }
   corrected_area_table <- area_table2
 
-  area_table <- area_table |>
-    pivot_longer(-(contains("Peak"):contains("mean_RT"))
-                 , names_to = "sample"
-                 , values_to = "area")
+  if(plot == T) {
+    area_table <- area_table |>
+      pivot_longer(-(contains("Peak"):contains("mean_RT"))
+                   , names_to = "sample"
+                   , values_to = "area")
 
-  area_table2 <- area_table2 |>
-    pivot_longer(-(contains("Peak"):contains("mean_RT"))
-                 , names_to = "sample"
-                 , values_to = "corrected_area")
+    area_table2 <- area_table2 |>
+      pivot_longer(-(contains("Peak"):contains("mean_RT"))
+                   , names_to = "sample"
+                   , values_to = "corrected_area")
 
-  area_table <-  area_table |>
-    bind_cols(corrected_area = area_table2$corrected_area)
+    area_table <-  area_table |>
+      bind_cols(corrected_area = area_table2$corrected_area)
 
-  # Loop over each sample
-  for (muestra in unique(area_table$sample)) {
-    long_sample_table <- area_table |>
-      pivot_longer(-(contains("Peak"):contains("sample"))
-                   , names_to = "ab_type"
-                   , values_to = "abundance") |>
-      filter(get("sample") == muestra)
+    # Loop over each sample
+    for (muestra in unique(area_table$sample)) {
+      long_sample_table <- area_table |>
+        pivot_longer(-(contains("Peak"):contains("sample"))
+                     , names_to = "ab_type"
+                     , values_to = "abundance") |>
+        filter(get("sample") == muestra)
 
-    # Create a bar plot showing the abundance on y-axis and mean_RT on x-axis
-    # Use facet the plot, to show the un-adjusted and adjusted versions of the
-    # peaks' abundance within the sample defined by the current iteration
-    p <- long_sample_table |>
-      ggplot(aes(y = get("abundance")
-                 , x = get("mean_RT"))) +
-      geom_col(color = "black") +
-      facet_wrap(vars(get("ab_type"))
-                 , ncol = 1
-                 , scales = "free_y") +
-      theme_classic() +
-      labs(title = paste0("Sample "
-                          , muestra
-                          , " before and after abundance adjustment")
-           , x = "mean RT"
-           , y = "Abundance")
-    print(p)
+      # Create a bar plot showing the abundance on y-axis and mean_RT on x-axis
+      # Use facet the plot, to show the un-adjusted and adjusted versions of the
+      # peaks' abundance within the sample defined by the current iteration
+      p <- long_sample_table |>
+        ggplot(aes(y = get("abundance")
+                   , x = get("mean_RT"))) +
+        geom_col(color = "black") +
+        facet_wrap(vars(get("ab_type"))
+                   , ncol = 1
+                   , scales = "free_y") +
+        theme_classic() +
+        labs(title = paste0("Sample "
+                            , muestra
+                            , " before and after abundance adjustment")
+             , x = "mean RT"
+             , y = "Abundance")
+      print(p)
+    }
   }
 
   aligned_data[["Area"]] <- corrected_area_table
