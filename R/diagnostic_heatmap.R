@@ -85,6 +85,19 @@ diagnostic_heatmap <- function(data, title) {
     df_area_norm <- area_2_percent(data)
   }
 
+  if (class(data) == "pseudo_align") {
+    area_2_percent <- function(x) {
+      x <- x / rowSums(x, na.rm = T) * 100
+      x
+    }
+
+    data <- data[["Area"]] |>
+      select(-"mean_RT") |>
+      t() |>
+      as.data.frame()
+    df_area_norm <- area_2_percent(data)
+  }
+
   heatmap_colors <- viridis::turbo(200)
 
   if (nrow(df_area_norm) > 1) {
