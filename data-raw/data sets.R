@@ -2,17 +2,15 @@
 load_all()
 
 # Samples_data_list ----
-# Import the CSV files with the samples' integration results
-samples_path_data <- list.files(path = system.file("extdata/gcms_integration"
-                                                   , package = "analyzeGC")
-                                #  Get all CSV files in the folder
-                                , pattern = ".CSV|.csv"
-                                , full.names = T) |>
-  # Do not include standards
-  str_subset('STD', negate = T)
+data_list <-
+  import_mh_integration(path =
+                   system.file("extdata/gcms_integration/MS_integration.csv"
+                               , package = "analyzeGC")
+                 , patterns_2_delete = "DR_")
 
-samples_data_list <- import_mh_data(samples_path_data
-                                      , patterns_2_delete = "DR_")
+samples_data_list <- data_list |>
+  # Do not include standards
+  discard_at(str_detect(names(data_list), 'STD'))
 
 # Create the samples_data _list data file for the package
 use_data(samples_data_list, overwrite = TRUE)
@@ -32,16 +30,9 @@ use_data(grouping_info, overwrite = TRUE)
 
 # standards_data_list ----
 # Import the CSV files with the samples' integration results
-standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
-                                                   , package = "analyzeGC")
-                                #  Get all CSV files in the folder
-                                , pattern = ".CSV|.csv"
-                                , full.names = T) |>
-  # Only include standards
-  str_subset('STD')
-
-standards_data_list <- import_mh_data(standards_path_data
-                                      , patterns_2_delete = "STD")
+standards_data_list <-data_list |>
+  # Do not include standards
+  keep_at(str_detect(names(data_list), 'STD'))
 
 # Create the standards_data_list data file for the package
 use_data(standards_data_list, overwrite = TRUE)

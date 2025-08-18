@@ -40,6 +40,7 @@ library(GCalignR)
 library(stringr)
 library(dplyr)
 library(tidyr)
+library(purrr)
 ```
 
 # Import the GC-MS integration data
@@ -48,66 +49,45 @@ The very first thing we will need to do is to import the CSV files with the inte
 We need to create a list of data frames, where each data frame corresponds to the integration results of one sample.
 The rows of the data frames should correspond to the peaks within the sample, and each data frame should have only two columns; one for the retention time, and another for the abundance (area of the peak).
 
-The function `analyzeGC::import_mh_data()` is designed to import the CSV files produced by the MassHunter Qualitative Navigator proprietary software and shape it into the correct format.
+The function `analyzeGC::import_mh_integration()` is designed to import the CSV files exported by the MassHunter Qualitative Navigator proprietary software and shape it into the correct format.
 This is the software my colleagues and I use.
 If you use a different one, feel free to explore the internal code of the function to create a code that does the same for the CSV files you got.
-To use `import_mh_data()` we need to create a list with the paths to the CSV files containing the integration results of each sample.
-This can be done with `list.files()`, providing the path to the folder where the corresponding CSV files are stored, and setting `pattern = ".CSV|.csv"`.
-There are many ways to provide the path to the folder storing the CSV files to `list.files()`, like writing it directly.
-My personal recommendation would be to use the function `here::here()`, assuming that we are storing the CSV files in a sub-folder of an R project that would be used for the entire analysis.
-Such a code would look similar to the code chunk below.
+To use the function you just need to define the path to the CSV file holding the integration results.
+We can set it as a variable with a code that follows a template like the following.
 
 ```{r eval=FALSE}
-samples_path_data <- list.files(path = here::here("strings"
-                                                  , "indicating"
-                                                  , "path"
-                                                  , "components"
-                                                  , "below"
-                                                  , "R project"
-                                                  , "root folder")
-                                #  Get all CSV files in the folder
-                                , pattern = ".CSV|.csv"
-                                , full.names = T) |>
-  # Do not include standards
-  str_subset('STD', negate = T)
+data_path <- here::here("folder", "data_file.csv")
 ```
+
+Or jsut directly giving the path string to the argument `path` of the function `import_mh_integration()`.
 
 ```{r include=FALSE}
-samples_path_data <- list.files(path = system.file("extdata/gcms_integration"
-                                                   , package = "analyzeGC")
-                                #  Get all CSV files in the folder
-                                , pattern = ".CSV|.csv"
-                                , full.names = T) |>
-  # Remove the paths of the standards from the lists
-  str_subset('STD', negate = T)
-
-standards_path_data <- list.files(path = system.file("extdata/gcms_integration"
-                                                   , package = "analyzeGC")
-                                #  Get all CSV files in the folder
-                                , pattern = ".CSV|.csv"
-                                , full.names = T) |>
-  # Only include standards
-  str_subset('STD')
+data_path <- system.file("extdata/gcms_integration/MS_integration.csv"
+                               , package = "analyzeGC")
 ```
 
-Now that we have the paths to the CSV files with the integration results, we can use `import_mh_data()` to import the data frames they contain, and store them within a list.
-
-The function takes a second argument `patterns_2_delete`, which should be a string indicating anything that has to be removed from the name of the files to obtain the samples' names.
-I tend to add "DR_" in front of the sample when naming the runs in the GC-MS files, so I can easily differentiate my files from those of anybody else, stored in the machine, and the usage of "STD" as a label is protocolary for naming the standard runs in the lab I work.
-Therefore, I provide this strings as the `patterns_2_delete` argument of `import_mh_data()`, for it to get the right name of the samples from their file names.
+The function takes a second argument `patterns_2_delete`, which should be a string indicating anything that has to be removed from the name of the GC/MS runs to obtain the samples' names.
+I tend to add "DR_" in front of the sample when naming the runs in the GC/MS files, so I can easily differentiate my files from those of anybody else, stored in the machine, and the "STDH"'or "STDL" are protocolary among me and my colleagues to identify the runs of n-alkane standard mixturess.
+Therefore, I use `patterns_2_delete` argument of `import_mh_integration()`, to get the right name of the samples from their GC/MS run names.
 However, naming systems can vary, and you probably will add different type of labels to the name of your run files, the idea is to provide the part of the name of the file that does not correspond to the direct name of the sample.
 In the case nothing should be removed from the name of the file, you can omit the `patterns_2_delete` argument (its default value is an empty string).
 
 ```{r warning=FALSE}
-samples_data_list <- import_mh_data(samples_path_data
-                                      , patterns_2_delete = "DR_")
+data_list <- import_mh_integration(path = data_path
+                            , patterns_2_delete = "DR_|STD")
 
-standards_data_list <- import_mh_data(standards_path_data
-                                      , patterns_2_delete = "STD")
+# Separate integration result of the samples and standards runs
+samples_data_list <- data_list |>
+  # Do not include standards
+  discard_at(str_detect(names(data_list), 'H|L'))
+
+standards_data_list <- data_list |>
+  # Do not include standards
+  keep_at(str_detect(names(data_list), 'H|L'))
 ```
 
-With the previous code we just imported the data frames contained in the CSV files, and stored them as tibbles within a list (`samples_data_list` or `standards_data_list`).
-`import_mh_data()` automatically recognizes the columns within the CSV files that correspond to the retention time (RT) and abundance (Area) of each peak within a sample and removes any other column from them, thus shaping the data frames in the format that is required within the `GCalignR` package for the automatic alignment of peaks across samples.
+With the previous code we just imported the data frames contained in the CSV files, and stored them as tibbles within a list `data_list` that we saparated in two, depending on whether the integration result tables corresponded to a samples or a standard (`samples_data_list` or `standards_data_list`).
+`import_mh_integration()` automatically recognizes the columns within the CSV files that correspond to the retention time (RT) and abundance (Area) of each peak within a sample and removes any other column from them, thus shaping the data frames in the format that is required within the `GCalignR` package for the automatic alignment of peaks across samples.
 Additionally, each  entry in the lists got named after the sample/run they belong.
 
 We can verify this by calling any of the entries within the lists.
@@ -141,7 +121,6 @@ Your intention might be to compare the composition of very different samples (e.
 So, you probably will end up having to manually correct some of the alignments produced by the algorithm.
 
 Therefore, here I propose some modifications to the workflow suggested by the  `GCalignR` package, aiming to extend the reproducibility provided by coding to further steps of the preparation of GC data in the context of chemical ecology. 
-
 ## Group your samples
 
 The first thing we can consider is to perform an automatic RT driven alignment among samples that are more similar.
