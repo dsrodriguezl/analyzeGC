@@ -25,6 +25,11 @@
 #' @import tibble
 #' @import tools
 #'
+#' @examples
+#'
+#' import_mh_integration(path =
+#'              system.file("extdata/gcms_integration/MS_integration.csv"
+#'            , package = "analyzeGC"), patterns_2_delete = "DR_")
 #'
 #' @export
 
@@ -52,8 +57,9 @@ import_mh_integration <- function(path
 
   # Clean sample name: remove " + TIC Scan " and ".D..." and normalize
   clean_id <- function(firstline) {
-    # remove "+ TIC Scan"
-    id <- trimws(gsub("\\s*\\+\\s*TIC\\s*Scan\\s*", "", firstline))
+    # remove "+ TIC Scan" or "+EI TIC Scan"
+    id <- trimws(gsub("\\s*\\+\\s*TIC\\s*Scan\\s*|\\s*\\+EI\\s*TIC\\s*Scan\\s*"
+                      , "", firstline))
     # remove ".D" and everything after
     id <- sub("\\.D.*", "", id)
     # drop any path
@@ -67,8 +73,9 @@ import_mh_integration <- function(path
   # Read stacked file
   lines <- readLines(path, warn = FALSE, encoding = "UTF-8")
 
-  # Locate the start of each table using the marker "+ TIC Scan"
-  starts <- grep("\\+\\s*TIC\\s*Scan", lines)
+  # Locate the start of each table using the marker "+ TIC Scan" or
+  # "+EI TIC Scan"
+  starts <- grep("\\+\\s*TIC\\s*Scan|\\s*\\+EI\\s*TIC\\s*Scan", lines)
 
   if (length(starts) == 0) {
     stop(paste("No '+ TIC Scan' markers found."

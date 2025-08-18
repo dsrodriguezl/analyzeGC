@@ -28,3 +28,10 @@ sample.
 A function to import the integration results data frames,
 as obtained from MassHunter.
 }
+\examples{
+
+import_mh_integration(path =
+             system.file("extdata/gcms_integration/MS_integration.csv"
+           , package = "analyzeGC"), patterns_2_delete = "DR_")
+
+}
