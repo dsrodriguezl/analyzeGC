@@ -2,7 +2,7 @@ Type: Package
 Package: analyzeGC
 Title: Analysis of GC data
 Version: 0.3.0
-Date: 2024-04-19
+Date: 2025-08-18
 Author: Daniel S. Rodríguez-Leon
 Maintainer: Daniel S. Rodríguez-Leon
     <72925497+dsrodriguezl@users.noreply.github.com>
@@ -39,7 +39,7 @@ Suggests:
     here (>= 1.0.1),
     knitr,
     openxlsx (>= 4.2.5.2),
-    rmarkdown,
+    rmarkdown (>= 2.26),
     testthat (>= 3.2.1.1),
     vegan (>= 2.6.4)
 VignetteBuilder: 
