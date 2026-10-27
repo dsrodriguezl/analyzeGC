@@ -121,6 +121,7 @@ Your intention might be to compare the composition of very different samples (e.
 So, you probably will end up having to manually correct some of the alignments produced by the algorithm.
 
 Therefore, here I propose some modifications to the workflow suggested by the  `GCalignR` package, aiming to extend the reproducibility provided by coding to further steps of the preparation of GC data in the context of chemical ecology. 
+
 ## Group your samples
 
 The first thing we can consider is to perform an automatic RT driven alignment among samples that are more similar.
@@ -182,6 +183,7 @@ samples_data_list |>
 ```
 
 ## What about the standards? 
+
 The standards are analytical solutions of n-alkanes, in which each compound is in a 40mg/l concentration. 
 In our lab we use two different mixtures, which correspond to the two data frames in `standards_data_list` (H2005, and L2005).
 L2005 corresponds to a mixture of the n-alkanes C8 to C20, and H2005 corresponds to a mixture of the n-alkanes C21 to C40.
@@ -209,6 +211,7 @@ This resulted in thinking few possible approaches, based on different arguments.
 Here I am trying to provide a synthesis of them.
 
 ### The linear shift
+
 For the linear shift (`linear_shift_criteria`), might be best to keep it as a very small value, on the end you should not be aligning samples that have a very strong RT variability for a given compound (at least, under the considerations of the workflow presented here).
 Personally, I usually use the third of the `partial_alignment_threshold`, as it seems to work well.
 Another approach, more conservative, would be to just set it as 0.
@@ -217,12 +220,13 @@ This implies that you think in advance the number of samples you can run between
 Moreover, it might not be possible to use this approach, if you want to analyze GC-MS runs from the past (re-running the samples might also not be a viable option in some cases).
 An alternative approach, if you used an internal standard for absolute quantification of the abundance of the compounds in your samples, would be to use the average RT difference of the internal standard peak across samples.
 However, an internal standard is not always used (sometimes is not possible), and once a sample has been extracted there is no use to adding the internal standard to the corresponding extract.
-In general these two approaches are more difficult to implement and my colleagues and I just have not have the chance to test them, although we seem to agree it has the potential to be the most adequate.
+In general these two approaches are more difficult to implement and my colleagues and I just have not have the chance to test them, although we seem to agree it has the potential to be adequate.
 Here we will just take the original `GCalignR::align_chromatograms()` default value of 0.02, as it worked well for this particular data set during my initial trials of the function.
 In general, this alignment parameter is not very relevant, as at this step the algorithm only attempts to build a table with all the samples, placing the peaks in each sample as close as possible to their closest neighbor peaks in the other samples.
-So, regardless of the approach yo u use, just keep in mind how you want the `GCalignR` algorithm handle your data at that first step.
+So, regardless of the approach you use, just keep in mind how you want the `GCalignR` algorithm handle your data at that first step.
 
 ### The partial peak alignment
+
 In the case of the partial peak alignment, a very recommendable approach would be to use `GCalignR::peak_interspace()` to find and use the minimum separation between neighboring (adjacent) peaks within samples.
 We can easily apply this function to each of the list inside `samples_data_list` with `lapply()`.
 
@@ -245,6 +249,7 @@ So, I would recommend to not use such approach, and stick to the initially descr
 I am only using this approach here, because I used it for my initial assessment of the `GCalignR` workflow, and have confirmed that it works properly.
 
 ### Merging rows
+
 Finally we have to determine the threshold for the row merging step; `row_merging_threshold` within `align_chromatograms2()`. 
 One possible approach would be to use the maximum distance between homologous peaks between standard runs before and after our samples, or between the peaks of an internal standard among samples.
 But, as previously said, these approaches might not always be possible.
@@ -260,7 +265,7 @@ We can easily apply this function to every list within `samples_data_list` with 
 Therefore, here I will show an example of code that parallelize this alignment operations.
 
 ```{r}
-# We need the doParallel package 
+# We need the doParallel package
 library(doParallel)
 
 ## Define the number of cores that will be used for the parallel processes
@@ -287,7 +292,7 @@ In the code above we used the `doParallel` package to register a processing clus
 `parLapply()` works like `lapply()`, but unlike `lapply()`, it performs the processes in parallel (not consecutively).
 As we use two cores for this, we effectively cut by half the time the process would have taken if using `lapply()`.
 However, be careful when paralleling processes in R, more cores are not always better, and you should consider the capabilities of the PC you are using before registering any bigger processing cluster.
-In general I would recommend you to read carefully the `doParallel` package before trying to parallelize processes with it.
+In general I would recommend you to read carefully the `doParallel` package documentation before trying to parallelize processes with it.
 
 In the case of the `standards_data_list` we can just directly use `align_chromatograms2()` on it.
 The standards usually have much more discrete RT values than the samples, so using the same alignment parameters as with the samples would most probably give an adequate alignment result (which do not tend to contain miss-alignments).
@@ -300,18 +305,19 @@ aligned_standards <- standards_data_list |>
 ```
 
 ## Check the precision of the alignments
+
 The goal of the automatic alignment is to minimize the number of miss-alignments in the aligned data frames, to reduce as much as possible the time and effort required to manually correct them.
 At the same time, it is crucial to reliably find possible miss-alignments within the data frames, as the process of manually compare every peak across every sample in a data frame can be very time consuming, not reproducible, and prone to errors.
 
 The `GCalignR` package provides the `gc_heatmap()` function, which can generate two different types of heat maps, designed to help finding peaks that might not be properly aligned, and are properly explained among the package documentation.
-However, my colleagues and I not found such plots particularly helpful to spot miss-alignments within the aligned data frames.
-So, we came with an alternative heat map plot, which displays the transformed normalized abundance of the peaks for every sample.
+However, my colleagues and I do not found such plots particularly helpful to spot miss-alignments within the aligned data frames.
+So, we came with an alternative heat map plot, which displays the abundance of the peaks for every sample.
 Additionally, the samples are ordered regarding their similarity within the plot, via a hierarchical cluster that is displayed as a dendrogram. 
 For us, such plot has resulted considerably more useful for finding possible miss-alignments, while it also offers a first overall view of the data within each aligned group data set. 
 As a result, this package includes the function `diagnostic_heatmap()`, which produces this plot. 
 
-_Note: The diagnostic plot tends to be very big, so I recommend you to use `pdf()` to generate the plots within a PDF document, where they will be easier to explore._
-_Given the illustrative purposes of this guide, I am not doing that, to properly show the plots here._ 
+>Note: The diagnostic plot tends to be very big, so I recommend you to use `pdf()` to generate the plots within a PDF document, where they will be easier to explore.
+>Given the illustrative purposes of this guide, I am not doing that, to embed and show the plots here.
 ```{r eval=F, include=T}
 for (df in names(aligned_samples_data_list)) {
   diagnostic_heatmap(aligned_samples_data_list[[df]]
@@ -369,12 +375,13 @@ By such process we can properly verify if the rows forming a stair do actually
 correspond to the same peak, thus being a miss-alignment.
 
 # Correct the alignment
-Once all the miss-alignments have been identified, it is necessary to correct
-them. 
+
+Once all the miss-alignments have been identified, it is necessary to correct them. 
 The correction of miss-alignments consist on the displacement of the peaks' Area and RT values within samples, to obtain a data frame where each row corresponds to the same peak, thus same compound(s), across samples. 
-This can be done using the `correct_alignment()` function. 
+This can be done using the `correct_alignment()` function.
 
 ## Add empty peaks
+
 If the values within a row do not correspond to the same peak, the miss-aligned
 values should be displaced to a different peak (row).
 However, if the values to displace represent different peaks to those 
@@ -407,6 +414,7 @@ empty_peaks
  So, we can consider those peaks in our `peak_movements` instructions to correct the alignment.
 
 ## Displace the peak values to correct the alignment
+
 `correct_alignment()` allows the displacement of the Area and RT values of
 peaks, within samples, to correct their alignment.
 It iterates through the samples in an aligned data set, displacing the RT and Area values within the data frames, as indicated by a list of data frames (given as the `peak_movements` parameter). The entry names in the list provided as `peak_movements` should correspond to the sample label within the data, for which the modifications encoded in the corresponding data frame within the list should be applied.
@@ -415,7 +423,7 @@ These data frames must have two columns (`peaks_origin` and `peaks_target`), ind
 We need to create a list of data frames, indicating how to displace the peak RT and Area values of each sample in the data set.
 We should consider that `correct_alignment()` displaces the peak values one after the other, in the order they are listed within a data frame.
 Hence, we should set the moving instructions in a way that the values of one peak do not overwrite the values of another, or we will be losing data.
-For example, if the values of two neighboring peaks should be displaced to the upper row, then the values of the first peak should be displaced before them other, or the values of the latter peak will overwrite the values of the first.
+For example, if the values of two neighboring peaks should be displaced to the upper row, then the values of the first peak should be displaced before the values in the second peak, or the values of the second peak will overwrite the values of the first.
 
 ```{r}
 peaks_movements <- list("350" = data.frame(peaks_origin = 
@@ -469,10 +477,10 @@ Now we can apply `correct_alignment()` to each of the group data sets in
 `aligned_samples_data_list`, using `lapply())`. 
 If we would only have a single aligned data set (like in the case of the
 standards), instead of a list of them, `correct_alignment()` could be directly
-use on it without `lapply()`
+used on it without `lapply()`
 
 The function will perform the modifications encoded in the `new_peaks` and `peak_movements`, remove any empty peak that has been left in the aligned data tables after these modifications, and recalculate the mean RT of the peaks.
-As the function removes peaks that are left empty, here the corrected aligned tables will not contained the empty peaks we indicated in `new_empty` peaks.
+As the function removes peaks that are left empty, here the corrected aligned tables will not contain the empty peaks we indicated in `new_empty` peaks.
 Remember the creation of those was just for illustrative purpose, they are not needed for this specific data set.
 If you move values into new peaks within your own alignment corrections, the new peaks will be preserved in the corrected tables.
 
@@ -527,6 +535,7 @@ Now that we have identified the compounds contained by the peaks within our samp
 I am assuming we have already loaded the data frames with the compound information of the samples and the standards, as they come within the package, and you might have your own preference on how you want to produce (thus import) such data frames for your own data.
 
 ## Shape the data frames
+
 To prepare the group tables, we first need to put together the new data frames that contain the compound identification, and perform some data wrangling operations to shape the group tables.
 
 ### The standards
@@ -772,7 +781,8 @@ sol <- metaMDS(master_daten
                , distance = "bray"
                , try = 200
                , k = 2
-               , trymax = 400)
+               , trymax = 400
+               , autotransform = F)
 ```
 
 ```{r}
