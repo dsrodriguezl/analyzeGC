@@ -321,12 +321,17 @@ shape_hcstd_info <- function(comps_id.STD
                           , " mean retention time")
            , x = "mean RT (minutes)"
            , y = "Abundance (area)"
-           , subtitle = "**Observed abundance:**
-         <span style = 'color:red'>**red dots**</span> connected by an
-         <span style = 'color:orange'>**orange line**</span>. <br>
-         **Corrected abundance:**
-         <span style = 'color:black'>**black dots**</span> connected by a
-         <span style = 'color:green'>**green line**</span>") +
+           , subtitle =
+             paste0("**Observed abundance:** "
+                    , "<span style='color:red'>**red dots**</span>"
+                    , " connected by an "
+                    , "<span style='color:orange'>**orange line**</span>. <br>"
+                    , "**Corrected abundance:** "
+                    , "<span style='color:black'>**black dots**</span>"
+                    , " connected by a "
+                    , "<span style='color:green'>**green line**</span>"
+                    )
+           ) +
       theme(plot.subtitle = element_markdown())
     print(p)
   }
